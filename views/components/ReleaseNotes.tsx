@@ -67,8 +67,16 @@ interface IRelease {
 
 const releaseNotes: IRelease[] = [
   {
+    version: "0.9.3",
+    date: "2022-07-19",
+    notes: [
+      "Bug fixes:",
+      "- Show count of weapons when granted by equipment upgrade"
+    ],
+  },
+  {
     version: "0.9.2",
-    date: "02/07/22",
+    date: "2022-07-02",
     notes: [
       "Enhancements:",
       '- Added unit notes to card view',
@@ -78,14 +86,14 @@ const releaseNotes: IRelease[] = [
   },
   {
     version: "0.9.1",
-    date: "02/07/22",
+    date: "2022-07-02",
     notes: [
       "Bug fix - mobile tabs scroll to top on change",
     ],
   },
   {
     version: "0.9.0",
-    date: "02/07/22",
+    date: "2022-07-02",
     notes: [
       "Enhancements:",
       '- "Heroes only join units from their own faction" competitive warning',
@@ -107,7 +115,7 @@ const releaseNotes: IRelease[] = [
   },
   {
     version: "0.8.3",
-    date: "26/06/22",
+    date: "2022-06-26",
     notes: [
       "Bug fix - can now refresh view screen.",
     ],
