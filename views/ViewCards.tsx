@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../data/store";
 import style from "../styles/Cards.module.css";
 import UnitEquipmentTable from "../views/UnitEquipmentTable";
-import { Paper, Card } from "@mui/material";
+import { Paper, Card, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import RulesService from "../services/RulesService";
 import { ArmyState, IGameRule } from "../data/armySlice";
 import { groupBy, groupMap, intersperse, makeCopy } from "../services/Helpers";
@@ -16,6 +16,7 @@ import { IViewPreferences, listContainsPyschic } from "../pages/view";
 import { getFlatTraitDefinitions, ITrait } from "../data/campaign";
 import LinkIcon from "@mui/icons-material/Link";
 import { ListState } from "../data/listSlice";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface ViewCardsProps {
   prefs: IViewPreferences;
@@ -353,12 +354,14 @@ function SpecialRulesCard({ usedRules, ruleDefinitions }) {
 function ViewCard({ title, content }) {
   return (
     <Card elevation={1} className={style.card}>
-      <div className="card-body">
-        <h3 className="is-size-5 my-2" style={{ fontWeight: 600, textAlign: "center" }}>
-          {title}
-        </h3>
-        {content}
-      </div>
+      <Accordion disableGutters defaultExpanded>
+        <AccordionSummary className="card-accordion-summary" expandIcon={<ExpandMoreIcon/>}>
+          <h3 className="is-size-5 my-2" style={{ fontWeight: 600, textAlign: "center", flex: 1 }}>
+            {title}
+          </h3>
+        </AccordionSummary>
+        <AccordionDetails sx={{ p: 0 }}>{content}</AccordionDetails>
+      </Accordion>
     </Card>
   );
 }
