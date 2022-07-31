@@ -72,7 +72,7 @@ export function Upgrades({ mobile = false }) {
       const ruleDef = ruleDefinitions.find((rd) => rd.name === r.name);
       console.log(r.name, ruleDef);
       const ruleDesc = ruleDef?.description;
-      result ||= ruleDesc && /(?:Psychic|Wizard)\(\d\)/i.test(ruleDesc);
+      result ||= ruleDesc && /(?:Psychic|Wizard)\(\d\)/i.test(ruleDesc) && !(/(?:as if)/i.test(ruleDesc));
     }
     return result;
   })();
