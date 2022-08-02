@@ -24,7 +24,7 @@ export default function ArmyImage({
   return (
     <div
       {...props}
-      className={`${props.className ?? ""} is-flex p-2`}
+      className={`${props.className ?? ""} p-2`}
       style={{
         ...props.style,
         position: "relative",
@@ -49,7 +49,6 @@ export default function ArmyImage({
         }}
       ></div>
       <div
-        className="is-flex"
         style={{
           height: "100%",
           width: "100%",

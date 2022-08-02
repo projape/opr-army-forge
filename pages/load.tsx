@@ -309,10 +309,13 @@ function SaveListItem({
   const points = save.listPoints;
   const title = (
     <>
-      <span style={{ fontWeight: 600 }}>
+      <Typography component="span" sx={{ fontWeight: 600 }}>
         {save.gameSystem?.toUpperCase()} - {save.list.name}
-      </span>
-      <span style={{ color: "#656565" }}> • {points}pts</span>
+      </Typography>
+      <Typography sx={{ color: "text.secondary" }} component="span">
+        {" "}
+        • {points}pts
+      </Typography>
     </>
   );
 
@@ -323,9 +326,8 @@ function SaveListItem({
       secondaryAction={
         showCheckbox && <Checkbox checked={selected} onClick={() => onSelect(save)} />
       }
-      style={{ backgroundColor: selected ? "#F9FDFF" : null }}
     >
-      <ListItemButton {...bindLongPress()}>
+      <ListItemButton {...bindLongPress()} selected={selected}>
         <ListItemAvatar>
           <ArmyImage
             name={save.armyFaction || save.armyName}
@@ -334,7 +336,7 @@ function SaveListItem({
           />
         </ListItemAvatar>
         <ListItemText
-          className={"ml-2" + (save.saveVersion >= 2 ? "" : " has-text-danger")}
+          sx={{ ml: 2, color: save.saveVersion >= 2 ? "" : "error.main" }}
           primary={title}
           secondary={
             save.saveVersion >= 2

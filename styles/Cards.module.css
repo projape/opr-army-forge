@@ -34,48 +34,6 @@
   padding-bottom: 0px;
 }
 
-.profileStat {
-  margin-top: 0;
-  margin-bottom: 16px;
-  margin-left: 6px;
-  margin-right: 6px;
-  width: 86px;
-  border: 1px solid rgba(33, 33, 33, 0.08);
-  border-radius: 4px;
-  background-color: #fafdff;
-}
-
-.profileStat p:first-child {
-  padding: 2px;
-  text-indent: 4px;
-  background-color: #0f71b4;
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
-  text-transform: uppercase;
-  position: relative;
-}
-
-.profileStat p:first-child::after {
-  content: " ";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 28px;
-  border-left: 4px solid transparent;
-  border-bottom: 4px solid #fafdff;
-}
-
-.profileStat p:last-child {
-  text-align: center;
-  font-weight: bold;
-  font-size: 22px;
-  font-weight: bold;
-  border-radius: 4px;
-}
-
 .profileStat2 {
   display: flex;
   background-color: #0f71b4;

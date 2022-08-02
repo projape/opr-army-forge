@@ -4,13 +4,10 @@ import { Fragment, useState } from "react";
 import { Card, Divider, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { IUnit } from "../data/interfaces";
-
-import UnitService from "../services/UnitService";
 import ArmyBookGroupHeader from "./components/ArmyBookGroupHeader";
 import UnitListItem from "./components/UnitListItem";
-import { addUnit, previewUnit, removeUnit, selectUnit } from "../data/listSlice";
+import { addUnit, previewUnit } from "../data/listSlice";
 import { useRouter } from "next/router";
-import { getTabsListUnstyledUtilityClass } from "@mui/base";
 
 export function UnitSelection() {
   const loadedArmyBooks = useSelector((state: RootState) => state.army.loadedArmyBooks);
@@ -39,14 +36,14 @@ function UnitSelectionForArmy({ army, showTitle }) {
     const scroll = window.scrollY;
     router.events.on("routeChangeComplete", () => {
       window.scrollTo(0, scroll);
-    })
+    });
     router.push({ query: { ...router.query, upgradesOpen: true } });
   };
 
   const unitGroups = getUnitCategories(army.units);
 
   return (
-    <Card elevation={2} sx={{ backgroundColor: "#FAFAFA", marginBottom: "1rem" }} square>
+    <Card elevation={2} sx={{ mb: 1 }} square>
       {showTitle && (
         <ArmyBookGroupHeader army={army} collapsed={collapsed} setCollapsed={setCollapsed} />
       )}

@@ -42,7 +42,7 @@ export default function List() {
         <title>OPR Army Forge</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {armyState.loaded ? isBigScreen ? <DesktopView /> : <MobileView /> : null}
+      {armyState.loaded && (isBigScreen ? <DesktopView /> : <MobileView />)}
     </>
   );
 }
