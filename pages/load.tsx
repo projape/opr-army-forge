@@ -15,6 +15,7 @@ import {
   Toolbar,
   AppBar,
   Typography,
+  Container,
 } from "@mui/material";
 import _ from "lodash";
 import { Delete } from "@mui/icons-material";
@@ -246,34 +247,38 @@ export default function Load() {
           </AppBar>
         </Paper>
       )}
-      <div className="container">
+      <Container
+        maxWidth={false}
+        sx={{ mx: "auto", pt: 4, maxWidth: "480px", display: "flex", flexDirection: "column" }}
+      >
         <input type="file" id="file-input" style={{ display: "none" }} onChange={readSingleFile} />
-        <div className="mx-auto" style={{ maxWidth: "480px" }}>
-          <div className="is-flex is-justify-content-center p-4 my-4">
-            <Button variant="contained" color="primary" onClick={() => importFile()}>
-              <DownloadFileIcon fill="white" /> <span className="ml-2">Upload Army Forge File</span>
-            </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => importFile()}
+          sx={{ alignSelf: "center", px: 4 }}
+        >
+          <DownloadFileIcon fill="white" /> <span className="ml-2">Upload Army Forge File</span>
+        </Button>
+        {loading && (
+          <div className="is-flex is-flex-direction-column is-align-items-center">
+            <CircularProgress />
+            <p>Loading army data...</p>
           </div>
-          {loading && (
-            <div className="is-flex is-flex-direction-column is-align-items-center">
-              <CircularProgress />
-              <p>Loading army data...</p>
-            </div>
-          )}
-          {favourites.length > 0 && (
-            <>
-              <p className="px-4 mb-2" style={{ fontWeight: 600 }}>
-                Favourite Lists
-              </p>
-              <SaveList saves={favourites} />
-            </>
-          )}
-          <p className="px-4 my-2" style={{ fontWeight: 600 }}>
-            Saved Lists
-          </p>
-          <SaveList saves={parsedSaves.filter((s) => !s.favourite)} />
-        </div>
-      </div>
+        )}
+        {favourites.length > 0 && (
+          <>
+            <p className="px-4 mb-2" style={{ fontWeight: 600 }}>
+              Favourite Lists
+            </p>
+            <SaveList saves={favourites} />
+          </>
+        )}
+        <p className="px-4 my-2" style={{ fontWeight: 600 }}>
+          Saved Lists
+        </p>
+        <SaveList saves={parsedSaves.filter((s) => !s.favourite)} />
+      </Container>
     </>
   );
 }

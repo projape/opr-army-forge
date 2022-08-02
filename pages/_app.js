@@ -17,8 +17,8 @@ function MyApp({ Component, pageProps }) {
 
   const theme = createTheme({
     palette: {
-      //mode: prefersDarkMode ? "dark" : "light",
-      mode: "light"
+      mode: prefersDarkMode ? "dark" : "light",
+      //mode: "light"
     },
     typography: {
       fontFamily: "Source Sans Pro",

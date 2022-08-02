@@ -15,8 +15,6 @@ import {
   ListItem,
   ListItemText,
   Switch,
-  TableContainer,
-  Table,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -27,8 +25,7 @@ import PersistenceService from "../services/PersistenceService";
 import PrintIcon from "@mui/icons-material/Print";
 import ViewTable from "../views/ViewTable";
 import { getGameRules } from "../data/armySlice";
-import { ListState } from "../data/listSlice";
-import { ISelectedUnit, IUpgradeGainsRule } from "../data/interfaces";
+import { ISelectedUnit } from "../data/interfaces";
 import UnitService from "../services/UnitService";
 import { MainMenuOptions } from "../views/components/MainMenu";
 
@@ -191,7 +188,7 @@ export default function View() {
           <span className="pl-1 full-compact-text">{isCardView ? "cards" : "list"}</span>
         </Button>
       </div>
-      <h1 className="mb-4 mx-4 print-only" style={{ fontWeight: 600 }}>
+      <h1 className="print-only" style={{ fontWeight: 600 }}>
         {title}
       </h1>
       {isCardView ? <ViewCards prefs={preferences} /> : <ViewTable prefs={preferences} />}

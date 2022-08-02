@@ -54,8 +54,10 @@ function GameSystemTile({ gameSystem }) {
       <img
         onClick={() => selectGameSystem(dispatch, router, gameSystem)}
         src={`img/${gameSystem}_cover.jpg`}
-        className={"game-system-tile interactable"}
+        className="interactable"
         style={{
+          height: "auto",
+          maxWidth: "100%",
           borderRadius: "4px",
           display: "block",
         }}

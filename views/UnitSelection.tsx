@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../data/store";
 import { Fragment, useState } from "react";
-import { Card, Divider, IconButton } from "@mui/material";
+import { Box, Card, Divider, IconButton, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { IUnit } from "../data/interfaces";
 import ArmyBookGroupHeader from "./components/ArmyBookGroupHeader";
@@ -52,7 +52,18 @@ function UnitSelectionForArmy({ army, showTitle }) {
         Object.keys(unitGroups).map((key, i) => (
           <Fragment key={key}>
             {key !== "undefined" && unitGroups[key].length > 0 && (
-              <p className={"menu-label my-2 px-4 " + (i > 0 ? "pt-3" : "")}>{key}</p>
+              <Box
+                sx={{
+                  px: 2,
+                  pt: 2,
+                  pb: 0.5,
+                  backgroundColor: "action.hover",
+                }}
+              >
+                <Typography letterSpacing=".1em" fontSize=".75em" textTransform="uppercase">
+                  {key}
+                </Typography>
+              </Box>
             )}
             <Divider />
             {unitGroups[key].map((u, index) => {
@@ -66,7 +77,7 @@ function UnitSelectionForArmy({ army, showTitle }) {
                   key={u.id}
                   unit={u}
                   countInList={countInList}
-                  selected={countInList > 0 || list.unitPreview?.id === u.id}
+                  selected={list.unitPreview?.id === u.id}
                   onClick={() => {
                     handleSelectClick(u);
                   }}
