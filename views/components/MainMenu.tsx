@@ -70,16 +70,15 @@ export default function MainMenu() {
 
   return (
     <>
-      <AppBar elevation={0} style={{ position: "sticky", top: 0, zIndex: 1 }}>
-        <Toolbar className="p-0">
+      <AppBar elevation={0} sx={{ position: "sticky", top: 0, zIndex: 1 }}>
+        <Toolbar style={{ paddingLeft: "8px", paddingRight: "8px" }}>
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
             onClick={goBack}
-            style={{ marginLeft: "0" }}
-            className="mr-4"
+            sx={{ marginLeft: "0", mr: 2, ml: 0 }}
           >
             <HomeIcon />
           </IconButton>

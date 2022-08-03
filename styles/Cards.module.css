@@ -34,7 +34,7 @@
   padding-bottom: 0px;
 }
 
-.profileStat2 {
+.profileStat {
   display: flex;
   background-color: #0f71b4;
   margin-left: 8px;
@@ -44,11 +44,7 @@
   align-items: flex-end;
 }
 
-.profileStat2 p {
-  padding: 0;
-}
-
-.profileStat2 p:first-child {
+.profileStat span:first-child {
   padding-left: 8px;
   padding-right: 8px;
   color: white;
@@ -58,13 +54,14 @@
   line-height: 32px;
 }
 
-.profileStat2 > div {
+.statBreak {
   border-bottom: 26px solid white;
   border-left: 12px solid transparent;
 }
 
-.profileStat2 p:last-child {
+.profileStat span:last-child {
   background-color: white;
+  color: #121212;
   font-weight: 900;
   font-size: 18px;
   padding-left: 4px;
@@ -73,20 +70,4 @@
   line-height: 26px;
   border-bottom-right-radius: 3px;
   position: relative;
-}
-
-.profileStat2 p:last-child > div {
-  top: 0;
-  left: -2px;
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background-color: #0f71b4;
-}
-
-.profileStat2 p:last-child > div > div {
-  width: 100%;
-  height: 100%;
-  background-color: white;
-  border-top-left-radius: 8px;
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../data/store";
 import { useRouter } from "next/router";
 import ViewCards from "../views/ViewCards";
@@ -15,6 +15,7 @@ import {
   ListItem,
   ListItemText,
   Switch,
+  Stack,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -24,10 +25,10 @@ import ClearIcon from "@mui/icons-material/Clear";
 import PersistenceService from "../services/PersistenceService";
 import PrintIcon from "@mui/icons-material/Print";
 import ViewTable from "../views/ViewTable";
-import { getGameRules } from "../data/armySlice";
 import { ISelectedUnit } from "../data/interfaces";
 import UnitService from "../services/UnitService";
 import { MainMenuOptions } from "../views/components/MainMenu";
+import { useLoadFromQuery } from "../hooks/useLoadFromQuery";
 
 export interface IViewPreferences {
   showFullRules: boolean;
@@ -40,7 +41,8 @@ export default function View() {
   const list = useSelector((state: RootState) => state.list);
   const armyState = useSelector((state: RootState) => state.army);
   const router = useRouter();
-  const dispatch = useDispatch();
+  
+  useLoadFromQuery();
 
   const defaultPrefs = {
     showFullRules: false,
@@ -63,23 +65,6 @@ export default function View() {
   }, []);
 
   // Load army list file
-  useEffect(() => {
-    // Redirect to game selection screen if no army selected
-    if (!armyState.loaded) {
-      const listId = router.query["listId"] as string;
-      if (listId) {
-        PersistenceService.loadFromKey(dispatch, listId, (_) => {});
-        return;
-      }
-
-      router.push({ pathname: "/gameSystem", query: router.query }, null, {
-        shallow: true,
-      });
-      return;
-    } else {
-      dispatch(getGameRules(armyState.gameSystem));
-    }
-  }, []);
 
   if (!armyState.loaded) return <p>Loading...</p>;
 
@@ -130,14 +115,14 @@ export default function View() {
         </AppBar>
       </Paper>
       <Drawer anchor="right" open={settingsOpen} onClose={() => setSettingsOpen(false)}>
-        <div className="is-flex p-4">
-          <h3 className="is-size-4" style={{ flex: 1 }}>
+        <Stack direction="row" p={2}>
+          <h3 className="is-size-4" style={{ flex: 1, margin: 0 }}>
             Display Settings
           </h3>
           <IconButton onClick={() => setSettingsOpen(false)}>
             <ClearIcon />
           </IconButton>
-        </div>
+        </Stack>
         <List>
           <ListItem>
             <ListItemText>Show Psychic/Spells</ListItemText>

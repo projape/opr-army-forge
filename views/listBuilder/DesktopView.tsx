@@ -58,8 +58,7 @@ export default function DesktopView() {
           <Card
             square
             elevation={1}
-            className="px-4 pt-4 pb-2"
-            style={{ position: "sticky", top: 0, zIndex: 1 }}
+            sx={{ px: 2, pt: 2, pb: 1, position: "sticky", top: 0, zIndex: 1 }}
           >
             <UpgradePanelHeader />
           </Card>

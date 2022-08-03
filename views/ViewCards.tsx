@@ -3,10 +3,20 @@ import { useSelector } from "react-redux";
 import { RootState } from "../data/store";
 import style from "../styles/Cards.module.css";
 import UnitEquipmentTable from "../views/UnitEquipmentTable";
-import { Paper, Card, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import {
+  Paper,
+  Card,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Container,
+  Stack,
+  Typography,
+  Box,
+} from "@mui/material";
 import RulesService from "../services/RulesService";
 import { ArmyState, IGameRule } from "../data/armySlice";
-import { groupBy, groupMap, intersperse, makeCopy } from "../services/Helpers";
+import { groupBy, groupMap, intersperse } from "../services/Helpers";
 import UnitService from "../services/UnitService";
 import UpgradeService from "../services/UpgradeService";
 import _ from "lodash";
@@ -16,7 +26,7 @@ import { IViewPreferences, listContainsPyschic } from "../pages/view";
 import { getFlatTraitDefinitions, ITrait } from "../data/campaign";
 import LinkIcon from "@mui/icons-material/Link";
 import { ListState } from "../data/listSlice";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 interface ViewCardsProps {
   prefs: IViewPreferences;
@@ -67,7 +77,7 @@ export default function ViewCards({ prefs }: ViewCardsProps) {
   };
 
   return (
-    <div className="mx-4">
+    <Container maxWidth={false}>
       <div className={style.grid}>
         {prefs.combineSameUnits
           ? Object.values(unitGroups).map((grp: ISelectedUnit[], i) => {
@@ -84,7 +94,7 @@ export default function ViewCards({ prefs }: ViewCardsProps) {
           ruleDefinitions={ruleDefinitions.concat(traitDefinitions as any[])}
         />
       )}
-    </div>
+    </Container>
   );
 }
 
@@ -115,30 +125,24 @@ export function UnitCard({
     .concat(UnitService.getUpgradeRules(unit));
   const items = unit.loadout.filter((x) => x.type === "ArmyBookItem") as IUpgradeGainsItem[];
 
+  const Stat = ({ label, value }: { label: string; value: string }) => (
+    <Box className={style.profileStat}>
+      <Typography component="span">{label}</Typography>
+      <div className={style.statBreak}></div>
+      <Typography component="span">{value}</Typography>
+    </Box>
+  );
+
   const stats = (
-    <div className="is-flex mb-3" style={{ justifyContent: "center" }}>
-      <div className={style.profileStat2}>
-        <p>Quality</p>
-        <div className="stat-break"></div>
-        <p>{unit.quality}+</p>
-      </div>
-      <div className={style.profileStat2}>
-        <p>Defense</p>
-        <div className="stat-break"></div>
-        <p>{unit.defense}+</p>
-      </div>
-      {toughness > 1 && (
-        <div className={style.profileStat2}>
-          <p>Tough</p>
-          <div className="stat-break"></div>
-          <p>{toughness}</p>
-        </div>
-      )}
-    </div>
+    <Stack justifyContent="center" direction="row" mb={1}>
+      <Stat label="Defense" value={unit.defense + "+"} />
+      <Stat label="Quality" value={unit.quality + "+"} />
+      {toughness > 1 && <Stat label="Defense" value={toughness.toString()} />}
+    </Stack>
   );
 
   const rulesSection = (
-    <div className="px-2 mb-2" style={{ fontSize: "14px" }}>
+    <Box mb={1} px={1} fontSize="14px">
       {prefs.showFullRules
         ? (() => {
             const itemRules = _.flatMap(
@@ -163,12 +167,12 @@ export function UnitCard({
                 )[0];
 
                 return (
-                  <p key={key}>
+                  <Typography key={key} fontSize={"14px"}>
                     <span style={{ fontWeight: 600 }}>
                       {RulesService.displayName({ ...rule, rating: rating as any }, count)} -
                     </span>
                     <span> {ruleDefinition?.description || ""}</span>
-                  </p>
+                  </Typography>
                 );
               }
             );
@@ -214,10 +218,9 @@ export function UnitCard({
               }
             );
 
-            console.log(rules.concat(itemRules));
             return intersperse(rules.concat(itemRules), <span>, </span>);
           })()}
-    </div>
+    </Box>
   );
 
   const traitsSection = unit.traits?.length > 0 && (
@@ -355,7 +358,7 @@ function ViewCard({ title, content }) {
   return (
     <Card elevation={1} className={style.card}>
       <Accordion disableGutters defaultExpanded>
-        <AccordionSummary className="card-accordion-summary" expandIcon={<ExpandMoreIcon/>}>
+        <AccordionSummary className="card-accordion-summary" expandIcon={<ExpandMoreIcon />}>
           <h3 className="is-size-5 my-2" style={{ fontWeight: 600, textAlign: "center", flex: 1 }}>
             {title}
           </h3>
