@@ -125,8 +125,8 @@ function SearchBox({ searchText, setSearchText }) {
   return (
     <Input
       sx={{
-        flexGrow: 0.25,
-        color: "primary.contrastText",
+        flex: 1,
+        color: "common.white",
       }}
       id="txtSearch"
       size="small"
@@ -134,12 +134,12 @@ function SearchBox({ searchText, setSearchText }) {
       disableUnderline
       onChange={(e) => setSearchText(e.target.value)}
       value={searchText}
-      inputProps={{ style: { textAlign: "right" } }}
+      inputProps={{ style: { textAlign: "right", color: "common.white" } }}
       endAdornment={
-        <InputAdornment position="end" sx={{ width: "2rem", color: "primary.contrastText" }}>
+        <InputAdornment position="end" sx={{ width: "2rem", color: "common.white" }}>
           {searchText ? (
             <IconButton size="small" onClick={() => setSearchText("")}>
-              <ClearIcon sx={{ color: "primary.contrastText" }} />
+              <ClearIcon sx={{ color: "common.white" }} />
             </IconButton>
           ) : (
             <SearchIcon

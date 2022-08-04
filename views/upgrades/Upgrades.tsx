@@ -26,7 +26,7 @@ import { IGameRule } from "../../data/armySlice";
 import UnitNotes from "../components/UnitNotes";
 import { Fragment } from "react";
 
-export function Upgrades({ mobile = false }) {
+export function Upgrades() {
   const list = useSelector((state: RootState) => state.list);
   const { gameSystem, loadedArmyBooks, rules } = useSelector((state: RootState) => state.army);
   const dispatch = useDispatch();
