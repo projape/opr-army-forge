@@ -16,6 +16,7 @@ import {
   AppBar,
   Typography,
   Container,
+  Stack,
 } from "@mui/material";
 import _ from "lodash";
 import { Delete } from "@mui/icons-material";
@@ -155,7 +156,7 @@ export default function Load() {
   const SaveList = ({ saves }) => {
     return (
       <Paper square elevation={0}>
-        <List className="p-0">
+        <List sx={{ p: 0 }}>
           {_.sortBy(saves, (save) => save.modified)
             .reverse()
             .map((save) => (
@@ -258,23 +259,23 @@ export default function Load() {
           onClick={() => importFile()}
           sx={{ alignSelf: "center", px: 4 }}
         >
-          <DownloadFileIcon fill="white" /> <span className="ml-2">Upload Army Forge File</span>
+          <DownloadFileIcon fill="white" /> <span>&nbsp;Upload Army Forge File</span>
         </Button>
         {loading && (
-          <div className="is-flex is-flex-direction-column is-align-items-center">
+          <Stack alignItems="center" mt={2}>
             <CircularProgress />
             <p>Loading army data...</p>
-          </div>
+          </Stack>
         )}
         {favourites.length > 0 && (
           <>
-            <p className="px-4 mb-2" style={{ fontWeight: 600 }}>
+            <p style={{ fontWeight: 600 }}>
               Favourite Lists
             </p>
             <SaveList saves={favourites} />
           </>
         )}
-        <p className="px-4 my-2" style={{ fontWeight: 600 }}>
+        <p style={{ fontWeight: 600 }}>
           Saved Lists
         </p>
         <SaveList saves={parsedSaves.filter((s) => !s.favourite)} />
@@ -332,7 +333,7 @@ function SaveListItem({
         showCheckbox && <Checkbox checked={selected} onClick={() => onSelect(save)} />
       }
     >
-      <ListItemButton {...bindLongPress()} selected={selected}>
+      <ListItemButton {...bindLongPress()} selected={selected} disableGutters>
         <ListItemAvatar>
           <ArmyImage
             name={save.armyFaction || save.armyName}

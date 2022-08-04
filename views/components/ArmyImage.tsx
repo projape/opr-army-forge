@@ -1,3 +1,5 @@
+import { useTheme } from "@mui/material";
+
 const rotations = {} as any;
 
 export default function ArmyImage({
@@ -7,6 +9,8 @@ export default function ArmyImage({
   size = "100px",
   ...props
 }) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const urlName = name
     .replace(/Daemons of.+/gi, "Daemons")
     .replace(/\s+/g, "-")
@@ -58,6 +62,7 @@ export default function ArmyImage({
           backgroundRepeat: "no-repeat",
           position: "relative",
           zIndex: 1,
+          //filter: "invert(1)"
         }}
       ></div>
     </div>

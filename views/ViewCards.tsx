@@ -13,6 +13,7 @@ import {
   Stack,
   Typography,
   Box,
+  useMediaQuery,
 } from "@mui/material";
 import RulesService from "../services/RulesService";
 import { ArmyState, IGameRule } from "../data/armySlice";
@@ -119,6 +120,7 @@ export function UnitCard({
   traitDefinitions,
 }: UnitCardProps) {
   const toughness = toughFromUnit(unit);
+  const tinyScreen = useMediaQuery("(max-width: 420px)", { noSsr: true });
 
   const unitRules = unit.specialRules
     .filter((r) => r.name != "-")
@@ -135,9 +137,9 @@ export function UnitCard({
 
   const stats = (
     <Stack justifyContent="center" direction="row" mb={1}>
-      <Stat label="Defense" value={unit.defense + "+"} />
-      <Stat label="Quality" value={unit.quality + "+"} />
-      {toughness > 1 && <Stat label="Defense" value={toughness.toString()} />}
+      <Stat label={tinyScreen ? "Qua" : "Quality"} value={unit.quality + "+"} />
+      <Stat label={tinyScreen ? "Def" : "Defense"} value={unit.defense + "+"} />
+      {toughness > 1 && <Stat label={tinyScreen ? "Tough" : "Tough"} value={toughness.toString()} />}
     </Stack>
   );
 
@@ -277,9 +279,7 @@ export function UnitCard({
           {stats}
           {rulesSection}
           {traitsSection}
-          <div className="mt-4">
-            <UnitEquipmentTable loadout={unit.loadout} hideEquipment square />
-          </div>
+          <UnitEquipmentTable loadout={unit.loadout} hideEquipment square />
           {unit.notes && <div className="p-2">{unit.notes}</div>}
         </>
       }

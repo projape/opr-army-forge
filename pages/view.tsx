@@ -41,7 +41,7 @@ export default function View() {
   const list = useSelector((state: RootState) => state.list);
   const armyState = useSelector((state: RootState) => state.army);
   const router = useRouter();
-  
+
   useLoadFromQuery();
 
   const defaultPrefs = {
@@ -166,13 +166,12 @@ export default function View() {
           </ListItem>
         </List>
       </Drawer>
-      <div className="is-flex px-4 py-2 no-print" style={{ alignItems: "center" }}>
-        <div className="is-flex-grow-1"></div>
+      <Stack px={2} py={1} className="no-print" direction="row" justifyContent="flex-end">
         <Button onClick={() => setCardView(!isCardView)}>
           {isCardView ? <DashboardIcon /> : <ViewAgendaIcon />}
           <span className="pl-1 full-compact-text">{isCardView ? "cards" : "list"}</span>
         </Button>
-      </div>
+      </Stack>
       <h1 className="print-only" style={{ fontWeight: 600 }}>
         {title}
       </h1>
