@@ -90,12 +90,13 @@ function MainListSection({
           {fullUnits.map((fullUnit, index: number) => {
             const { hasJoined, heroes, unit, unitSize, unitPoints, joined } = fullUnit;
 
-            const listItem = (unit: ISelectedUnit) => (
+            const listItem = (unit: ISelectedUnit, hideOptions?: boolean) => (
               <MainListItem
                 selected={list.selectedUnitId === unit.selectionId}
                 unit={unit}
                 onSelected={() => onSelected(unit)}
                 onUnitRemoved={onUnitRemoved}
+                hideOptions={hideOptions}
               />
             );
 
@@ -117,10 +118,7 @@ function MainListSection({
                     </Typography>
                     <span>{unitPoints}pts</span>
                     <DropMenu sx={{ ml: 1 }}>
-                      <DuplicateButton
-                        units={[unit, ...heroes, joined].filter((u) => u)}
-                        text="Duplicate"
-                      />
+                      <DuplicateButton units={[unit, ...heroes, joined].filter((u) => u)} />
                     </DropMenu>
                   </Stack>
                 )}
@@ -129,7 +127,7 @@ function MainListSection({
                     <Fragment key={h.selectionId}>{listItem(h)}</Fragment>
                   ))}
                   {listItem(unit)}
-                  {joined && listItem(joined)}
+                  {joined && listItem(joined, true)}
                 </Box>
               </Box>
             );
@@ -145,9 +143,16 @@ interface MainListItemProps {
   unit: ISelectedUnit;
   onSelected: Function;
   onUnitRemoved: Function;
+  hideOptions: boolean;
 }
 
-function MainListItem({ selected, unit, onSelected, onUnitRemoved }: MainListItemProps) {
+function MainListItem({
+  selected,
+  unit,
+  onSelected,
+  onUnitRemoved,
+  hideOptions,
+}: MainListItemProps) {
   const dispatch = useDispatch();
 
   const handleSelectUnit = (unit: ISelectedUnit) => {
@@ -170,26 +175,28 @@ function MainListItem({ selected, unit, onSelected, onUnitRemoved }: MainListIte
         handleSelectUnit(unit);
       }}
       rightControl={
-        <DropMenu>
-          <DuplicateButton units={[unit]} text="Duplicate" />
-          <MenuItem
-            color="primary"
-            onClick={(e) => {
-              handleRemove(unit);
-            }}
-          >
-            <ListItemIcon>
-              <RemoveIcon />
-            </ListItemIcon>
-            <ListItemText>Remove</ListItemText>
-          </MenuItem>
-        </DropMenu>
+        hideOptions ? null : (
+          <DropMenu>
+            <DuplicateButton units={[unit]} />
+            <MenuItem
+              color="primary"
+              onClick={(e) => {
+                handleRemove(unit);
+              }}
+            >
+              <ListItemIcon>
+                <RemoveIcon />
+              </ListItemIcon>
+              <ListItemText>Remove</ListItemText>
+            </MenuItem>
+          </DropMenu>
+        )
       }
     />
   );
 }
 
-export function DuplicateButton({ units, text = "" }) {
+export function DuplicateButton({ units }) {
   const dispatch = useDispatch();
 
   const duplicateUnits = (units: ISelectedUnit[]) => {
@@ -203,16 +210,10 @@ export function DuplicateButton({ units, text = "" }) {
         duplicateUnits(units);
       }}
     >
-      {text ? (
-        <>
-          <ListItemIcon>
-            <ContentCopyIcon />
-          </ListItemIcon>
-          <ListItemText>{text}</ListItemText>
-        </>
-      ) : (
+      <ListItemIcon>
         <ContentCopyIcon />
-      )}
+      </ListItemIcon>
+      <ListItemText>Duplicate</ListItemText>
     </MenuItem>
   );
 }
