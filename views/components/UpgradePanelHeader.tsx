@@ -42,7 +42,8 @@ export default function UpgradePanelHeader() {
   const saveName = (value: string, toggleEdit: boolean) => {
     setCustomName(value);
     debounceSave(value);
-    toggleEditMode();
+    if (toggleEdit)
+      toggleEditMode();
   };
 
   return (
