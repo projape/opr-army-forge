@@ -8,6 +8,9 @@ import { RootState } from "../../data/store";
 import UnitService from "../../services/UnitService";
 import { debounce } from "throttle-debounce";
 
+const ENTER_KEY: number = 13;
+const ESCAPE_KEY: number = 27;
+
 export default function UpgradePanelHeader() {
   const list = useSelector((state: RootState) => state.list);
   const dispatch = useDispatch();
@@ -36,6 +39,12 @@ export default function UpgradePanelHeader() {
     }
   };
 
+  const saveName = (value: string) => {
+    setCustomName(value);
+    debounceSave(value);
+    toggleEditMode();
+  };
+
   return (
     <>
       <Stack direction="row" alignItems="center">
@@ -46,9 +55,12 @@ export default function UpgradePanelHeader() {
               sx={{ flex: 1 }}
               variant="standard"
               value={customName}
-              onChange={(e) => {
-                setCustomName(e.target.value);
-                debounceSave(e.target.value);
+              onChange={(e) => saveName(e.target.value)}
+              onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                // if enter or escape key pressed, exit edit mode
+                if (e.keyCode === ENTER_KEY || e.keyCode === ESCAPE_KEY) {
+                  saveName(e.target.value);
+                }
               }}
             />
           ) : (
