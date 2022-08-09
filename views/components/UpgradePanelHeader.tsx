@@ -39,7 +39,7 @@ export default function UpgradePanelHeader() {
     }
   };
 
-  const saveName = (value: string) => {
+  const saveName = (value: string, toggleEdit: boolean) => {
     setCustomName(value);
     debounceSave(value);
     toggleEditMode();
@@ -55,11 +55,11 @@ export default function UpgradePanelHeader() {
               sx={{ flex: 1 }}
               variant="standard"
               value={customName}
-              onChange={(e) => saveName(e.target.value)}
+              onChange={(e) => saveName(e.target.value, false)}
               onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
                 // if enter or escape key pressed, exit edit mode
                 if (e.keyCode === ENTER_KEY || e.keyCode === ESCAPE_KEY) {
-                  saveName(e.target.value);
+                  saveName(e.target.value, true);
                 }
               }}
             />

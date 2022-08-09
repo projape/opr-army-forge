@@ -4,7 +4,7 @@ import { RootState } from "../data/store";
 import { ISelectedUnit } from "../data/interfaces";
 import RemoveIcon from "@mui/icons-material/Clear";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { selectUnit, removeUnit, addUnits, ListState } from "../data/listSlice";
+import { selectUnit, removeUnit, addUnits } from "../data/listSlice";
 import UpgradeService from "../services/UpgradeService";
 import { Box, Card, ListItemIcon, ListItemText, MenuItem, Stack, Typography } from "@mui/material";
 import UnitService from "../services/UnitService";

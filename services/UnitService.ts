@@ -156,7 +156,7 @@ export default class UnitService {
       .filter((u) => !u.combined || !u.joinToUnit)
       .map((u) => (u.combined ? UnitService.mergeCombinedUnit(u, getAttachedUnit(u)) : u));
 
-    console.log(viewUnits);
+    console.log("viewUnits", viewUnits);
 
     const unitGroups = _.groupBy(viewUnits, (u) => JSON.stringify(unitAsKey(u)));
 
