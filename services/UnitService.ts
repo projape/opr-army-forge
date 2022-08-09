@@ -44,13 +44,12 @@ export default class UnitService {
   public static getAllUpgradedRules(unit: ISelectedUnit): IUpgradeGainsRule[] {
     const rules = unit.loadout?.filter((u) => u.type === "ArmyBookRule") || [];
     const rulesFromItems =
-      unit.loadout ?
-        .filter((u) => u.type === "ArmyBookItem")
-          .reduce(
-            (value, u: IUpgradeGainsItem) =>
-              value.concat(u.content.filter((c) => c.type === "ArmyBookRule" || c.type === "ArmyBookDefense")),
-            []
-          ) || [];
+      unit.loadout?.filter((u) => u.type === "ArmyBookItem")
+        .reduce(
+          (value, u: IUpgradeGainsItem) =>
+            value.concat(u.content.filter((c) => c.type === "ArmyBookRule" || c.type === "ArmyBookDefense")),
+          []
+        ) || [];
 
     return rules.concat(rulesFromItems) as IUpgradeGainsRule[];
   }
