@@ -139,7 +139,7 @@ export default function Load() {
         saveData.list.creationTime = creationTime;
 
         PersistenceService.load(dispatch, saveData, (_) => {
-          router.push("/list");
+          router.push("/list?listId=" + creationTime);
 
           PersistenceService.saveImport(creationTime, JSON.stringify(saveData));
 
@@ -269,15 +269,11 @@ export default function Load() {
         )}
         {favourites.length > 0 && (
           <>
-            <p style={{ fontWeight: 600 }}>
-              Favourite Lists
-            </p>
+            <p style={{ fontWeight: 600 }}>Favourite Lists</p>
             <SaveList saves={favourites} />
           </>
         )}
-        <p style={{ fontWeight: 600 }}>
-          Saved Lists
-        </p>
+        <p style={{ fontWeight: 600 }}>Saved Lists</p>
         <SaveList saves={parsedSaves.filter((s) => !s.favourite)} />
       </Container>
     </>
