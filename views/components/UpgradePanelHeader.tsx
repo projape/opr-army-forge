@@ -24,8 +24,10 @@ export default function UpgradePanelHeader() {
     setCustomName(selectedUnit?.customName ?? selectedUnit?.name ?? "");
   }, [selectedUnit?.selectionId]);
 
+  const dispatchSave = (name: string) =>
+    dispatch(renameUnit({ unitId: selectedUnit.selectionId, name }));
   const debounceSave = useCallback(
-    debounce(1000, (name) => dispatch(renameUnit({ unitId: selectedUnit.selectionId, name }))),
+    debounce(1000, (name: string) => dispatchSave(name)),
     [list]
   );
 
@@ -39,11 +41,15 @@ export default function UpgradePanelHeader() {
     }
   };
 
-  const saveName = (value: string, toggleEdit: boolean) => {
+  const saveName = (value: string, final: boolean) => {
     setCustomName(value);
-    debounceSave(value);
-    if (toggleEdit)
+
+    if (final) {
+      dispatchSave(value);
       toggleEditMode();
+    } else {
+      debounceSave(value);
+    }
   };
 
   return (
