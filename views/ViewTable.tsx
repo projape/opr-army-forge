@@ -2,7 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../data/store";
 import style from "../styles/Cards.module.css";
-import { Paper, Card, TableContainer, Table, TableRow, TableCell, TableHead } from "@mui/material";
+import {
+  Paper,
+  Card,
+  TableContainer,
+  Table,
+  TableRow,
+  TableCell,
+  TableHead,
+  Typography,
+} from "@mui/material";
 import RulesService from "../services/RulesService";
 import { IGameRule } from "../data/armySlice";
 import { groupBy, groupMap, makeCopy } from "../services/Helpers";
@@ -12,6 +21,7 @@ import _ from "lodash";
 import { ISelectedUnit } from "../data/interfaces";
 import RuleList from "./components/RuleList";
 import { IViewPreferences } from "../pages/view";
+import EquipmentService from "../services/EquipmentService";
 
 interface ViewTableProps {
   prefs: IViewPreferences;
@@ -89,7 +99,7 @@ export default function ViewTable({ prefs }: ViewTableProps) {
               <TableCell style={{ fontWeight: "600" }}>Unit</TableCell>
               <TableCell style={{ fontWeight: "600" }}>Stats</TableCell>
               <TableCell style={{ fontWeight: "600" }}>Loadout</TableCell>
-              <TableCell style={{ fontWeight: "600" }}>Rules</TableCell>
+              <TableCell style={{ fontWeight: "600" }}>Special Rules</TableCell>
             </TableRow>
           </TableHead>
           {prefs.combineSameUnits
@@ -182,56 +192,24 @@ function UnitRow({ unit, rules, count, prefs, ruleDefinitions, maxCellWidth }: U
 
   const stats = (
     <TableCell>
-      <table>
-        <tr>
-          <td style={{ paddingRight: "8px" }}>Quality </td>
-          <td style={{ fontWeight: "600" }}> {unit.quality}+</td>
-        </tr>
-        <tr>
-          <td style={{ paddingRight: "8px" }}>Defense</td>
-          <td style={{ fontWeight: "600" }}> {unit.defense}+</td>
-        </tr>
-      </table>
+      Qua {unit.quality}+&nbsp;&nbsp;&nbsp;Def {unit.defense}+
     </TableCell>
   );
 
-  const cellStyle = {
-    padding: "2px 4px",
-  };
-
   const loadout = (
     <TableCell>
-      <table>
-        {groupMap(
-          unit.loadout,
-          (x) => x.name + x.attacks,
-          (group, key) => {
-            const weapon = group[0];
-            return (
-              <tr key={key}>
-                <td
-                  className="weapon-name-cell"
-                  style={{
-                    ...cellStyle,
-                    paddingRight: "12px",
-                    fontWeight: "600",
-                    width: maxCellWidth ? maxCellWidth + "px" : null,
-                  }}
-                >
-                  {_.sumBy(group, (x) => x.count)}x {weapon.name}
-                </td>
-                <td style={cellStyle}>
-                  {(weapon as any).range ? (weapon as any).range + '"' : "-"}
-                </td>
-                <td style={cellStyle}>A{weapon.attacks}</td>
-                <td style={cellStyle}>
-                  {weapon.specialRules?.map((r) => RulesService.displayName(r)).join(", ")}
-                </td>
-              </tr>
-            );
-          }
-        )}
-      </table>
+      {groupMap(
+        unit.loadout.filter((x) => x.attacks),
+        (x) => x.name + x.attacks,
+        (group, key) => {
+          const weapon = group[0];
+          return (
+            <Typography key={key} variant="body2">
+              {_.sumBy(group, (x) => x.count)}x {EquipmentService.formatString(weapon)}
+            </Typography>
+          );
+        }
+      )}
     </TableCell>
   );
 

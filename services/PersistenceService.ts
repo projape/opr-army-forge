@@ -334,19 +334,20 @@ export default class PersistenceService {
     const fullUnits = UnitService.getFullUnitList(list.units, true);
     const unitGroups = UnitService.getGroupedDisplayUnits(fullUnits);
 
-    const writeLine = (unit: ISelectedUnit, count: number) => {
+    const writeLine = (unit: ISelectedUnit, count: number, endWithNewline: boolean = true) => {
       const name = unit.customName || unit.name;
       const size = UnitService.getSize(unit);
       const cost = UpgradeService.calculateUnitTotal(unit);
       lines.push(`${count > 1 ? (count + "x ") : ""}${name} [${size}] Q${unit.quality}+ D${unit.defense}+ | ${cost}pts | ` + getRules(unit));
-      lines.push(getWeapons(unit) + "\n");
+      lines.push(getWeapons(unit) + (endWithNewline ? "\n" : ""));
     }
 
     for (let key of Object.keys(unitGroups)) {
       const group = unitGroups[key];
 
       for (let hero of group.flatMap(x => x.heroes)) {
-        writeLine(hero, 1);
+        writeLine(hero, 1, false);
+        lines.push("# Joined to:")
       }
       // TODO: Campaign unit pt cost...?
       writeLine(group[0].unit, group.length);
