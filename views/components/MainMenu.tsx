@@ -286,6 +286,9 @@ export function MainMenuOptions() {
         <MenuItem onClick={openOprWebapp}>Open OPR Webapp</MenuItem>
         <MenuItem onClick={() => dispatch(setOpenReleaseNotes(true))}>See Release Notes</MenuItem>
         <MenuItemDarkMode />
+        <MenuItem onClick={() => document.documentElement.requestFullscreen()}>
+          Open Fullscreen
+        </MenuItem>
       </Menu>
       <Snackbar
         open={showTextCopiedAlert}
