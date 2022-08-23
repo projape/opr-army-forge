@@ -65,6 +65,18 @@ interface IRelease {
 
 const releaseNotes: IRelease[] = [
   {
+    version: "0.9.4",
+    date: "2022-07-02",
+    notes: [
+      "Enhancements:",
+      "- Added support for dark mode",
+      "- Card view cards now collapsible",
+      "- Table view more accurate, but still WIP",
+      "Bug fixes:",
+      "- Minor bug fixes with some upgrade text",
+    ],
+  },
+  {
     version: "0.9.3",
     date: "2022-07-19",
     notes: ["Bug fixes:", "- Show count of weapons when granted by equipment upgrade"],
