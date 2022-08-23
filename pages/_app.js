@@ -7,7 +7,7 @@ import pluralise from "pluralize";
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 import ReleaseNotes from "../views/components/ReleaseNotes";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { setDarkMode } from "../data/appSlice";
 
 // TODO: Better place for global generic things to go?
@@ -37,6 +37,35 @@ function App({ Component, pageProps }) {
   );
 }
 
+const getDesignTokens = (darkMode) => ({
+  palette: {
+    mode: darkMode ? "dark" : "light",
+    ...(darkMode
+      ? {
+          // palette values for dark mode
+          background: {
+            default: "#202125",
+            paper: "#202125",
+          },
+        }
+      : {}),
+  },
+  typography: {
+    fontFamily: "Source Sans Pro",
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          fontSize: "14px",
+          fontWeight: 600,
+          letterSpacing: "1.25px",
+        },
+      },
+    },
+  },
+});
+
 const ThemedApp = ({ Component, pageProps }) => {
   const dispatch = useDispatch();
   const darkMode = useSelector((state) => state.app.darkMode);
@@ -50,26 +79,8 @@ const ThemedApp = ({ Component, pageProps }) => {
     }
   }, [darkMode]);
 
-  const theme = createTheme({
-    palette: {
-      mode: darkMode ? "dark" : "light",
-    },
-    typography: {
-      fontFamily: "Source Sans Pro",
-    },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            fontSize: "14px",
-            fontWeight: 600,
-            letterSpacing: "1.25px",
-          },
-        },
-      },
-    },
-  });
-  //console.log("Theme", theme);
+  const theme = useMemo(() => createTheme(getDesignTokens(darkMode)), [darkMode]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
