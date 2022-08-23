@@ -15,6 +15,8 @@ import {
   Snackbar,
   Divider,
   ListItemIcon,
+  Checkbox,
+  Stack,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -28,7 +30,7 @@ import { updateCreationTime } from "../../data/listSlice";
 import ValidationErrors, { competitiveGoogleDriveLinks } from "../ValidationErrors";
 import ValidationService from "../../services/ValidationService";
 import { useMediaQuery } from "react-responsive";
-import { setOpenReleaseNotes } from "../../data/appSlice";
+import { setDarkMode, setOpenReleaseNotes } from "../../data/appSlice";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
@@ -44,18 +46,6 @@ export default function MainMenu() {
   const [validationAnchorElement, setValidationAnchorElement] = useState(null);
   const errors = ValidationService.getErrors(army, list);
 
-  // const handleShareTTS = () => {
-  //   if (!list.creationTime) {
-  //     const creationTime = handleSave();
-  //     PersistenceService.downloadTTS({
-  //       ...list,
-  //       creationTime,
-  //     });
-  //   } else {
-  //     PersistenceService.downloadTTS(list);
-  //   }
-  // };
-
   const goBack = () => {
     const confirmMsg = "Going back will leave your current list and go back home. Continue?";
     if (list.creationTime || confirm(confirmMsg)) {
@@ -70,16 +60,15 @@ export default function MainMenu() {
 
   return (
     <>
-      <AppBar elevation={0} style={{ position: "sticky", top: 0, zIndex: 1 }}>
-        <Toolbar className="p-0">
+      <AppBar elevation={0} sx={{ position: "sticky", top: 0, zIndex: 1 }}>
+        <Toolbar style={{ paddingLeft: "8px", paddingRight: "8px" }}>
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
             onClick={goBack}
-            style={{ marginLeft: "0" }}
-            className="mr-4"
+            sx={{ marginLeft: "0", mr: 2, ml: 0 }}
           >
             <HomeIcon />
           </IconButton>
@@ -170,6 +159,19 @@ export function MainMenuOptions() {
   const router = useRouter();
   const [menuAnchorElement, setMenuAnchorElement] = useState(null);
   const [showTextCopiedAlert, setShowTextCopiedAlert] = useState(false);
+  const isLive = window.location.origin.indexOf("onepagerules.com") > -1;
+
+  const handleShareTTS = () => {
+    if (!list.creationTime) {
+      const creationTime = handleSave();
+      PersistenceService.downloadTTS({
+        ...list,
+        creationTime,
+      });
+    } else {
+      PersistenceService.downloadTTS(list);
+    }
+  };
 
   const handleSave = () => {
     const creationTime = PersistenceService.createSave(army, list.name, list);
@@ -273,7 +275,7 @@ export function MainMenuOptions() {
           </ListItemIcon>
           <ListItemText>Export as Army Forge File</ListItemText>
         </MenuItem>
-        {/* <MenuItem onClick={handleShareTTS}>Export as TTS File</MenuItem> */}
+        {!isLive && <MenuItem onClick={handleShareTTS}>Export as TTS File</MenuItem>}
         <MenuItem onClick={handleTextExport}>
           <ListItemIcon>
             <AssignmentOutlinedIcon sx={{ color: "#9E9E9E" }} />
@@ -283,6 +285,12 @@ export function MainMenuOptions() {
         <Divider />
         <MenuItem onClick={openOprWebapp}>Open OPR Webapp</MenuItem>
         <MenuItem onClick={() => dispatch(setOpenReleaseNotes(true))}>See Release Notes</MenuItem>
+        <MenuItemDarkMode />
+        {!isLive && (
+          <MenuItem onClick={() => document.documentElement.requestFullscreen()}>
+            Open Fullscreen
+          </MenuItem>
+        )}
       </Menu>
       <Snackbar
         open={showTextCopiedAlert}
@@ -292,5 +300,20 @@ export function MainMenuOptions() {
         autoHideDuration={4000}
       />
     </>
+  );
+}
+
+function MenuItemDarkMode() {
+  const dispatch = useDispatch();
+  const darkMode = useSelector((state: RootState) => state.app.darkMode);
+  if (darkMode === undefined) return null;
+  const toggle = () => {
+    dispatch(setDarkMode(!darkMode));
+  };
+  return (
+    <MenuItem onClick={() => toggle()}>
+      <span style={{ flex: 1 }}>Dark Mode</span>
+      <Checkbox sx={{ p: 0 }} checked={darkMode ?? false} />{" "}
+    </MenuItem>
   );
 }

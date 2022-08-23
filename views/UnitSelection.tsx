@@ -1,16 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../data/store";
 import { Fragment, useState } from "react";
-import { Card, Divider, IconButton } from "@mui/material";
+import { Box, Card, Divider, IconButton, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { IUnit } from "../data/interfaces";
-
-import UnitService from "../services/UnitService";
+import { ISelectedUnit, IUnit } from "../data/interfaces";
 import ArmyBookGroupHeader from "./components/ArmyBookGroupHeader";
 import UnitListItem from "./components/UnitListItem";
-import { addUnit, previewUnit, removeUnit, selectUnit } from "../data/listSlice";
+import { addUnit, previewUnit } from "../data/listSlice";
 import { useRouter } from "next/router";
-import { getTabsListUnstyledUtilityClass } from "@mui/base";
 
 export function UnitSelection() {
   const loadedArmyBooks = useSelector((state: RootState) => state.army.loadedArmyBooks);
@@ -39,14 +36,14 @@ function UnitSelectionForArmy({ army, showTitle }) {
     const scroll = window.scrollY;
     router.events.on("routeChangeComplete", () => {
       window.scrollTo(0, scroll);
-    })
+    });
     router.push({ query: { ...router.query, upgradesOpen: true } });
   };
 
   const unitGroups = getUnitCategories(army.units);
 
   return (
-    <Card elevation={2} sx={{ backgroundColor: "#FAFAFA", marginBottom: "1rem" }} square>
+    <Card elevation={2} sx={{ mb: 1 }} square>
       {showTitle && (
         <ArmyBookGroupHeader army={army} collapsed={collapsed} setCollapsed={setCollapsed} />
       )}
@@ -55,13 +52,27 @@ function UnitSelectionForArmy({ army, showTitle }) {
         Object.keys(unitGroups).map((key, i) => (
           <Fragment key={key}>
             {key !== "undefined" && unitGroups[key].length > 0 && (
-              <p className={"menu-label my-2 px-4 " + (i > 0 ? "pt-3" : "")}>{key}</p>
+              <Box
+                sx={{
+                  px: 2,
+                  pt: 2,
+                  pb: 0.5,
+                  backgroundColor: "action.hover",
+                }}
+              >
+                <Typography letterSpacing=".1em" fontSize=".75em" textTransform="uppercase">
+                  {key}
+                </Typography>
+              </Box>
             )}
             <Divider />
-            {unitGroups[key].map((u, index) => {
+            {unitGroups[key].map((u: ISelectedUnit) => {
               const countInList = list?.units.filter(
                 (listUnit) =>
-                  listUnit.name === u.name && listUnit.armyId === army.uid && !listUnit.joinToUnit
+                  listUnit.name === u.name &&
+                  listUnit.armyId === army.uid &&
+                  (!listUnit.joinToUnit ||
+                    listUnit.specialRules.some((x) => x.name.toLowerCase() === "hero"))
               ).length;
 
               return (
@@ -69,7 +80,7 @@ function UnitSelectionForArmy({ army, showTitle }) {
                   key={u.id}
                   unit={u}
                   countInList={countInList}
-                  selected={countInList > 0 || list.unitPreview?.id === u.id}
+                  selected={list.unitPreview?.id === u.id}
                   onClick={() => {
                     handleSelectClick(u);
                   }}
