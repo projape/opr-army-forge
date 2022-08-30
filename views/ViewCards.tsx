@@ -212,8 +212,8 @@ export function UnitCard({
                   unit.selectedUpgrades.find((x) =>
                     x.option.gains.some((y) => y.name === item.name)
                   )?.upgrade?.affects === "all";
-                const hasStackableRule = itemRules.some((x) => x.name === "Impact");
-                const hideCount = itemAffectsAll && !hasStackableRule;
+                //const hasStackableRule = itemRules.some((x) => x.name === "Impact");
+                const hideCount = itemAffectsAll;// && !hasStackableRule;
 
                 return (
                   <span key={key}>
