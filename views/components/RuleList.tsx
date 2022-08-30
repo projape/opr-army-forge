@@ -28,10 +28,11 @@ export default function RuleList({ specialRules }: { specialRules: (ISpecialRule
       {keys.map((key, index) => {
         const group: ISpecialRule[] = ruleGroups[key];
         const rule = group[0];
+        const stack = rule.rating && ["Psychic", "Wizard"].indexOf(rule.name) === -1;
         const rating =
           rule.rating == null || rule.rating == ""
             ? null
-            : key === "Psychic"
+            : key === "Psychic" || key === "Wizard"
             ? // Take Highest
               Math.max(...group.map((rule) => parseInt(rule.rating)))
             : // Sum all occurrences
@@ -41,7 +42,7 @@ export default function RuleList({ specialRules }: { specialRules: (ISpecialRule
               );
 
         // Rules with ratings do not show multiple instances
-        const count = rating > 0 ? 0 : group.length;
+        const count = stack ? 0 : group.length;
 
         //console.log(rule)
         const ruleDefinition = ruleDefinitions.filter(

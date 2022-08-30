@@ -315,15 +315,17 @@ export default class PersistenceService {
         // This has been copy/pasted from RuleList.tsx - refactor!
         const group: ISpecialRule[] = ruleGroups[key];
         const rule = group[0];
-        const rating = (rule.rating == null || rule.rating == "") ? null : key === "Psychic"
-
-          // Take Highest
-          ? Math.max(...group.map(rule => parseInt(rule.rating)))
-          // Sum all occurrences
-          : group.reduce((total, next) => next.rating ? total + parseInt(next.rating) : total, 0);
+        const stack = rule.rating && ["Psychic", "Wizard"].indexOf(rule.name) === -1;
+        const rating = (rule.rating == null || rule.rating == "")
+          ? null
+          : (key === "Psychic" || key === "Wizard")
+            // Take Highest
+            ? Math.max(...group.map(rule => parseInt(rule.rating)))
+            // Sum all occurrences
+            : group.reduce((total, next) => next.rating ? total + parseInt(next.rating) : total, 0);
 
         // Rules with ratings do not show multiple instances
-        const count = rating > 0 ? 0 : group.length;
+        const count = stack ? 0 : group.length;
 
         return (count > 1 ? `${count}x ` : "") + RulesService.displayName({ ...rule, rating: rule.rating ? rating.toString() : null });
       });

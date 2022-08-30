@@ -162,10 +162,14 @@ export function UnitCard({
               (x) => x.name,
               (group, key) => {
                 const rule = group[0];
-                const rating = group.reduce(
-                  (total, next) => (next.rating ? total + parseInt(next.rating) : total),
-                  0
-                );
+                const count = group.length;
+                const stack = rule.rating && ["Psychic", "Wizard"].indexOf(rule.name) === -1;
+                const rating = stack
+                  ? group.reduce(
+                      (total, next) => (next.rating ? total + parseInt(next.rating) : total),
+                      0
+                    )
+                  : rule.rating || 0;
 
                 const ruleDefinition = ruleDefinitions.filter(
                   (r) => /(.+?)(?:\(|$)/.exec(r.name)[0] === rule.name
@@ -174,7 +178,11 @@ export function UnitCard({
                 return (
                   <Typography key={key} fontSize={"14px"}>
                     <span style={{ fontWeight: 600 }}>
-                      {RulesService.displayName({ ...rule, rating: rating as any }, count)} -
+                      {RulesService.displayName(
+                        { ...rule, rating: rating as any },
+                        stack ? 1 : count
+                      )}{" "}
+                      -
                     </span>
                     <span> {ruleDefinition?.description || ""}</span>
                   </Typography>
@@ -200,12 +208,12 @@ export function UnitCard({
                   (x) => x.type === "ArmyBookRule" || x.type === "ArmyBookDefense"
                 ) as any;
 
-                const upgrade = unit.selectedUpgrades.find((x) =>
-                  x.option.gains.some((y) => y.name === item.name)
-                )?.upgrade;
-                const itemAffectsAll = upgrade?.affects === "all";
-                const hasStackableRule = itemRules.some((x) => x.name === "Impact");
-                const hideCount = itemAffectsAll && !hasStackableRule;
+                const itemAffectsAll =
+                  unit.selectedUpgrades.find((x) =>
+                    x.option.gains.some((y) => y.name === item.name)
+                  )?.upgrade?.affects === "all";
+                //const hasStackableRule = itemRules.some((x) => x.name === "Impact");
+                const hideCount = itemAffectsAll;// && !hasStackableRule;
 
                 return (
                   <span key={key}>
