@@ -25,6 +25,7 @@ function App({ Component, pageProps }) {
         <link rel="manifest" href="/manifest.json" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+        <link rel="canonical" href={window ? window.location.href.split("?")[0] : ""} />
         <link
           href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&&family=Source+Sans+Pro:wght@400;500;600;900&display=swap"
           rel="stylesheet"
