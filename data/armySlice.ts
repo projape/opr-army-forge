@@ -66,7 +66,23 @@ export const getArmyBookData = createAsyncThunk("army/getArmyBookData", async (p
     payload.armyUid,
     payload.gameSystem
   );
+  
   console.log("Loaded army data", armyBookData);
+
+  try {
+    // Tracking!
+    const x = (window as any)?.goatcounter;
+    const trackEvent = {
+      path: '/army/' + (armyBookData as any).gameSystemSlug + "/" + armyBookData.name,
+      title: 'Loaded ' + (armyBookData as any).gameSystemSlug + " " + armyBookData.name,
+      event: true,
+    };
+    console.log("Track event...", trackEvent)
+    x?.count(trackEvent);
+  } catch {
+    // Ignore silently...
+  }
+
   //payload.callback(armyBookData);
   return { armyBookData, reset: payload.reset };
 });

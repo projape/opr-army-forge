@@ -240,7 +240,7 @@ export default class PersistenceService {
 
     Promise.all(promises).then(results => {
       const armyBooks = results.map(res => (res.payload as any).armyBookData) as IArmyData[];
-      console.log(armyBooks);
+      console.log("Loaded army books...", armyBooks);
       const list: ListState = this.buildListFromSave(save, armyBooks);
       dispatch(loadSavedList(list));
       dispatch(getGameRules(save.gameSystem));
