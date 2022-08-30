@@ -240,7 +240,24 @@ export default class PersistenceService {
 
     Promise.all(promises).then(results => {
       const armyBooks = results.map(res => (res.payload as any).armyBookData) as IArmyData[];
-      console.log(armyBooks);
+      console.log("Loaded army books...", armyBooks);
+
+      try {
+        // Tracking!
+        const x = (window as any)?.goatcounter;
+        for (let book of armyBooks) {
+          const trackEvent = {
+            path: '/army/' + book.name,
+            title: 'Loaded army book',
+            event: true,
+          };
+          console.log("Track event...", trackEvent)
+          x?.count(trackEvent);
+        }
+      } catch {
+        // Ignore silently...
+      }
+
       const list: ListState = this.buildListFromSave(save, armyBooks);
       dispatch(loadSavedList(list));
       dispatch(getGameRules(save.gameSystem));

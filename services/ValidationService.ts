@@ -46,9 +46,6 @@ export default class ValidationService {
     const heroCount = heroes.length;
     const joinedHeroes = heroes.filter(u => (u.joinToUnit && units.some(t => t.selectionId === u.joinToUnit)))
     const joinedIds = joinedHeroes.map(u => u.joinToUnit);
-
-    console.log(joinedHeroes);
-
     const duplicateUnitLimit = 1 + Math.floor((points / duplicateUnitThresholds[system]));
     const nonCombinedUnitsGrouped = _.groupBy(units.filter(u => !(u.combined && (!u.joinToUnit))), u => u.id);
     const unitsOverDuplicateLimit = Object
