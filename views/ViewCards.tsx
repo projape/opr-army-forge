@@ -92,10 +92,12 @@ export default function ViewCards({ prefs }: ViewCardsProps) {
         {prefs.showPsychic && <SpellsCard army={army} list={list} />}
       </div>
       {!prefs.showFullRules && (
-        <SpecialRulesCard
-          usedRules={usedRules}
-          ruleDefinitions={ruleDefinitions.concat(traitDefinitions as any[])}
-        />
+        <Box mb={6}>
+          <SpecialRulesCard
+            usedRules={usedRules}
+            ruleDefinitions={ruleDefinitions.concat(traitDefinitions as any[])}
+          />
+        </Box>
       )}
     </Container>
   );
@@ -213,7 +215,7 @@ export function UnitCard({
                     x.option.gains.some((y) => y.name === item.name)
                   )?.upgrade?.affects === "all";
                 //const hasStackableRule = itemRules.some((x) => x.name === "Impact");
-                const hideCount = itemAffectsAll;// && !hasStackableRule;
+                const hideCount = itemAffectsAll; // && !hasStackableRule;
 
                 return (
                   <span key={key}>
@@ -317,19 +319,16 @@ export function SpellsCard({ army, list }: SpellsCardProps) {
               content={
                 <>
                   <hr className="my-0" />
-
-                  <Paper square elevation={0}>
-                    <div className="px-2 my-2">
-                      {book.spells.map((spell) => (
-                        <p key={spell.id}>
-                          <span style={{ fontWeight: 600 }}>
-                            {spell.name} ({spell.threshold}+):{" "}
-                          </span>
-                          <span>{spell.effect}</span>
-                        </p>
-                      ))}
-                    </div>
-                  </Paper>
+                  <Box px={2}>
+                    {book.spells.map((spell) => (
+                      <p key={spell.id}>
+                        <span style={{ fontWeight: 600 }}>
+                          {spell.name} ({spell.threshold}+):{" "}
+                        </span>
+                        <span>{spell.effect}</span>
+                      </p>
+                    ))}
+                  </Box>
                 </>
               }
             />
@@ -351,7 +350,7 @@ function SpecialRulesCard({ usedRules, ruleDefinitions }) {
               .sort()
               .map((r, i) => (
                 <Typography key={i} sx={{ breakInside: "avoid" }}>
-                  <span style={{ fontWeight: 600 }}>{r + " - "}</span>
+                  <span style={{ fontWeight: 600 }}>{r + ": "}</span>
                   <span>{ruleDefinitions.find((t) => t.name === r)?.description}</span>
                 </Typography>
               ))}
