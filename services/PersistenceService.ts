@@ -291,7 +291,7 @@ export default class PersistenceService {
     };
     const getWeapons = (unit: ISelectedUnit) => {
       const allWeapons = unit.loadout
-        .concat(_.flatMap(unit.loadout, x => ((x as any).content || [])))
+        .concat(_.flatMap(unit.loadout, x => ((x as any).content?.map(c => ({ ...c, count: (c.count || 1) * x.count })) || [])))
         .filter(x => x.type === "ArmyBookWeapon");
       const loadoutGroups = _.groupBy(allWeapons, x => constructLabel(x));
       const loadoutParts = Object.keys(loadoutGroups).map(key => {

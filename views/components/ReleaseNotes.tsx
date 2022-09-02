@@ -65,8 +65,20 @@ interface IRelease {
 
 const releaseNotes: IRelease[] = [
   {
+    version: "0.9.5",
+    date: "2022-09-02",
+    notes: [
+      "Enhancements:",
+      "- Remember selection for Auto-Save",
+      "- Table/list view alternative to cards",
+      "Bug fixes:",
+      "- App header padding fix",
+      "- Special rules summary shows weapon rules"
+    ],
+  },
+  {
     version: "0.9.4",
-    date: "2022-07-02",
+    date: "2022-08-02",
     notes: [
       "Enhancements:",
       "- Added support for dark mode",
