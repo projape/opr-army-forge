@@ -60,7 +60,7 @@ export default function ListConfiguration() {
         onBackClick={() => router.back()}
         transparent
       />
-      <Container maxWidth={false} sx={{ maxWidth: "480px", mx: "auto", mt: 2 }}>
+      <Container maxWidth={false} sx={{ maxWidth: "480px", mx: "auto", mt: 2, pb: 2 }}>
         <Box sx={{ mb: 4 }}>
           {armyData && (
             <ArmyImage name={armyData?.factionName ?? armyData?.name} armyData={armyState} />
