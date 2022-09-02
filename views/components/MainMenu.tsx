@@ -17,6 +17,7 @@ import {
   ListItemIcon,
   Checkbox,
   Stack,
+  useTheme,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -37,6 +38,7 @@ import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import DownloadFileIcon from "../icons/DownloadFile";
+import { ThemeContext } from "@emotion/react";
 
 export default function MainMenu() {
   const army = useSelector((state: RootState) => state.army);
@@ -156,6 +158,7 @@ export function MainMenuOptions() {
   const list = useSelector((state: RootState) => state.list);
   const dispatch = useDispatch();
   const router = useRouter();
+  const theme = useTheme();
   const [menuAnchorElement, setMenuAnchorElement] = useState(null);
   const [showTextCopiedAlert, setShowTextCopiedAlert] = useState(false);
   const isLive = window.location.origin.indexOf("onepagerules.com") > -1;
@@ -270,7 +273,7 @@ export function MainMenuOptions() {
         <Divider />
         <MenuItem onClick={handleShare}>
           <ListItemIcon>
-            <DownloadFileIcon />
+            <DownloadFileIcon fill={theme.palette.text.disabled} />
           </ListItemIcon>
           <ListItemText>Export as Army Forge File</ListItemText>
         </MenuItem>
