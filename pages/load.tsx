@@ -17,6 +17,7 @@ import {
   Typography,
   Container,
   Stack,
+  useTheme,
 } from "@mui/material";
 import _ from "lodash";
 import { Delete } from "@mui/icons-material";
@@ -37,6 +38,7 @@ import FileCopyIcon from "@mui/icons-material/FileCopy";
 export default function Load() {
   const dispatch = useDispatch<typeof store.dispatch>();
   const router = useRouter();
+  const theme = useTheme();
   const [localSaves, setLocalSaves] = useState([]);
   const [forceLoad, setForceLoad] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -259,7 +261,7 @@ export default function Load() {
           onClick={() => importFile()}
           sx={{ alignSelf: "center", px: 4 }}
         >
-          <DownloadFileIcon fill="white" /> <span>&nbsp;Upload Army Forge File</span>
+          <DownloadFileIcon fill={theme.palette.primary.contrastText} /> <span>&nbsp;Upload Army Forge File</span>
         </Button>
         {loading && (
           <Stack alignItems="center" mt={2}>
