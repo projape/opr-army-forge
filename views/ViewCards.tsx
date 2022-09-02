@@ -1,23 +1,12 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../data/store";
 import style from "../styles/Cards.module.css";
 import UnitEquipmentTable from "../views/UnitEquipmentTable";
-import {
-  Paper,
-  Card,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Container,
-  Stack,
-  Typography,
-  Box,
-  useMediaQuery,
-} from "@mui/material";
+import { Stack, Typography, Box, useMediaQuery } from "@mui/material";
 import RulesService from "../services/RulesService";
 import { ArmyState, IGameRule } from "../data/armySlice";
-import { groupBy, groupMap, intersperse } from "../services/Helpers";
+import { groupMap, intersperse } from "../services/Helpers";
 import UnitService, { IFullUnit } from "../services/UnitService";
 import UpgradeService from "../services/UpgradeService";
 import _ from "lodash";
