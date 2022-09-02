@@ -268,7 +268,11 @@ export function UnitCard({
       {rulesSection}
       {traitsSection}
       <UnitEquipmentTable loadout={unit.loadout} hideEquipment square />
-      {unit.notes && <div className="p-2">{unit.notes}</div>}
+      {unit.notes && (
+        <Box px={2}>
+          <pre style={{ whiteSpace: "pre-wrap" }}>{unit.notes}</pre>
+        </Box>
+      )}
     </ViewCard>
   );
 }
