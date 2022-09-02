@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../data/store";
 import { useRouter } from "next/router";
 import ViewCards from "../views/ViewCards";
+import style from "../styles/Cards.module.css";
 import {
   AppBar,
   Button,
   IconButton,
-  Paper,
+  Box,
   Toolbar,
   Typography,
   Drawer,
@@ -17,7 +18,6 @@ import {
   Switch,
   Stack,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ViewAgendaIcon from "@mui/icons-material/ViewAgenda";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -29,6 +29,12 @@ import { ISelectedUnit } from "../data/interfaces";
 import UnitService from "../services/UnitService";
 import { MainMenuOptions } from "../views/components/MainMenu";
 import { useLoadFromQuery } from "../hooks/useLoadFromQuery";
+import { MenuBar } from "../views/components/MenuBar";
+import ViewCard from "../views/components/ViewCard";
+import { IGameRule } from "../data/armySlice";
+import _ from "lodash";
+import { getFlatTraitDefinitions } from "../data/campaign";
+import { Container } from "@mui/system";
 
 export interface IViewPreferences {
   showFullRules: boolean;
@@ -65,8 +71,27 @@ export default function View() {
   }, []);
 
   // Load army list file
+  const usedRules = useMemo(() => {
+    const unitRules = _.flatten(
+      list?.units.map((u) => UnitService.getAllRules(u).map((r) => r.name))
+    );
+
+    const usedWeaponRules = _.chain(list?.units)
+      .map((unit) => unit.loadout.map((x) => x.specialRules || []))
+      .flattenDeep()
+      .map((x) => x.name)
+      .uniq()
+      .value();
+
+    return unitRules.concat(usedWeaponRules);
+  }, [list?.units]);
 
   if (!armyState.loaded) return <p>Loading...</p>;
+
+  const gameRules = armyState.rules;
+  const armyRules = armyState.loadedArmyBooks.flatMap((x) => x.specialRules);
+  const ruleDefinitions: IGameRule[] = gameRules.concat(armyRules);
+  const traitDefinitions = getFlatTraitDefinitions();
 
   function setPreferences(setFunc) {
     const newPrefs = setFunc(preferences);
@@ -78,22 +103,11 @@ export default function View() {
 
   return (
     <>
-      <Paper className="no-print" elevation={2} color="primary" square>
-        <AppBar position="static" elevation={0}>
-          <Toolbar className="p-0">
-            <IconButton
-              size="large"
-              color="inherit"
-              aria-label="menu"
-              onClick={() => router.back()}
-              style={{ marginLeft: "0" }}
-              className="mr-4"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              {title}
-            </Typography>
+      <MenuBar
+        title={title}
+        onBackClick={() => router.back()}
+        right={
+          <>
             <IconButton
               size="large"
               color="inherit"
@@ -111,9 +125,9 @@ export default function View() {
               <SettingsIcon />
             </IconButton>
             <MainMenuOptions />
-          </Toolbar>
-        </AppBar>
-      </Paper>
+          </>
+        }
+      />
       <Drawer anchor="right" open={settingsOpen} onClose={() => setSettingsOpen(false)}>
         <Stack direction="row" p={2}>
           <h3 className="is-size-4" style={{ flex: 1, margin: 0 }}>
@@ -175,8 +189,35 @@ export default function View() {
       <h1 className="print-only" style={{ fontWeight: 600 }}>
         {title}
       </h1>
-      {isCardView ? <ViewCards prefs={preferences} /> : <ViewTable prefs={preferences} />}
+      <Container maxWidth={false}>
+        {isCardView ? <ViewCards prefs={preferences} /> : <ViewTable prefs={preferences} />}
+        {!preferences.showFullRules && (
+          <Box mb={6}>
+            <SpecialRulesCard
+              usedRules={usedRules}
+              ruleDefinitions={ruleDefinitions.concat(traitDefinitions as any[])}
+            />
+          </Box>
+        )}
+      </Container>
     </>
+  );
+}
+
+function SpecialRulesCard({ usedRules, ruleDefinitions }) {
+  return (
+    <ViewCard title="Special Rules">
+      <Box className={style.grid} sx={{ p: 2, mt: 1 }}>
+        {_.uniq(usedRules)
+          .sort()
+          .map((r, i) => (
+            <Typography key={i} sx={{ breakInside: "avoid" }}>
+              <span style={{ fontWeight: 600 }}>{r + ": "}</span>
+              <span>{ruleDefinitions.find((t) => t.name === r)?.description}</span>
+            </Typography>
+          ))}
+      </Box>
+    </ViewCard>
   );
 }
 
