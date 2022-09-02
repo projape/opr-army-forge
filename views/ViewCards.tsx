@@ -3,21 +3,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "../data/store";
 import style from "../styles/Cards.module.css";
 import UnitEquipmentTable from "../views/UnitEquipmentTable";
-import {
-  Paper,
-  Card,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Container,
-  Stack,
-  Typography,
-  Box,
-  useMediaQuery,
-} from "@mui/material";
+import { Stack, Typography, Box, useMediaQuery } from "@mui/material";
 import RulesService from "../services/RulesService";
 import { ArmyState, IGameRule } from "../data/armySlice";
-import { groupBy, groupMap, intersperse } from "../services/Helpers";
+import { groupMap, intersperse } from "../services/Helpers";
 import UnitService, { IFullUnit } from "../services/UnitService";
 import UpgradeService from "../services/UpgradeService";
 import _ from "lodash";
@@ -27,7 +16,7 @@ import { IViewPreferences, listContainsPyschic } from "../pages/view";
 import { getFlatTraitDefinitions, ITrait } from "../data/campaign";
 import LinkIcon from "@mui/icons-material/Link";
 import { ListState } from "../data/listSlice";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ViewCard from "./components/ViewCard";
 
 interface ViewCardsProps {
   prefs: IViewPreferences;
@@ -44,9 +33,6 @@ export default function ViewCards({ prefs }: ViewCardsProps) {
 
   const units = UnitService.getFullUnitList(list?.units, true);
   const unitGroups = UnitService.getGroupedDisplayUnits(units);
-  const usedRules = _.flatten(
-    list?.units.map((u) => UnitService.getAllRules(u).map((r) => r.name))
-  );
 
   const getUnitCard = (unit: IFullUnit, unitCount: number, heroes: ISelectedUnit[]) => {
     return (
@@ -76,30 +62,20 @@ export default function ViewCards({ prefs }: ViewCardsProps) {
   };
 
   return (
-    <Container maxWidth={false}>
-      <div className={style.grid}>
-        {prefs.combineSameUnits
-          ? Object.values(unitGroups).map((grp: IFullUnit[], i) => {
-              const unit = grp[0];
-              const count = grp.length;
-              return getUnitCard(
-                unit,
-                count,
-                grp.flatMap((x) => x.heroes)
-              );
-            })
-          : units.map((unit, i) => getUnitCard(unit, 1, unit.heroes))}
-        {prefs.showPsychic && <SpellsCard army={army} list={list} />}
-      </div>
-      {!prefs.showFullRules && (
-        <Box mb={6}>
-          <SpecialRulesCard
-            usedRules={usedRules}
-            ruleDefinitions={ruleDefinitions.concat(traitDefinitions as any[])}
-          />
-        </Box>
-      )}
-    </Container>
+    <div className={style.grid}>
+      {prefs.combineSameUnits
+        ? Object.values(unitGroups).map((grp: IFullUnit[], i) => {
+            const unit = grp[0];
+            const count = grp.length;
+            return getUnitCard(
+              unit,
+              count,
+              grp.flatMap((x) => x.heroes)
+            );
+          })
+        : units.map((unit, i) => getUnitCard(unit, 1, unit.heroes))}
+      {prefs.showPsychic && <SpellsCard army={army} list={list} />}
+    </div>
   );
 }
 
@@ -286,17 +262,18 @@ export function UnitCard({
           )}
         </>
       }
-      content={
-        <>
-          {joinedUnitText}
-          {stats}
-          {rulesSection}
-          {traitsSection}
-          <UnitEquipmentTable loadout={unit.loadout} hideEquipment square />
-          {unit.notes && <div className="p-2">{unit.notes}</div>}
-        </>
-      }
-    />
+    >
+      {joinedUnitText}
+      {stats}
+      {rulesSection}
+      {traitsSection}
+      <UnitEquipmentTable loadout={unit.loadout} hideEquipment square />
+      {unit.notes && (
+        <Box px={2}>
+          <pre style={{ whiteSpace: "pre-wrap" }}>{unit.notes}</pre>
+        </Box>
+      )}
+    </ViewCard>
   );
 }
 
@@ -313,70 +290,22 @@ export function SpellsCard({ army, list }: SpellsCardProps) {
         const enable = listContainsPyschic(list.units.filter((x) => x.armyId === book.uid));
         return (
           enable && (
-            <ViewCard
-              key={book.uid}
-              title={`${book.name} ${isGrimdark ? "Psychic " : ""} Spells`}
-              content={
-                <>
-                  <hr className="my-0" />
-                  <Box px={2}>
-                    {book.spells.map((spell) => (
-                      <p key={spell.id}>
-                        <span style={{ fontWeight: 600 }}>
-                          {spell.name} ({spell.threshold}+):{" "}
-                        </span>
-                        <span>{spell.effect}</span>
-                      </p>
-                    ))}
-                  </Box>
-                </>
-              }
-            />
+            <ViewCard key={book.uid} title={`${book.name} ${isGrimdark ? "Psychic " : ""} Spells`}>
+              <Box px={2}>
+                {book.spells.map((spell) => (
+                  <p key={spell.id}>
+                    <span style={{ fontWeight: 600 }}>
+                      {spell.name} ({spell.threshold}+):{" "}
+                    </span>
+                    <span>{spell.effect}</span>
+                  </p>
+                ))}
+              </Box>
+            </ViewCard>
           )
         );
       })}
     </>
-  );
-}
-
-function SpecialRulesCard({ usedRules, ruleDefinitions }) {
-  return (
-    <ViewCard
-      title="Special Rules"
-      content={
-        <>
-          <Box className={style.grid} sx={{ p: 2, mt: 1 }}>
-            {_.uniq(usedRules)
-              .sort()
-              .map((r, i) => (
-                <Typography key={i} sx={{ breakInside: "avoid" }}>
-                  <span style={{ fontWeight: 600 }}>{r + ": "}</span>
-                  <span>{ruleDefinitions.find((t) => t.name === r)?.description}</span>
-                </Typography>
-              ))}
-          </Box>
-        </>
-      }
-    />
-  );
-}
-
-function ViewCard({ title, content }) {
-  return (
-    <Card elevation={1} className={style.card}>
-      <Accordion disableGutters defaultExpanded>
-        <AccordionSummary
-          className="card-accordion-summary"
-          expandIcon={<ExpandMoreIcon />}
-          sx={{ pt: 1 }}
-        >
-          <Typography style={{ fontWeight: 600, textAlign: "center", flex: 1, fontSize: "20px" }}>
-            {title}
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ p: 0 }}>{content}</AccordionDetails>
-      </Accordion>
-    </Card>
   );
 }
 

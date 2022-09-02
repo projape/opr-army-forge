@@ -15,14 +15,15 @@ export function MenuBar(props: MenuBarProps) {
       position="static"
       elevation={0}
       color={props.transparent ? "transparent" : undefined}
+      sx={{ px: 1 }}
     >
-      <Toolbar>
+      <Toolbar disableGutters>
         <IconButton
-          size="large"
+          
           edge="start"
           color="inherit"
           aria-label="menu"
-          sx={{ mr: 2 }}
+          sx={{ mr: 1, ml:0 }}
           onClick={props.onBackClick}
         >
           <BackIcon />
@@ -38,7 +39,7 @@ export function MenuBar(props: MenuBarProps) {
   return props.transparent ? (
     appBar
   ) : (
-    <Paper elevation={2} color="primary" square>
+    <Paper className="no-print" elevation={2} color="primary" square>
       {appBar}
     </Paper>
   );

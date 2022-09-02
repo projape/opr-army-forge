@@ -17,7 +17,9 @@ export function CreateView(props: CreateViewProps) {
   const router = useRouter();
   const armyState = useSelector((state: RootState) => state.army);
 
-  const [autoSave, setAutoSave] = useState(true);
+  const [autoSave, setAutoSave] = useState(
+    localStorage["AF_AutoSave"] ? JSON.parse(localStorage["AF_AutoSave"]) : true
+  );
   const [isCampaignList, setCampaignList] = useState(false);
 
   const armyId = router.query["armyId"] as string;
@@ -35,6 +37,13 @@ export function CreateView(props: CreateViewProps) {
       );
     }
   }, [armyState.armyBooks]);
+
+  const toggleAutoSave = () => {
+    setAutoSave((prev) => {
+      localStorage["AF_AutoSave"] = !prev;
+      return !prev;
+    });
+  };
 
   const create = async () => {
     const name = props.armyName || "My List";
@@ -57,9 +66,9 @@ export function CreateView(props: CreateViewProps) {
 
   return (
     <>
-      <FormGroup sx={{mt:2}}>
+      <FormGroup sx={{ mt: 2 }}>
         <FormControlLabel
-          control={<Checkbox checked={autoSave} onClick={() => setAutoSave((prev) => !prev)} />}
+          control={<Checkbox checked={autoSave} onClick={toggleAutoSave} />}
           label="Auto-save changes"
         />
       </FormGroup>
@@ -71,7 +80,7 @@ export function CreateView(props: CreateViewProps) {
           label="Campaign Mode"
         />
       </FormGroup>
-      <Grid container justifyContent={"center"} sx={{mt:2}}>
+      <Grid container justifyContent={"center"} sx={{ mt: 2 }}>
         <Button
           sx={{ px: 6 }}
           variant="contained"

@@ -1,27 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../data/store";
-import style from "../styles/Cards.module.css";
-import {
-  Paper,
-  Card,
-  TableContainer,
-  Table,
-  TableRow,
-  TableCell,
-  TableHead,
-  Typography,
-} from "@mui/material";
-import RulesService from "../services/RulesService";
+import { TableContainer, Table, TableRow, TableCell, TableHead, Typography } from "@mui/material";
 import { IGameRule } from "../data/armySlice";
-import { groupBy, groupMap, makeCopy } from "../services/Helpers";
-import UnitService from "../services/UnitService";
+import { groupBy, groupMap, intersperse } from "../services/Helpers";
+import UnitService, { IFullUnit } from "../services/UnitService";
 import UpgradeService from "../services/UpgradeService";
 import _ from "lodash";
-import { ISelectedUnit } from "../data/interfaces";
+import { ISelectedUnit, IUpgradeGainsItem, IUpgradeGainsRule } from "../data/interfaces";
 import RuleList from "./components/RuleList";
 import { IViewPreferences } from "../pages/view";
 import EquipmentService from "../services/EquipmentService";
+import { SpellsCard } from "./ViewCards";
 
 interface ViewTableProps {
   prefs: IViewPreferences;
@@ -36,10 +26,8 @@ export default function ViewTable({ prefs }: ViewTableProps) {
   const armyRules = army.loadedArmyBooks.flatMap((x) => x.specialRules);
   const ruleDefinitions: IGameRule[] = gameRules.concat(armyRules);
 
-  const units = (list?.units ?? []).map((u) => makeCopy(u));
-  for (let unit of units) {
-    delete unit.selectionId;
-  }
+  const units = UnitService.getFullUnitList(list?.units, true);
+  const unitGroups = UnitService.getGroupedDisplayUnits(units);
 
   useEffect(() => {
     var maxCellWidth = Array.from(document.querySelectorAll(".weapon-name-cell")).reduce(
@@ -49,50 +37,32 @@ export default function ViewTable({ prefs }: ViewTableProps) {
     setMaxCellWidth(maxCellWidth);
   });
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     maxCellWidth = Array.from(document.querySelectorAll(".weapon-name-cell")).reduce(
-  //       (width, elem) => Math.max(width, elem.getBoundingClientRect().width),
-  //       0
-  //     );
-  //     console.log("maxCellWidth", maxCellWidth);
-  //   }, 100);
-  // }, [maxCellWidth]);
-
-  const usedRules = [];
-
-  const unitAsKey = (unit: ISelectedUnit) => {
-    return {
-      id: unit.id,
-      upgrades: unit.selectedUpgrades.map((x) => ({
-        sectionId: x.upgrade.uid,
-        optionId: x.option.id,
-      })),
-    };
-  };
-
-  const unitGroups = _.groupBy(units, (u) => JSON.stringify(unitAsKey(u)));
-
-  const getUnitRow = (unit: ISelectedUnit, unitCount: number) => {
-    const rules = getRules(unit);
-    usedRules.push(...rules.keys);
-    usedRules.push(...rules.weaponRules.map((r) => r.name));
+  const getUnitRow = (unit: IFullUnit, unitCount: number, heroes: ISelectedUnit[]) => {
     return (
-      <UnitRow
-        rules={rules}
-        unit={unit}
-        count={unitCount}
-        prefs={prefs}
-        ruleDefinitions={ruleDefinitions}
-        maxCellWidth={maxCellWidth}
-      />
+      <>
+        {heroes.map((hero) => (
+          <UnitRow
+            unit={hero}
+            count={1}
+            prefs={prefs}
+            ruleDefinitions={ruleDefinitions}
+            maxCellWidth={maxCellWidth}
+          />
+        ))}
+        <UnitRow
+          unit={unit.unit}
+          count={unitCount}
+          prefs={prefs}
+          ruleDefinitions={ruleDefinitions}
+          maxCellWidth={maxCellWidth}
+        />
+      </>
     );
   };
 
   return (
     <>
-      <p className="mb-2">This view is a work in progress...</p>
-      <TableContainer>
+      <TableContainer sx={{ mb: 2 }}>
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -103,92 +73,34 @@ export default function ViewTable({ prefs }: ViewTableProps) {
             </TableRow>
           </TableHead>
           {prefs.combineSameUnits
-            ? Object.values(unitGroups).map((grp: ISelectedUnit[], i) => {
+            ? Object.values(unitGroups).map((grp: IFullUnit[], i) => {
                 const unit = grp[0];
                 const count = grp.length;
-                return getUnitRow(unit, count);
+                return getUnitRow(unit, count, unit.heroes);
               })
             : units.map((unit, i) => {
-                return getUnitRow(unit, 1);
+                return getUnitRow(unit, 1, unit.heroes);
               })}
         </Table>
       </TableContainer>
-      {prefs.showPsychic &&
-        army.loadedArmyBooks.map((book) => (
-          <div key={book.uid} className={style.card}>
-            <Card elevation={1}>
-              <div className="mb-4">
-                <div className="card-body">
-                  <h3 className="is-size-4 my-2" style={{ fontWeight: 500, textAlign: "center" }}>
-                    Psychic/Spells
-                  </h3>
-                  <hr className="my-0" />
-
-                  <Paper square elevation={0}>
-                    <div className="px-2 my-2">
-                      {book.spells.map((spell) => (
-                        <p key={spell.id}>
-                          <span style={{ fontWeight: 600 }}>
-                            {spell.name} ({spell.threshold}+):{" "}
-                          </span>
-                          <span>{spell.effect}</span>
-                        </p>
-                      ))}
-                    </div>
-                  </Paper>
-                </div>
-              </div>
-            </Card>
-          </div>
-        ))}
-      {!prefs.showFullRules && (
-        <div className={`mx-4 ${style.card}`}>
-          <Card elevation={1}>
-            <div className="mb-4">
-              <div className="card-body">
-                <h3 className="is-size-4 my-2" style={{ fontWeight: 500, textAlign: "center" }}>
-                  Special Rules
-                </h3>
-                <hr className="my-0" />
-
-                <Paper square elevation={0}>
-                  <div className={`px-2 my-2 ${style.grid} has-text-left`}>
-                    {_.uniq(usedRules)
-                      .sort()
-                      .map((r, i) => (
-                        <p key={i} style={{ breakInside: "avoid" }}>
-                          <span style={{ fontWeight: 600 }}>{r} - </span>
-                          <span>{ruleDefinitions.find((t) => t.name === r)?.description}</span>
-                        </p>
-                      ))}
-                  </div>
-                </Paper>
-              </div>
-            </div>
-          </Card>
-        </div>
-      )}
+      {prefs.showPsychic && <SpellsCard army={army} list={list} />}
     </>
   );
 }
 
 interface UnitRowProps {
   unit: ISelectedUnit;
-  rules: any;
   count: number;
   prefs: IViewPreferences;
   ruleDefinitions: any;
   maxCellWidth: number;
 }
 
-function UnitRow({ unit, rules, count, prefs, ruleDefinitions, maxCellWidth }: UnitRowProps) {
-  const ruleKeys = rules.keys;
-  const ruleGroups = rules.groups;
-  // usedRules.push(...ruleKeys);
-  // usedRules.push(...weaponRules.map((r) => r.name));
-
-  // Sort rules alphabetically
-  ruleKeys.sort((a, b) => a.localeCompare(b));
+function UnitRow({ unit, count, prefs, ruleDefinitions, maxCellWidth }: UnitRowProps) {
+  const unitRules = unit.specialRules
+    .filter((r) => r.name != "-")
+    .concat(UnitService.getUpgradeRules(unit));
+  const items = unit.loadout.filter((x) => x.type === "ArmyBookItem") as IUpgradeGainsItem[];
 
   const stats = (
     <TableCell>
@@ -199,7 +111,9 @@ function UnitRow({ unit, rules, count, prefs, ruleDefinitions, maxCellWidth }: U
   const loadout = (
     <TableCell>
       {groupMap(
-        unit.loadout.filter((x) => x.attacks),
+        unit.loadout
+          .filter((x) => x.attacks)
+          .concat(items.flatMap((x) => x.content.filter((x) => x.attacks))),
         (x) => x.name + x.attacks,
         (group, key) => {
           const weapon = group[0];
@@ -213,38 +127,50 @@ function UnitRow({ unit, rules, count, prefs, ruleDefinitions, maxCellWidth }: U
     </TableCell>
   );
 
-  const rulesSection = ruleKeys?.length > 0 && (
+  const rulesSection = (
     <TableCell>
-      {ruleKeys.map((key, index) => {
-        const group = ruleGroups[key];
-
-        if (!prefs.showFullRules)
-          return (
-            <span key={index}>
-              {index === 0 ? "" : ", "}
-              <RuleList specialRules={group} />
-            </span>
-          );
-
-        const rule = group[0];
-        const rating = group.reduce(
-          (total, next) => (next.rating ? total + parseInt(next.rating) : total),
-          0
+      {(() => {
+        const rules = groupMap(
+          unitRules,
+          (x) => x.name,
+          (group, key) => <RuleList key={key} specialRules={group} />
         );
 
-        const ruleDefinition = ruleDefinitions.filter(
-          (r) => /(.+?)(?:\(|$)/.exec(r.name)[0] === rule.name
-        )[0];
+        const itemRules = groupMap(
+          items,
+          (x) => x.name,
+          (group, key) => {
+            const item: IUpgradeGainsItem = group[0] as IUpgradeGainsItem;
+            const count = _.sumBy(group, (x) => x.count || 1);
 
-        return (
-          <p key={index}>
-            <span style={{ fontWeight: 600 }}>
-              {RulesService.displayName({ ...rule, rating }, count)} -
-            </span>
-            <span> {ruleDefinition?.description || ""}</span>
-          </p>
+            const itemRules: IUpgradeGainsRule[] = item.content.filter(
+              (x) => x.type === "ArmyBookRule" || x.type === "ArmyBookDefense"
+            ) as any;
+
+            const itemAffectsAll =
+              unit.selectedUpgrades.find((x) => x.option.gains.some((y) => y.name === item.name))
+                ?.upgrade?.affects === "all";
+            //const hasStackableRule = itemRules.some((x) => x.name === "Impact");
+            const hideCount = itemAffectsAll; // && !hasStackableRule;
+
+            return (
+              <span key={key}>
+                {count > 1 && !hideCount && `${count}x `}
+                {item.name}
+                {itemRules.length > 0 && (
+                  <>
+                    <span>(</span>
+                    <RuleList specialRules={itemRules} />
+                    <span>)</span>
+                  </>
+                )}
+              </span>
+            );
+          }
         );
-      })}
+
+        return intersperse(rules.concat(itemRules), <span>, </span>);
+      })()}
     </TableCell>
   );
 
