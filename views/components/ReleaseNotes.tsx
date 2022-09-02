@@ -71,6 +71,7 @@ const releaseNotes: IRelease[] = [
       "Enhancements:",
       "- Remember selection for Auto-Save",
       "- Table/list view alternative to cards",
+      "- Can use line breaks in unit notes",
       "Bug fixes:",
       "- App header padding fix",
       "- Special rules summary shows weapon rules"
