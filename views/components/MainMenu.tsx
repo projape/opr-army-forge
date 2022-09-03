@@ -38,7 +38,7 @@ import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import DownloadFileIcon from "../icons/DownloadFile";
-import { ThemeContext } from "@emotion/react";
+import SaveIcon from "@mui/icons-material/Save";
 
 export default function MainMenu() {
   const army = useSelector((state: RootState) => state.army);
@@ -217,7 +217,7 @@ export function MainMenuOptions() {
   const openOprWebapp = () => {
     window.open("https://webapp.onepagerules.com", "_blank");
   };
-
+  const sxIcon = { color: theme.palette.text.disabled };
   return (
     <>
       <IconButton
@@ -245,28 +245,35 @@ export function MainMenuOptions() {
       >
         <MenuItem onClick={navigateToListConfig}>
           <ListItemIcon>
-            <EditOutlinedIcon sx={{ color: "#9E9E9E" }} />
+            <EditOutlinedIcon sx={sxIcon} />
           </ListItemIcon>
           <ListItemText>Edit Details</ListItemText>
         </MenuItem>
         <MenuItem onClick={() => router.push({ pathname: "/view", query: router.query })}>
           <ListItemIcon>
-            <DashboardOutlinedIcon sx={{ color: "#9E9E9E" }} />
+            <DashboardOutlinedIcon sx={sxIcon} />
           </ListItemIcon>
           <ListItemText>View Cards</ListItemText>
         </MenuItem>
-        {!list.creationTime && <MenuItem onClick={handleSave}>Save</MenuItem>}
+        {!list.creationTime && (
+          <MenuItem onClick={handleSave}>
+            <ListItemIcon>
+              <SaveIcon sx={{ color: theme.palette.text.disabled }} />
+            </ListItemIcon>
+            <ListItemText>Save</ListItemText>
+          </MenuItem>
+        )}
         {list.creationTime && (
           <MenuItem onClick={handleDelete}>
             <ListItemIcon>
-              <DeleteOutlinedIcon sx={{ color: "#9E9E9E" }} />
+              <DeleteOutlinedIcon sx={sxIcon} />
             </ListItemIcon>
             <ListItemText>Delete List</ListItemText>
           </MenuItem>
         )}
         <MenuItem onClick={handleLoad}>
           <ListItemIcon>
-            <FolderOpenIcon sx={{ color: "#9E9E9E" }} />
+            <FolderOpenIcon sx={sxIcon} />
           </ListItemIcon>
           <ListItemText>Open a List</ListItemText>
         </MenuItem>
@@ -277,13 +284,13 @@ export function MainMenuOptions() {
           </ListItemIcon>
           <ListItemText>Export as Army Forge File</ListItemText>
         </MenuItem>
-        {!isLive && <MenuItem onClick={handleShareTTS}>Export as TTS File</MenuItem>}
         <MenuItem onClick={handleTextExport}>
           <ListItemIcon>
-            <AssignmentOutlinedIcon sx={{ color: "#9E9E9E" }} />
+            <AssignmentOutlinedIcon sx={sxIcon} />
           </ListItemIcon>
           <ListItemText>Export as Text</ListItemText>
         </MenuItem>
+        {!isLive && <MenuItem onClick={handleShareTTS}>Export as TTS File</MenuItem>}
         <Divider />
         <MenuItem onClick={openOprWebapp}>Open OPR Webapp</MenuItem>
         <MenuItem onClick={() => dispatch(setOpenReleaseNotes(true))}>See Release Notes</MenuItem>
