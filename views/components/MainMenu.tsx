@@ -254,17 +254,17 @@ export function MainMenuOptions() {
         open={Boolean(menuAnchorElement)}
         onClose={(_) => setMenuAnchorElement(null)}
       >
-        <MenuItem onClick={navigateToListConfig}>
-          <ListItemIcon>
-            <EditOutlinedIcon sx={sxIcon} />
-          </ListItemIcon>
-          <ListItemText>Edit Details</ListItemText>
-        </MenuItem>
         <MenuItem onClick={() => router.push({ pathname: "/view", query: router.query })}>
           <ListItemIcon>
             <VisibilityIcon sx={sxIcon} />
           </ListItemIcon>
           <ListItemText>View List</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={navigateToListConfig}>
+          <ListItemIcon>
+            <EditOutlinedIcon sx={sxIcon} />
+          </ListItemIcon>
+          <ListItemText>Edit Details</ListItemText>
         </MenuItem>
         {!list.creationTime && (
           <MenuItem onClick={handleSave}>
