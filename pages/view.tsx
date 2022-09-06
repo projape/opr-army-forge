@@ -35,6 +35,7 @@ import { IGameRule } from "../data/armySlice";
 import _ from "lodash";
 import { getFlatTraitDefinitions } from "../data/campaign";
 import { Container } from "@mui/system";
+import { useMediaQuery } from "react-responsive";
 
 export interface IViewPreferences {
   showFullRules: boolean;
@@ -47,6 +48,7 @@ export default function View() {
   const list = useSelector((state: RootState) => state.list);
   const armyState = useSelector((state: RootState) => state.army);
   const router = useRouter();
+  const isBigScreen = useMediaQuery({ query: "(min-width: 1024px)" });
 
   useLoadFromQuery();
 
@@ -109,7 +111,7 @@ export default function View() {
         right={
           <>
             <IconButton
-              size="large"
+              size={isBigScreen ? "large" : "medium"}
               color="inherit"
               aria-label="menu"
               onClick={() => window.print()}
@@ -117,7 +119,7 @@ export default function View() {
               <PrintIcon />
             </IconButton>
             <IconButton
-              size="large"
+              size={isBigScreen ? "large" : "medium"}
               color="inherit"
               aria-label="menu"
               onClick={() => setSettingsOpen(true)}
@@ -182,8 +184,8 @@ export default function View() {
       </Drawer>
       <Stack px={2} py={1} className="no-print" direction="row" justifyContent="flex-end">
         <Button onClick={() => setCardView(!isCardView)}>
+          <Typography sx={{ mr: 1 }}>{isCardView ? "cards" : "table"}</Typography>
           {isCardView ? <DashboardIcon /> : <ViewAgendaIcon />}
-          <span className="pl-1 full-compact-text">{isCardView ? "cards" : "list"}</span>
         </Button>
       </Stack>
       <h1 className="print-only" style={{ fontWeight: 600 }}>

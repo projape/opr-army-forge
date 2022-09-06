@@ -36,7 +36,6 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import DownloadFileIcon from "../icons/DownloadFile";
 import SaveIcon from "@mui/icons-material/Save";
 
@@ -65,6 +64,7 @@ export default function MainMenu() {
       <AppBar elevation={0} sx={{ position: "sticky", top: 0, zIndex: 1, px: 1 }}>
         <Toolbar disableGutters>
           <IconButton
+            size={isBigScreen ? "large" : "medium"}
             edge="start"
             color="inherit"
             aria-label="menu"
@@ -73,13 +73,23 @@ export default function MainMenu() {
           >
             <HomeIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              fontSize: isBigScreen ? null : "18px",
+              flexGrow: 1,
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+            }}
+          >
             {list.name}
           </Typography>
           {errors.length > 0 && (
             <>
               <IconButton
-                size="large"
+                size={isBigScreen ? "large" : "medium"}
                 color="inherit"
                 title="Validation warnings"
                 style={{
@@ -133,7 +143,7 @@ export default function MainMenu() {
           )}
           {isBigScreen && (
             <IconButton
-              size="large"
+              size={isBigScreen ? "large" : "medium"}
               color="inherit"
               aria-label="menu"
               title="View list"
@@ -156,6 +166,7 @@ export default function MainMenu() {
 export function MainMenuOptions() {
   const army = useSelector((state: RootState) => state.army);
   const list = useSelector((state: RootState) => state.list);
+  const isBigScreen = useMediaQuery({ query: "(min-width: 1024px)" });
   const dispatch = useDispatch();
   const router = useRouter();
   const theme = useTheme();
@@ -221,7 +232,7 @@ export function MainMenuOptions() {
   return (
     <>
       <IconButton
-        size="large"
+        size={isBigScreen ? "large" : "medium"}
         color="inherit"
         aria-label="menu"
         onClick={(e) => setMenuAnchorElement(e.currentTarget)}
@@ -251,9 +262,9 @@ export function MainMenuOptions() {
         </MenuItem>
         <MenuItem onClick={() => router.push({ pathname: "/view", query: router.query })}>
           <ListItemIcon>
-            <DashboardOutlinedIcon sx={sxIcon} />
+            <VisibilityIcon sx={sxIcon} />
           </ListItemIcon>
-          <ListItemText>View Cards</ListItemText>
+          <ListItemText>View List</ListItemText>
         </MenuItem>
         {!list.creationTime && (
           <MenuItem onClick={handleSave}>
@@ -293,7 +304,7 @@ export function MainMenuOptions() {
         {!isLive && <MenuItem onClick={handleShareTTS}>Export as TTS File</MenuItem>}
         <Divider />
         <MenuItem onClick={openOprWebapp}>Open OPR Webapp</MenuItem>
-        <MenuItem onClick={() => dispatch(setOpenReleaseNotes(true))}>See Release Notes</MenuItem>
+        <MenuItem onClick={() => dispatch(setOpenReleaseNotes(true))}>Open Release Notes</MenuItem>
         <MenuItemDarkMode />
         {!isLive && (
           <MenuItem onClick={() => document.documentElement.requestFullscreen()}>

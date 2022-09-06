@@ -181,33 +181,19 @@ function UnitRow({ unit, count, prefs, ruleDefinitions, maxCellWidth, cost }: Un
       <TableCell style={{ fontWeight: "600", fontSize: "16px" }}>
         {count > 1 ? `${count}x ` : ""}
         {unit.customName || unit.name}
-        <span className="" style={{ color: "#666666" }}>
-          {" "}
-          [{unit.size}]
-        </span>
-        {prefs.showPointCosts && (
-          <span className="ml-1" style={{ fontSize: "14px", color: "#666666" }}>
-            - {cost || UpgradeService.calculateUnitTotal(unit)}pts
-          </span>
-        )}
+        <Typography component="span" color="text.secondary">
+          <span> [{unit.size}]</span>
+          {prefs.showPointCosts && (
+            <Typography component="span" variant="body2">
+              {" "}
+              - {cost || UpgradeService.calculateUnitTotal(unit)}pts
+            </Typography>
+          )}
+        </Typography>
       </TableCell>
       {stats}
       {loadout}
       {rulesSection}
     </TableRow>
   );
-}
-
-function getRules(unit: ISelectedUnit) {
-  const unitRules = (unit.specialRules || []).filter((r) => r.name != "-");
-
-  const rulesFromUpgrades = UnitService.getAllUpgradedRules(unit);
-  const weaponRules = UnitService.getAllEquipment(unit)
-    .filter((e) => e.attacks > 0)
-    .flatMap((e) => e.specialRules);
-
-  const rules = unitRules.concat(rulesFromUpgrades).filter((r) => !!r && r.name != "-");
-  const ruleGroups = groupBy(rules, "name");
-  const ruleKeys = Object.keys(ruleGroups);
-  return { keys: ruleKeys, groups: ruleGroups, weaponRules };
 }
