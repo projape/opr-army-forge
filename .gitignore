@@ -38,4 +38,6 @@ yarn-error.log*
 public\sw.js
 public\sw.js.map
 public\workbox-9a8b0a38.js
+public/sw.js
 public/sw.js.map
+public/workbox*.js
