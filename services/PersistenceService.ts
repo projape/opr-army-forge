@@ -336,7 +336,7 @@ export default class PersistenceService {
     const fullUnits = UnitService.getFullUnitList(list.units, true);
     const unitGroups = UnitService.getGroupedDisplayUnits(fullUnits);
 
-    const writeLine = (unit: ISelectedUnit, count: number, endWithNewline: boolean = true, pointsCost?: number = null) => {
+    const writeLine = (unit: ISelectedUnit, count: number, endWithNewline: boolean = true, pointsCost: number = null) => {
       const name = unit.customName || unit.name;
       const size = UnitService.getSize(unit);
       const cost = pointsCost ?? UpgradeService.calculateUnitTotal(unit);

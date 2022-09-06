@@ -54,6 +54,7 @@ export default function ViewTable({ prefs }: ViewTableProps) {
           count={unitCount}
           prefs={prefs}
           ruleDefinitions={ruleDefinitions}
+          cost={unit.unitPoints}
           maxCellWidth={maxCellWidth}
         />
       </>
@@ -94,9 +95,10 @@ interface UnitRowProps {
   prefs: IViewPreferences;
   ruleDefinitions: any;
   maxCellWidth: number;
+  cost?: number;
 }
 
-function UnitRow({ unit, count, prefs, ruleDefinitions, maxCellWidth }: UnitRowProps) {
+function UnitRow({ unit, count, prefs, ruleDefinitions, maxCellWidth, cost }: UnitRowProps) {
   const unitRules = unit.specialRules
     .filter((r) => r.name != "-")
     .concat(UnitService.getUpgradeRules(unit));
@@ -185,7 +187,7 @@ function UnitRow({ unit, count, prefs, ruleDefinitions, maxCellWidth }: UnitRowP
         </span>
         {prefs.showPointCosts && (
           <span className="ml-1" style={{ fontSize: "14px", color: "#666666" }}>
-            - {UpgradeService.calculateUnitTotal(unit)}pts
+            - {cost || UpgradeService.calculateUnitTotal(unit)}pts
           </span>
         )}
       </TableCell>
