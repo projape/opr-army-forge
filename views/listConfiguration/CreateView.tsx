@@ -1,4 +1,5 @@
 import { Button, Checkbox, Grid, FormControlLabel, FormGroup } from "@mui/material";
+import { nanoid } from "nanoid";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,12 +53,15 @@ export function CreateView(props: CreateViewProps) {
 
     dispatch(
       createList({
+        id: nanoid(8),
+        key: nanoid(),
         name,
         units: [],
         points: 0,
         pointsLimit: props.pointsLimit || 0,
         creationTime: creationTime,
         campaignMode: isCampaignList,
+        gameSystem: armyState.gameSystem
       })
     );
 

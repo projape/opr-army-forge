@@ -1,6 +1,10 @@
+import axios from "axios";
+import { nanoid } from "nanoid";
 import router from "next/router";
 import { IArmyData } from "../data/armySlice";
+import { ListState } from "../data/listSlice";
 import { gameSystemToEnum } from "./Helpers";
+import PersistenceService from "./PersistenceService";
 import UnitService from "./UnitService";
 
 export default class WebappApiService {
@@ -13,7 +17,7 @@ export default class WebappApiService {
 
     //return "http://localhost:3000/api";
 
-    return this.webCompanionUrl;
+    return window.location.host.startsWith("localhost") ? "http://localhost:3000/api" : this.webCompanionUrl;
   }
 
   private static cacheResponse(key: string, res: any) {
@@ -114,5 +118,16 @@ export default class WebappApiService {
     };
 
     return transformedData;
+  }
+
+  public static async shareList(list: ListState) {
+    const payload = PersistenceService.getDataForSave(list);
+    return await axios.post(this.getUrl() + "/af/share", payload);
+  }
+
+  public static async getSharedList(id: string) {
+    const res = await axios.get(this.getUrl() + "/af/share/" + id);
+    console.log("GET Share res", res);
+    return res.data;
   }
 }

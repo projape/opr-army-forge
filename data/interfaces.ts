@@ -19,6 +19,7 @@ export interface ISavedListState extends Omit<ListState, 'units'> {
 
 export interface ISavedUnit extends Omit<IUnitSelectionData, 'loadout' | 'selectedUpgrades'> {
   id: string;
+  armyId: string;
   selectedUpgrades: {
     instanceId: string,
     upgradeId: string,
