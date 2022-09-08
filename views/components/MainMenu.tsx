@@ -36,9 +36,8 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import DownloadFileIcon from "../icons/DownloadFile";
-import { ThemeContext } from "@emotion/react";
+import SaveIcon from "@mui/icons-material/Save";
 
 export default function MainMenu() {
   const army = useSelector((state: RootState) => state.army);
@@ -65,6 +64,7 @@ export default function MainMenu() {
       <AppBar elevation={0} sx={{ position: "sticky", top: 0, zIndex: 1, px: 1 }}>
         <Toolbar disableGutters>
           <IconButton
+            size={isBigScreen ? "large" : "medium"}
             edge="start"
             color="inherit"
             aria-label="menu"
@@ -73,13 +73,23 @@ export default function MainMenu() {
           >
             <HomeIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              fontSize: isBigScreen ? null : "18px",
+              flexGrow: 1,
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+            }}
+          >
             {list.name}
           </Typography>
           {errors.length > 0 && (
             <>
               <IconButton
-                size="large"
+                size={isBigScreen ? "large" : "medium"}
                 color="inherit"
                 title="Validation warnings"
                 style={{
@@ -133,7 +143,7 @@ export default function MainMenu() {
           )}
           {isBigScreen && (
             <IconButton
-              size="large"
+              size={isBigScreen ? "large" : "medium"}
               color="inherit"
               aria-label="menu"
               title="View list"
@@ -156,6 +166,7 @@ export default function MainMenu() {
 export function MainMenuOptions() {
   const army = useSelector((state: RootState) => state.army);
   const list = useSelector((state: RootState) => state.list);
+  const isBigScreen = useMediaQuery({ query: "(min-width: 1024px)" });
   const dispatch = useDispatch();
   const router = useRouter();
   const theme = useTheme();
@@ -217,11 +228,11 @@ export function MainMenuOptions() {
   const openOprWebapp = () => {
     window.open("https://webapp.onepagerules.com", "_blank");
   };
-
+  const sxIcon = { color: theme.palette.text.disabled };
   return (
     <>
       <IconButton
-        size="large"
+        size={isBigScreen ? "large" : "medium"}
         color="inherit"
         aria-label="menu"
         onClick={(e) => setMenuAnchorElement(e.currentTarget)}
@@ -243,30 +254,37 @@ export function MainMenuOptions() {
         open={Boolean(menuAnchorElement)}
         onClose={(_) => setMenuAnchorElement(null)}
       >
+        <MenuItem onClick={() => router.push({ pathname: "/view", query: router.query })}>
+          <ListItemIcon>
+            <VisibilityIcon sx={sxIcon} />
+          </ListItemIcon>
+          <ListItemText>View List</ListItemText>
+        </MenuItem>
         <MenuItem onClick={navigateToListConfig}>
           <ListItemIcon>
-            <EditOutlinedIcon sx={{ color: "#9E9E9E" }} />
+            <EditOutlinedIcon sx={sxIcon} />
           </ListItemIcon>
           <ListItemText>Edit Details</ListItemText>
         </MenuItem>
-        <MenuItem onClick={() => router.push({ pathname: "/view", query: router.query })}>
-          <ListItemIcon>
-            <DashboardOutlinedIcon sx={{ color: "#9E9E9E" }} />
-          </ListItemIcon>
-          <ListItemText>View Cards</ListItemText>
-        </MenuItem>
-        {!list.creationTime && <MenuItem onClick={handleSave}>Save</MenuItem>}
+        {!list.creationTime && (
+          <MenuItem onClick={handleSave}>
+            <ListItemIcon>
+              <SaveIcon sx={{ color: theme.palette.text.disabled }} />
+            </ListItemIcon>
+            <ListItemText>Save</ListItemText>
+          </MenuItem>
+        )}
         {list.creationTime && (
           <MenuItem onClick={handleDelete}>
             <ListItemIcon>
-              <DeleteOutlinedIcon sx={{ color: "#9E9E9E" }} />
+              <DeleteOutlinedIcon sx={sxIcon} />
             </ListItemIcon>
             <ListItemText>Delete List</ListItemText>
           </MenuItem>
         )}
         <MenuItem onClick={handleLoad}>
           <ListItemIcon>
-            <FolderOpenIcon sx={{ color: "#9E9E9E" }} />
+            <FolderOpenIcon sx={sxIcon} />
           </ListItemIcon>
           <ListItemText>Open a List</ListItemText>
         </MenuItem>
@@ -277,16 +295,16 @@ export function MainMenuOptions() {
           </ListItemIcon>
           <ListItemText>Export as Army Forge File</ListItemText>
         </MenuItem>
-        {!isLive && <MenuItem onClick={handleShareTTS}>Export as TTS File</MenuItem>}
         <MenuItem onClick={handleTextExport}>
           <ListItemIcon>
-            <AssignmentOutlinedIcon sx={{ color: "#9E9E9E" }} />
+            <AssignmentOutlinedIcon sx={sxIcon} />
           </ListItemIcon>
           <ListItemText>Export as Text</ListItemText>
         </MenuItem>
+        {!isLive && <MenuItem onClick={handleShareTTS}>Export as TTS File</MenuItem>}
         <Divider />
         <MenuItem onClick={openOprWebapp}>Open OPR Webapp</MenuItem>
-        <MenuItem onClick={() => dispatch(setOpenReleaseNotes(true))}>See Release Notes</MenuItem>
+        <MenuItem onClick={() => dispatch(setOpenReleaseNotes(true))}>Open Release Notes</MenuItem>
         <MenuItemDarkMode />
         {!isLive && (
           <MenuItem onClick={() => document.documentElement.requestFullscreen()}>

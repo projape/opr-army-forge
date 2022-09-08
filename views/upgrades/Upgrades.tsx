@@ -223,13 +223,13 @@ export function Upgrades() {
       )}
 
       {upgradeSets.map((pkg: IUpgradePackage) => (
-        <Fragment key={pkg.uid}>
+        <Box key={pkg.uid} sx={{pb:4}}>
           {pkg.sections
             .filter((section) => selectedUnit.disabledUpgradeSections.indexOf(section.uid) === -1)
             .map((u, i) => (
               <UpgradeGroup key={u.uid} unit={selectedUnit} upgrade={u} previewMode={previewMode} />
             ))}
-        </Fragment>
+        </Box>
       ))}
     </>
   );
