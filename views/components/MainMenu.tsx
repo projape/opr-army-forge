@@ -242,7 +242,7 @@ export function MainMenuOptions() {
         const isSuccessful = res.status === 200;
         if (isSuccessful) {
           navigator.clipboard
-            .writeText("/share?id=" + res.data.id)
+            .writeText(window.location.origin + "/share?id=" + res.data.id)
             .then(() => setCloudShareStatus(CloudShareStatus.success));
         } else {
           setCloudShareStatus(CloudShareStatus.failed);

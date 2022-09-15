@@ -15,9 +15,8 @@ export default class WebappApiService {
     const fromQuery = router.query.dataSourceUrl;
     if (fromQuery) return `https://${fromQuery}.herokuapp.com/api`;
 
-    //return "http://localhost:3000/api";
-
-    return window.location.host.startsWith("localhost") ? "http://localhost:3000/api" : this.webCompanionUrl;
+    //return window.location.host.startsWith("localhost") ? "http://localhost:3000/api" : this.webCompanionUrl;
+    return this.webCompanionUrl;
   }
 
   private static cacheResponse(key: string, res: any) {
