@@ -18,6 +18,9 @@ import {
   Checkbox,
   Stack,
   useTheme,
+  LinearProgress,
+  Alert,
+  Button,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -38,7 +41,8 @@ import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import DownloadFileIcon from "../icons/DownloadFile";
 import SaveIcon from "@mui/icons-material/Save";
-
+import ShareIcon from "@mui/icons-material/Share";
+import WebappApiService from "../../services/WebappApiService";
 export default function MainMenu() {
   const army = useSelector((state: RootState) => state.army);
   const list = useSelector((state: RootState) => state.list);
@@ -48,7 +52,7 @@ export default function MainMenu() {
   const errors = ValidationService.getErrors(army, list);
 
   const goBack = () => {
-    const confirmMsg = "Going back will leave your current list and go back home. Continue?";
+    const confirmMsg = "Going back will discard your current list and go back home. Continue?";
     if (list.creationTime || confirm(confirmMsg)) {
       //router.back();
       router.replace("/");
@@ -172,6 +176,7 @@ export function MainMenuOptions() {
   const theme = useTheme();
   const [menuAnchorElement, setMenuAnchorElement] = useState(null);
   const [showTextCopiedAlert, setShowTextCopiedAlert] = useState(false);
+  const [cloudShareStatus, setCloudShareStatus] = useState(CloudShareStatus.none);
   const isLive = window.location.origin.indexOf("onepagerules.com") > -1;
 
   const handleShareTTS = () => {
@@ -228,6 +233,27 @@ export function MainMenuOptions() {
   const openOprWebapp = () => {
     window.open("https://webapp.onepagerules.com", "_blank");
   };
+
+  const handleCloudShare = () => {
+    setCloudShareStatus(CloudShareStatus.uploading);
+    // POST list to webapp...
+    WebappApiService.shareList(list)
+      .then((res) => {
+        const isSuccessful = res.status === 200;
+        if (isSuccessful) {
+          navigator.clipboard
+            .writeText(window.location.origin + "/share?id=" + res.data.id)
+            .then(() => setCloudShareStatus(CloudShareStatus.success));
+        } else {
+          setCloudShareStatus(CloudShareStatus.failed);
+        }
+      })
+      .catch((_) => {
+        setCloudShareStatus(CloudShareStatus.failed);
+      });
+    // check response, show dialog?
+  };
+
   const sxIcon = { color: theme.palette.text.disabled };
   return (
     <>
@@ -289,6 +315,12 @@ export function MainMenuOptions() {
           <ListItemText>Open a List</ListItemText>
         </MenuItem>
         <Divider />
+        <MenuItem onClick={handleCloudShare} disabled={!list.creationTime}>
+          <ListItemIcon>
+            <ShareIcon sx={sxIcon} />
+          </ListItemIcon>
+          <ListItemText>Cloud Share</ListItemText>
+        </MenuItem>
         <MenuItem onClick={handleShare}>
           <ListItemIcon>
             <DownloadFileIcon fill={theme.palette.text.disabled} />
@@ -319,6 +351,67 @@ export function MainMenuOptions() {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         autoHideDuration={4000}
       />
+      <CloudShare
+        status={cloudShareStatus}
+        setStatus={setCloudShareStatus}
+        onCancelRequested={() => {
+          setCloudShareStatus(CloudShareStatus.none);
+        }}
+      />
+    </>
+  );
+}
+
+enum CloudShareStatus {
+  none,
+  uploading,
+  success,
+  failed,
+}
+
+interface CloudShareProps {
+  status: CloudShareStatus;
+  setStatus: (status: CloudShareStatus) => void;
+  onCancelRequested: () => void;
+}
+
+function CloudShare({ status, setStatus, onCancelRequested }: CloudShareProps) {
+  return (
+    <>
+      <Snackbar
+        open={status === CloudShareStatus.uploading}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <LinearProgress />
+          <Alert
+            severity="info"
+            action={
+              <Button color="inherit" size="small" onClick={onCancelRequested}>
+                Cancel
+              </Button>
+            }
+          >
+            Uploading your list...
+          </Alert>
+        </div>
+      </Snackbar>
+      <Snackbar
+        open={status === CloudShareStatus.success}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        autoHideDuration={4000}
+        onClose={() => setStatus(CloudShareStatus.none)}
+      >
+        <Alert severity="success">Upload success. Link copied to clipboard!</Alert>
+      </Snackbar>
+      <Snackbar
+        open={status === CloudShareStatus.failed}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        autoHideDuration={4000}
+        onClose={() => setStatus(CloudShareStatus.none)}
+      >
+        <Alert severity="error">Upload failed!</Alert>
+      </Snackbar>
     </>
   );
 }

@@ -39,14 +39,15 @@ export default class PersistenceService {
         name: name,
         units: [],
         points: 0,
-        undoUnitRemove: null
+        undoUnitRemove: null,
+        gameSystem: army.gameSystem
       };
 
     const armyData = army.loadedArmyBooks[0];
     const saveData: ISaveData = {
       gameSystem: army.gameSystem,
       armyId: armyData.uid,
-      armyIds: [armyData.uid],
+      armyIds: army.loadedArmyBooks.map(x => x.uid),// ??? [armyData.uid],
       armyFaction: armyData.factionName,
       armyName: armyData.name,
       modified: new Date().toJSON(),
@@ -242,8 +243,43 @@ export default class PersistenceService {
       const armyBooks = results.map(res => (res.payload as any).armyBookData) as IArmyData[];
       console.log("Loaded army books...", armyBooks);
       const list: ListState = this.buildListFromSave(save, armyBooks);
+
+      // if the list has no key it's either old, or from a share
+      if (!list.key) {
+        list.id = nanoid(8);
+        list.key = nanoid();
+        this.updateSave(list);
+      }
+      if (!list.gameSystem) {
+        list.gameSystem = save.gameSystem;
+        this.updateSave(list);
+      }
+
       dispatch(loadSavedList(list));
       dispatch(getGameRules(save.gameSystem));
+      callback(armyBooks);
+    });
+  }
+
+  public static async loadFromShare(dispatch: ThunkDispatch<RootState, any, any>, shareData: ISavedListState, callback: (armyBooks: IArmyData[]) => void) {
+
+    console.log("Loading save...", shareData);
+
+    dispatch(resetLoadedBooks());
+    dispatch(setGameSystem(shareData.gameSystem));
+    const armyIds = _.uniq(shareData.units.map(x => x.armyId));
+
+    const promises = armyIds.map(id => dispatch(getArmyBookData({
+      armyUid: id, gameSystem: shareData.gameSystem, reset: false
+    })));
+
+    Promise.all(promises).then(results => {
+      const armyBooks = results.map(res => (res.payload as any).armyBookData) as IArmyData[];
+      const list: ListState = this.buildListFromSave_v3(shareData, armyBooks);
+      console.log("Loaded army books...", armyBooks);
+
+      dispatch(loadSavedList(list));
+      dispatch(getGameRules(shareData.gameSystem));
       callback(armyBooks);
     });
   }

@@ -251,14 +251,15 @@ export function UnitCard({
         <>
           {count > 1 ? `${count}x ` : ""}
           {unit.customName || unit.name}
-          <span className="" style={{ color: "#666666" }}>
+          <Typography component="span" sx={{ color: "text.secondary" }}>
             {" "}
-            [{UnitService.getSize(unit)}]
-          </span>
+            [{UnitService.getSize(unit)}] - {unit.xp}XP
+          </Typography>
           {prefs.showPointCosts && (
-            <span className="is-size-6 ml-1" style={{ color: "#666666" }}>
+            <Typography component="span" sx={{ color: "text.secondary" }}>
+              {" "}
               - {pointCost}pts
-            </span>
+            </Typography>
           )}
         </>
       }
