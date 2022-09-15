@@ -1,14 +1,11 @@
 import Head from "next/head";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../data/store";
+import { useDispatch } from "react-redux";
 import { useMediaQuery } from "react-responsive";
-import MobileView from "../views/listBuilder/MobileView";
-import DesktopView from "../views/listBuilder/DesktopView";
-import { useLoadFromQuery } from "../hooks/useLoadFromQuery";
 import { useRouter } from "next/router";
 import WebappApiService from "../services/WebappApiService";
 import PersistenceService from "../services/PersistenceService";
+import { nanoid } from "nanoid";
 
 export default function Share() {
   const router = useRouter();
@@ -20,6 +17,9 @@ export default function Share() {
     console.log(listId);
     (async () => {
       const list = await WebappApiService.getSharedList(listId);
+      console.log("Loading shared list:", list);
+      list.id = nanoid(8);
+      list.key = nanoid();
       PersistenceService.loadFromShare(dispatch, list, () => {
         router.push("/list");
       });

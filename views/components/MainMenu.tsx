@@ -52,7 +52,7 @@ export default function MainMenu() {
   const errors = ValidationService.getErrors(army, list);
 
   const goBack = () => {
-    const confirmMsg = "Going back will leave your current list and go back home. Continue?";
+    const confirmMsg = "Going back will discard your current list and go back home. Continue?";
     if (list.creationTime || confirm(confirmMsg)) {
       //router.back();
       router.replace("/");
@@ -315,7 +315,7 @@ export function MainMenuOptions() {
           <ListItemText>Open a List</ListItemText>
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleCloudShare}>
+        <MenuItem onClick={handleCloudShare} disabled={!list.creationTime}>
           <ListItemIcon>
             <ShareIcon sx={sxIcon} />
           </ListItemIcon>
