@@ -88,7 +88,7 @@ function MainListSection({
       {!collapsed && (
         <>
           {fullUnits.map((fullUnit, index: number) => {
-            const { hasJoined, heroes, unit, unitSize, unitPoints, joined } = fullUnit;
+            const { hasJoined, heroes, unit, unitSize, unitPointsAll, joined } = fullUnit;
 
             const listItem = (unit: ISelectedUnit, hideOptions?: boolean) => (
               <MainListItem
@@ -116,7 +116,7 @@ function MainListSection({
                         color="text.secondary"
                       >{` [${unitSize}]`}</Typography>
                     </Typography>
-                    <span>{unitPoints}pts</span>
+                    <span>{unitPointsAll}pts</span>
                     <DropMenu sx={{ ml: 1 }}>
                       <DuplicateButton units={[unit, ...heroes, joined].filter((u) => u)} />
                     </DropMenu>

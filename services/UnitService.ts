@@ -110,13 +110,18 @@ export default class UnitService {
         (size, u) => size + UnitService.getSize(u),
         UnitService.getSize(unit)
       );
-      const unitPoints = attachedUnits.reduce(
+      const unitPoints = joined.reduce(
+        (cost, u) => cost + UpgradeService.calculateUnitTotal(u),
+        UpgradeService.calculateUnitTotal(unit)
+      );
+      const unitPointsAll = attachedUnits.reduce(
         (cost, u) => cost + UpgradeService.calculateUnitTotal(u),
         UpgradeService.calculateUnitTotal(unit)
       );
       return {
         unitSize,
         unitPoints,
+        unitPointsAll,
         unit: combine ? UnitService.mergeCombinedUnit(unit, joined[0]) : unit,
         joined: joined[0], // Combined units can only have one joined...
         heroes,

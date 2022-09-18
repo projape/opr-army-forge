@@ -47,6 +47,7 @@ export default function ViewTable({ prefs }: ViewTableProps) {
             prefs={prefs}
             ruleDefinitions={ruleDefinitions}
             maxCellWidth={maxCellWidth}
+            joinedTo={unit.unit.customName || unit.unit.name}
           />
         ))}
         <UnitRow
@@ -96,9 +97,18 @@ interface UnitRowProps {
   ruleDefinitions: any;
   maxCellWidth: number;
   cost?: number;
+  joinedTo?: string;
 }
 
-function UnitRow({ unit, count, prefs, ruleDefinitions, maxCellWidth, cost }: UnitRowProps) {
+function UnitRow({
+  unit,
+  count,
+  prefs,
+  ruleDefinitions,
+  maxCellWidth,
+  cost,
+  joinedTo,
+}: UnitRowProps) {
   const unitRules = unit.specialRules
     .filter((r) => r.name != "-")
     .concat(UnitService.getUpgradeRules(unit));
@@ -179,17 +189,20 @@ function UnitRow({ unit, count, prefs, ruleDefinitions, maxCellWidth, cost }: Un
   return (
     <TableRow>
       <TableCell style={{ fontWeight: "600", fontSize: "16px" }}>
-        {count > 1 ? `${count}x ` : ""}
-        {unit.customName || unit.name}
-        <Typography component="span" color="text.secondary">
-          <span> [{unit.size}]</span>
-          {prefs.showPointCosts && (
-            <Typography component="span" variant="body2">
-              {" "}
-              - {cost || UpgradeService.calculateUnitTotal(unit)}pts
-            </Typography>
-          )}
+        <Typography>
+          {count > 1 ? `${count}x ` : ""}
+          {unit.customName || unit.name}
+          <Typography component="span" color="text.secondary">
+            <span> [{unit.size}]</span>
+            {prefs.showPointCosts && (
+              <Typography component="span" variant="body2">
+                {" "}
+                - {cost || UpgradeService.calculateUnitTotal(unit)}pts
+              </Typography>
+            )}
+          </Typography>
         </Typography>
+        {joinedTo && <Typography variant="body2">Joined to {joinedTo}</Typography>}
       </TableCell>
       {stats}
       {loadout}

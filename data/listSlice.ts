@@ -7,6 +7,7 @@ import PersistenceService from '../services/PersistenceService';
 import { nanoid } from "nanoid";
 import UnitService from '../services/UnitService';
 import { makeCopy } from '../services/Helpers';
+import GameSystem from '../pages/gameSystem';
 
 export interface ListState {
   creationTime: string;
@@ -18,9 +19,13 @@ export interface ListState {
   points: number;
   unitPreview?: ISelectedUnit;
   campaignMode?: boolean;
+  id?: string;
+  key?: string;
+  gameSystem: string;
 }
 
 const initialState: ListState = {
+  id: undefined,
   creationTime: null,
   name: null,
   pointsLimit: 0,
@@ -29,7 +34,8 @@ const initialState: ListState = {
   undoUnitRemove: null,
   points: 0,
   unitPreview: null,
-  campaignMode: false
+  campaignMode: false,
+  gameSystem: ""
 };
 
 const debounceSave = debounce(1500, (state: ListState) => {
