@@ -65,6 +65,18 @@ interface IRelease {
 
 const releaseNotes: IRelease[] = [
   {
+    version: "0.9.6",
+    date: "2022-09-17",
+    notes: [
+      "New Features:",
+      "- Cloud Share! Share your list via a URL, rather than by file export.",
+      "- Added unit count display to 'My List' header. (Desktop only)",
+      "Bug fixes:",
+      "- Unit point cost when hero is attached",
+      "- Show joined units in 'table' view"
+    ],
+  },
+  {
     version: "0.9.5",
     date: "2022-09-02",
     notes: [

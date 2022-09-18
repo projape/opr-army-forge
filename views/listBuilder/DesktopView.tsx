@@ -47,10 +47,10 @@ export default function DesktopView() {
         <Grid item xs sx={columnStyle} onScroll={setScrolled}>
           <Card square elevation={1} sx={{ p: 2, position: "sticky", top: 0, zIndex: 1 }}>
             <Stack direction="row">
-              <Typography variant="h5" flex={1}>
+              <Typography variant="h5">
                 My List
               </Typography>
-              <Typography variant="h5" mr={1} color="text.secondary">{`[${list.units.filter(x => !x.joinToUnit).length} units]`}</Typography>
+              <Typography variant="h5" ml={1} flex={1} color="text.secondary">{`[${list.units.filter(x => !x.joinToUnit).length} units]`}</Typography>
               <Typography variant="h5">
                 {`${list.points}${list.pointsLimit ? `/${list.pointsLimit}` : ""}pts`}
               </Typography>
