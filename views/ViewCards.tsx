@@ -253,7 +253,7 @@ export function UnitCard({
           {unit.customName || unit.name}
           <Typography component="span" sx={{ color: "text.secondary" }}>
             {" "}
-            [{UnitService.getSize(unit)}] - {unit.xp}XP
+            [{UnitService.getSize(unit)}]{unit.xp > 0 && ` - ${unit.xp}XP`}
           </Typography>
           {prefs.showPointCosts && (
             <Typography component="span" sx={{ color: "text.secondary" }}>
