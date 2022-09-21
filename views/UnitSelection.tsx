@@ -104,7 +104,7 @@ function UnitSelectionForArmy({ army, showTitle }) {
   );
 }
 
-function getUnitCategories(units: IUnit[]) {
+export function getUnitCategories(units: IUnit[]) {
   // Group army units by category
   const isTough = (u: IUnit, threshold) =>
     u.specialRules.some((r) => {
