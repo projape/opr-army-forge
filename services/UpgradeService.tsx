@@ -70,6 +70,7 @@ export default class UpgradeService {
         gainEquipment.map((g) => ({
           ...g,
           count: isAffectsAll ? g.count * unit.size : g.count,
+          isModel: option.isModel // Upgrade items which are models (weapon teams...)
         }))
       );
     } else if (upgrade.type === "replace") {
@@ -95,7 +96,7 @@ export default class UpgradeService {
           ...g,
           // "Replace all" is replacing each item with "g.count" copies,
           // whereas "replace 2x something" is replacing 2 with "g.count"
-          count: isAffectsAll ? g.count * removeCount : g.count,
+          count: isAffectsAll ? g.count * removeCount : g.count
         }))
       );
     }

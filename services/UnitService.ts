@@ -47,7 +47,7 @@ export default class UnitService {
   public static getAllUpgradedRules(unit: ISelectedUnit): IUpgradeGainsRule[] {
     const rules = this.getUpgradeRules(unit) || [];
     const rulesFromItems =
-      unit.loadout?.filter((u) => u.type === "ArmyBookItem")
+      unit.loadout?.filter((x) => x.type === "ArmyBookItem" && !x.isModel)
         .reduce(
           (value, u: IUpgradeGainsItem) =>
             value.concat(u.content.filter((c) => c.type === "ArmyBookRule" || c.type === "ArmyBookDefense")),

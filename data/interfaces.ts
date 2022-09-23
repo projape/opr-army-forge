@@ -103,6 +103,7 @@ export interface IUpgradeGains {
   dependencies?: IUpgradeDependency[];
   attacks?: number;
   specialRules?: IUpgradeGainsRule[];
+  isModel?: boolean;
 }
 
 export interface IUpgradeGainsItem extends IUpgradeGains {
