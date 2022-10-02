@@ -1,11 +1,12 @@
-//if (false) {
-  const withPWA = require("next-pwa");
-  const runtimeCaching = require("next-pwa/cache");
+const withPWA = require("next-pwa");
+const runtimeCaching = require("next-pwa/cache");
 
-  module.exports = withPWA({
-    pwa: {
-      dest: "public",
-      runtimeCaching,
-    },
-  });
-//}
+const { NODE_ENV } = process.env;
+
+module.exports = withPWA({
+  pwa: {
+    disable: NODE_ENV === "development",
+    dest: "public",
+    runtimeCaching,
+  },
+});
