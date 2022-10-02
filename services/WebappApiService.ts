@@ -66,7 +66,12 @@ export default class WebappApiService {
     try {
       const gameSystemId = gameSystemToEnum(gameSystem);
 
-      const armyBookRes = await fetch(this.getUrl() + `/army-books/${armyId}~${gameSystemId}?armyForge=true`);
+      const url = this.getUrl() + `/army-books/${armyId}~${gameSystemId}?armyForge=true`;
+      console.log("Fetching army data from", url);
+
+      const armyBookRes = await fetch(url);
+
+      console.log("Webapp response", armyBookRes);
 
       const data: IArmyData = await armyBookRes.json();
 
@@ -77,6 +82,7 @@ export default class WebappApiService {
       return transformedData;
     }
     catch (e) {
+      console.error("Error loading from webapp", e);
       return this.getFromCache(cacheKey);
     }
   };
