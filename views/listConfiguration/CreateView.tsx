@@ -1,4 +1,12 @@
-import { Button, Checkbox, Grid, FormControlLabel, FormGroup, Stack } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  Grid,
+  FormControlLabel,
+  FormGroup,
+  Stack,
+  Typography,
+} from "@mui/material";
 import _ from "lodash";
 import { nanoid } from "nanoid";
 import { useRouter } from "next/router";
@@ -6,7 +14,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getArmyBookData } from "../../data/armySlice";
 import { addUnit, createList } from "../../data/listSlice";
-import { RootState } from "../../data/store";
+import { RootState, useAppDispatch } from "../../data/store";
 import PersistenceService from "../../services/PersistenceService";
 import { getUnitCategories } from "../UnitSelection";
 
@@ -16,7 +24,7 @@ interface CreateViewProps {
 }
 
 export function CreateView(props: CreateViewProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const armyState = useSelector((state: RootState) => state.army);
 
@@ -75,8 +83,8 @@ export function CreateView(props: CreateViewProps) {
     router.push({ pathname: "/list", query: { listId: creationTime } });
   };
 
-  const generateArmy = () => {
-    console.log("Generate");
+  const generateArmy = async () => {
+    console.group("ARMY GENERATE");
 
     const creationTime = dispatchCreate();
 
@@ -85,7 +93,7 @@ export function CreateView(props: CreateViewProps) {
     const armyBook = armyState.loadedArmyBooks[0];
     const units = armyBook.units;
     const unitGroups = getUnitCategories(units);
-    console.log(unitGroups);
+    console.log("GEN unit groups", unitGroups);
 
     const heroPoints = 500;
     const heroCount = Math.floor(props.pointsLimit / 500);
@@ -95,7 +103,10 @@ export function CreateView(props: CreateViewProps) {
     let pointsRemaining = props.pointsLimit;
 
     const getChoices = (category: string, pointLimit?: number) =>
-      unitGroups[category].filter((x) => x.cost <= (pointLimit ?? pointsRemaining));
+      unitGroups[category]
+        .filter((x) => x.cost <= (pointLimit ?? pointsRemaining))
+        // no unit may be worth >33% of total point cost
+        .filter((x) => x.cost <= props.pointsLimit * 0.3333);
 
     const vehicles = (() => {
       debugger;
@@ -117,23 +128,23 @@ export function CreateView(props: CreateViewProps) {
     let choices = [];
     // While there are still choices available
     while ((choices = getChoices("Core Units")).length > 0) {
-      console.log(choices);
       selections.push(getRandomFrom(choices));
       pointsRemaining = props.pointsLimit - _.sumBy(selections, (x) => x.cost);
     }
-    console.log(selections);
-    console.log("Points left...", pointsRemaining);
+    console.log("GEN All selections:", selections);
+    console.log("GEN Points left...", pointsRemaining);
 
     // Add selections to list
     for (let unit of selections) {
-      dispatch(addUnit(unit));
+      const { payload } = await dispatch(addUnit(unit));
+      console.log("GEN added unit", payload);
     }
     /*
 - DONE add 1 hero per full Xpts in the list (see comp rules for X)
 - DONE add up to 100% of infantry units
 - DONE add up to 33% of vehicles/monsters/artillery/titans
 - add up to 15% of aircraft
-- no unit may be worth >33% of total point cost
+- DONE no unit may be worth >33% of total point cost
 - if 2 of same unit are generated, always combine them
 - max 1+X copies of same unit, where X is 1 per full Xpts (merged units count as 1 copy)
 - max 1 unit per full Xpts in the list (see comp rules for X)
@@ -144,9 +155,12 @@ in a 2000pts list, it should:
 3 - check all the requirements, and remove anything that breaks them
 4 - fill out the remaining points with infantry
      */
-
+    console.groupEnd();
     router.push({ pathname: "/list", query: { listId: creationTime } });
   };
+
+  const armyGenDisabled =
+    armyState.loadingArmyData || armyState.loadedArmyBooks.length === 0 || !props.pointsLimit;
 
   return (
     <>
@@ -177,11 +191,16 @@ in a 2000pts list, it should:
           sx={{ px: 6 }}
           variant="contained"
           onClick={() => generateArmy()}
-          disabled={armyState.loadingArmyData || armyState.loadedArmyBooks.length === 0 || !props.pointsLimit}
+          disabled={armyGenDisabled}
         >
           Generate Army
         </Button>
       </Stack>
+      {armyGenDisabled && (
+        <Typography align="center" variant="body2">
+          Enter a point limit to enable army generation.
+        </Typography>
+      )}
     </>
   );
 }
