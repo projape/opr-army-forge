@@ -13,7 +13,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getArmyBookData } from "../../data/armySlice";
-import { addUnit, createList } from "../../data/listSlice";
+import { ISelectedUnit } from "../../data/interfaces";
+import { addCombinedUnit, addUnit, createList } from "../../data/listSlice";
 import { RootState, useAppDispatch } from "../../data/store";
 import PersistenceService from "../../services/PersistenceService";
 import { getUnitCategories } from "../UnitSelection";
@@ -109,7 +110,6 @@ export function CreateView(props: CreateViewProps) {
         .filter((x) => x.cost <= props.pointsLimit * 0.3333);
 
     const vehicles = (() => {
-      debugger;
       let vehicleMax = props.pointsLimit * 0.3333;
       let vehicleRemaining = vehicleMax;
       const vehicles = [];
@@ -134,18 +134,37 @@ export function CreateView(props: CreateViewProps) {
     console.log("GEN All selections:", selections);
     console.log("GEN Points left...", pointsRemaining);
 
-    // Add selections to list
-    for (let unit of selections) {
-      const { payload } = await dispatch(addUnit(unit));
-      console.log("GEN added unit", payload);
+    var selectionGroups = _.groupBy(selections, (unit) => unit.name);
+
+    for (let key of Object.keys(selectionGroups)) {
+      const group = selectionGroups[key];
+
+      let i = 0;
+      let lastId: string = "";
+
+      for (let unit of group) {
+        const isEvenNumber = ++i % 2 === 0;
+        const isHero = unit.specialRules.some(x => x.name === "Hero");
+
+        if (isEvenNumber && !isHero) {
+          // Attach to last unit
+          dispatch(addCombinedUnit(lastId));
+          console.log("Combining unit", lastId)
+        } else {
+          const { payload }: any = await dispatch(addUnit(unit));
+          console.log("GEN added unit", payload);
+          lastId = payload.selectionId;
+        }
+      }
     }
+
     /*
 - DONE add 1 hero per full Xpts in the list (see comp rules for X)
 - DONE add up to 100% of infantry units
 - DONE add up to 33% of vehicles/monsters/artillery/titans
 - add up to 15% of aircraft
 - DONE no unit may be worth >33% of total point cost
-- if 2 of same unit are generated, always combine them
+- DONE if 2 of same unit are generated, always combine them
 - max 1+X copies of same unit, where X is 1 per full Xpts (merged units count as 1 copy)
 - max 1 unit per full Xpts in the list (see comp rules for X)
 
