@@ -34,6 +34,8 @@ export default function Share() {
       <Head>
         <title>OPR Army Forge</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta name="title" content="Share List Title" />
+        <meta name="description" content="Share List Description" />
       </Head>
     </>
   );
