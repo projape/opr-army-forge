@@ -210,12 +210,8 @@ interface SpecialRulesCardProps {
 }
 
 function SpecialRulesCard({ usedRules, ruleDefinitions }: SpecialRulesCardProps) {
-  const start = performance.now();
   usedRules = _.uniq(usedRules).sort();
   const usedRuleDefs = [];
-  console.group("SpecialRulesCard");
-  console.log("Used ruled", usedRules);
-  console.log("Rule defs", ruleDefinitions);
 
   // Check each rule for nested rules...
   for (let rule of usedRules) {
@@ -226,16 +222,11 @@ function SpecialRulesCard({ usedRules, ruleDefinitions }: SpecialRulesCardProps)
       if (match.name === usedRuleDef.name) continue;
 
       if (new RegExp(match.name).test(usedRuleDef.description)) {
-        
-        console.log(`${usedRuleDef.name} matches ${match.name}`);
         usedRuleDefs.push(match);
       }
     }
     usedRuleDefs.push(usedRuleDef);
   }
-  console.log("Used rul defs", usedRuleDefs);
-  console.log("Finished in ", performance.now() - start);
-  console.groupEnd();
   return (
     <ViewCard title="Special Rules">
       <Box className={style.grid} sx={{ p: 2, mt: 1 }}>
