@@ -5,11 +5,9 @@ import { useRouter } from "next/router";
 import ViewCards from "../views/ViewCards";
 import style from "../styles/Cards.module.css";
 import {
-  AppBar,
   Button,
   IconButton,
   Box,
-  Toolbar,
   Typography,
   Drawer,
   List,
@@ -206,18 +204,38 @@ export default function View() {
   );
 }
 
-function SpecialRulesCard({ usedRules, ruleDefinitions }) {
+interface SpecialRulesCardProps {
+  usedRules: string[];
+  ruleDefinitions: { name: string; description: string }[];
+}
+
+function SpecialRulesCard({ usedRules, ruleDefinitions }: SpecialRulesCardProps) {
+  usedRules = _.uniq(usedRules).sort();
+  const usedRuleDefs = [];
+
+  // Check each rule for nested rules...
+  for (let rule of usedRules) {
+    const usedRuleDef = ruleDefinitions.find((t) => t.name === rule);
+    if (!usedRuleDef) continue;
+    for (let match of ruleDefinitions) {
+      // Don't match against self
+      if (match.name === usedRuleDef.name) continue;
+
+      if (new RegExp(match.name).test(usedRuleDef.description)) {
+        usedRuleDefs.push(match);
+      }
+    }
+    usedRuleDefs.push(usedRuleDef);
+  }
   return (
     <ViewCard title="Special Rules">
       <Box className={style.grid} sx={{ p: 2, mt: 1 }}>
-        {_.uniq(usedRules)
-          .sort()
-          .map((r, i) => (
-            <Typography key={i} sx={{ breakInside: "avoid" }}>
-              <span style={{ fontWeight: 600 }}>{r + ": "}</span>
-              <span>{ruleDefinitions.find((t) => t.name === r)?.description}</span>
-            </Typography>
-          ))}
+        {_.uniqBy(usedRuleDefs, (x) => x.name).map((r, i) => (
+          <Typography key={i} sx={{ breakInside: "avoid" }}>
+            <span style={{ fontWeight: 600 }}>{r.name + ": "}</span>
+            <span>{r.description}</span>
+          </Typography>
+        ))}
       </Box>
     </ViewCard>
   );
