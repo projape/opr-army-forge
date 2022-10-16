@@ -194,7 +194,7 @@ export default function View() {
         {!preferences.showFullRules && (
           <Box mb={6}>
             <SpecialRulesCard
-              usedRules={usedRules}
+              usedRules={usedRules as string[]}
               ruleDefinitions={ruleDefinitions.concat(traitDefinitions as any[])}
             />
           </Box>
