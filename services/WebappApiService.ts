@@ -1,6 +1,4 @@
 import axios from "axios";
-import { nanoid } from "nanoid";
-import router from "next/router";
 import { IArmyData } from "../data/armySlice";
 import { ListState } from "../data/listSlice";
 import { gameSystemToEnum } from "./Helpers";
@@ -12,9 +10,6 @@ export default class WebappApiService {
   private static webCompanionUrl = "https://webapp.onepagerules.com/api";
 
   private static getUrl() {
-    const fromQuery = router.query.dataSourceUrl;
-    if (fromQuery) return `https://${fromQuery}.herokuapp.com/api`;
-
     //return window.location.host.startsWith("localhost") ? "http://localhost:3000/api" : this.webCompanionUrl;
     return this.webCompanionUrl;
   }
