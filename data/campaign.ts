@@ -334,7 +334,7 @@ const traitDefinitions = {
         "description": "Gets -1 to rolls when in melee."
       },
       {
-        "name": "Traumatised",
+        "name": "Traumatized",
         "description": "Gets -1 to rolls when taking morale tests."
       },
       {
