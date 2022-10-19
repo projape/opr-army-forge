@@ -415,15 +415,15 @@ const traitDefinitions = {
         traits: [
           {
             name: "Vanguard",
-            description: "Friendly units within 6” get +1 to morale tests."
+            description: "Friendly units within 6” get +4” charge range."
           },
           {
             name: "Scavenger",
-            description: "Friendly units within 6” get +1 to melee."
+            description: "Friendly units within 6” get +6” firing range."
           },
           {
             name: "Mastermind",
-            description: "Friendly units within 6” get +1 to shooting."
+            description: "Enemy units within 6” get -1 to defense."
           }
         ]
       },
@@ -432,15 +432,15 @@ const traitDefinitions = {
         traits: [
           {
             name: "Duellist",
-            description: "Friendly units within 6” get +1 to morale tests."
+            description: "Enemy units get -1 in melee against the hero."
           },
           {
             name: "Fanatic",
-            description: "Friendly units within 6” get +1 to melee."
+            description: "The hero gets +1 attack when in melee."
           },
           {
             name: "Berserker",
-            description: "Friendly units within 6” get +1 to shooting."
+            description: "Enemies get -1 to morale test when in melee with the hero."
           }
         ]
       },
@@ -491,7 +491,7 @@ const traitDefinitions = {
           },
           {
             name: "Warden",
-            description: "When the hero is activated roll one die, on a 5+ all friendly units within 6” stop being pinned."
+            description: "When the hero is activated roll one die, on a 5+ all friendly units within 6” stop being wavering."
           }
         ]
       }
@@ -510,7 +510,7 @@ const traitDefinitions = {
         "description": "Gets -1 to rolls when in melee."
       },
       {
-        "name": "Traumatised",
+        "name": "Traumatized",
         "description": "Gets -1 to rolls when taking morale tests."
       },
       {
@@ -529,7 +529,7 @@ const traitDefinitions = {
       },
       {
         "name": "Bitter Rivalry",
-        "description": "Always hits pinned units on 2+."
+        "description": "Always hits wavering units on 2+."
       },
       {
         "name": "Horrible Scars",
