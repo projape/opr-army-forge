@@ -24,7 +24,6 @@ import { CustomTooltip } from "../components/CustomTooltip";
 import CampaignUpgrades from "./CampaignUpgrades";
 import { IGameRule } from "../../data/armySlice";
 import UnitNotes from "../components/UnitNotes";
-import { Fragment } from "react";
 
 export function Upgrades() {
   const list = useSelector((state: RootState) => state.list);
@@ -221,16 +220,22 @@ export function Upgrades() {
       {list.campaignMode && selectedUnit && !previewMode && (
         <CampaignUpgrades unit={selectedUnit} />
       )}
-
-      {upgradeSets.map((pkg: IUpgradePackage) => (
-        <Box key={pkg.uid} sx={{pb:4}}>
-          {pkg.sections
-            .filter((section) => selectedUnit.disabledUpgradeSections.indexOf(section.uid) === -1)
-            .map((u, i) => (
-              <UpgradeGroup key={u.uid} unit={selectedUnit} upgrade={u} previewMode={previewMode} />
-            ))}
-        </Box>
-      ))}
+      <Box sx={{ pb: 4 }}>
+        {upgradeSets.map((pkg: IUpgradePackage) => (
+          <Box key={pkg.uid}>
+            {pkg.sections
+              .filter((section) => selectedUnit.disabledUpgradeSections.indexOf(section.uid) === -1)
+              .map((u, i) => (
+                <UpgradeGroup
+                  key={u.uid}
+                  unit={selectedUnit}
+                  upgrade={u}
+                  previewMode={previewMode}
+                />
+              ))}
+          </Box>
+        ))}
+      </Box>
     </>
   );
 }
