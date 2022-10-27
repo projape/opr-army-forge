@@ -65,6 +65,18 @@ interface IRelease {
 
 const releaseNotes: IRelease[] = [
   {
+    version: "0.9.7",
+    date: "2022-10-27",
+    notes: [
+      "New Features:",
+      "- Rules referenced by other special rules are now included in summary.",
+      "Enhancements:",
+      "- AoFS validation warning for command groups.",
+      "Bug fixes:",
+      "- Campaign trait descriptions"
+    ],
+  },
+  {
     version: "0.9.6",
     date: "2022-09-17",
     notes: [
