@@ -1,7 +1,7 @@
 import axios from "axios";
 import { IArmyData } from "../data/armySlice";
 import { ListState } from "../data/listSlice";
-import { gameSystemToEnum } from "./Helpers";
+import { gameSystemToEnum, isServer } from "./Helpers";
 import PersistenceService from "./PersistenceService";
 import UnitService from "./UnitService";
 
@@ -15,13 +15,16 @@ export default class WebappApiService {
   }
 
   private static cacheResponse(key: string, res: any) {
-    localStorage[key] = JSON.stringify({
-      cached: new Date(),
-      res
-    });
+    if (!isServer())
+      localStorage[key] = JSON.stringify({
+        cached: new Date(),
+        res
+      });
   }
 
   private static getFromCache(key: string) {
+    if (isServer())
+      return null;
     const cachedValue = localStorage[key];
     if (!cachedValue) return null;
     const cachedObject = JSON.parse(cachedValue);
