@@ -69,7 +69,7 @@ export default function Codex({ armyData }: CodexProps) {
                     </Typography>
                     <List>
                       {section.options.map((option) => (
-                        <ListItem sx={{ padding: 0.33 }}>
+                        <ListItem key={option.id} sx={{ padding: 0.33 }}>
                           <Typography sx={{ flex: 1 }}>{option.label}</Typography>
                           <Typography>{option.cost}pts</Typography>
                         </ListItem>
