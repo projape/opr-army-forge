@@ -37,8 +37,7 @@ function Share({ list }) {
 
 Share.getInitialProps = async (ctx) => {
   try {
-    const listId = ctx.query["listId"];
-    console.log("listId", listId);
+    const listId = ctx.query["id"];
     const list = await WebappApiService.getSharedList(listId);
     list.id = nanoid(8);
     list.key = nanoid();
