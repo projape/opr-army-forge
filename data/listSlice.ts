@@ -303,6 +303,8 @@ export const listSlice = createSlice({
         unit.traits.push(trait);
       }
 
+      state.points = UpgradeService.calculateListTotal(state.units);
+
       debounceSave(current(state));
     },
     setUnitNotes(state, action: PayloadAction<{ unitId: string, notes: string }>) {
