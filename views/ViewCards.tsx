@@ -215,6 +215,7 @@ export function UnitCard({
   );
 
   const traitsSection = unit.traits?.length > 0 && (
+    <Box mb={1} px={1} fontSize="14px">
     <div className="px-2 mb-4" style={{ fontSize: "14px" }}>
       {unit.traits.map((trait: string, index: number) => {
         const traitDef = traitDefinitions.find((x) => x.name === trait);
@@ -234,6 +235,7 @@ export function UnitCard({
         );
       })}
     </div>
+    </Box>
   );
 
   const joinedUnitText = attachedTo && (
