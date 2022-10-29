@@ -150,6 +150,7 @@ export default class UnitService {
             id: x.id,
             count: x.count,
           })),
+        traits: unit.traits,
       };
     };
 
