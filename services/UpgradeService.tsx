@@ -71,7 +71,7 @@ export default class UpgradeService {
         gainEquipment.map((g) => ({
           ...g,
           count: isAffectsAll ? g.count * unit.size : g.count,
-          isModel: option.isModel // Upgrade items which are models (weapon teams...)
+          isModel: option.isModel, // Upgrade items which are models (weapon teams...)
         }))
       );
     } else if (upgrade.type === "replace") {
@@ -97,7 +97,7 @@ export default class UpgradeService {
           ...g,
           // "Replace all" is replacing each item with "g.count" copies,
           // whereas "replace 2x something" is replacing 2 with "g.count"
-          count: isAffectsAll ? g.count * removeCount : g.count
+          count: isAffectsAll ? g.count * removeCount : g.count,
         }))
       );
     }
@@ -134,18 +134,17 @@ export default class UpgradeService {
     }
 
     const isHero = unit.specialRules.some((r) => r.name === "Hero");
-    if (isHero && unit.traits && unit.traits.length > 0) {
-      
+    if (isHero && unit.traits?.length > 0) {
       const allTraitDefinitions = getTraitDefinitions();
       const injuryDefinitions = allTraitDefinitions["injuries"];
       const talentDefinitions = allTraitDefinitions["talents"];
-      
+
       const isInjury = (trait: string) => !!injuryDefinitions.find((x) => x.name === trait);
       const isTalent = (trait: string) => !!talentDefinitions.find((x) => x.name === trait);
-    
-      let traitCount = 0,
-        injuryCount = 0,
-        talentCount = 0;
+
+      let traitCount = 0;
+      let injuryCount = 0;
+      let talentCount = 0;
       for (let trait of unit.traits) {
         if (isInjury(trait)) injuryCount++;
         else if (isTalent(trait)) talentCount++;
