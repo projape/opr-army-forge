@@ -33,7 +33,7 @@ export default function CampaignUpgrades({ unit }: CampaignUpgradesProps) {
   const level = unit.xp ? Math.floor(unit.xp / 5) : 0;
 
   const isInjury = (trait: string) => !!injuryDefinitions.find((x) => x.name === trait);
-  const isTalent = (trait: string) => !!injuryDefinitions.find((x) => x.name === trait);
+  const isTalent = (trait: string) => !!talentDefinitions.find((x) => x.name === trait);
 
   let traitCount = 0,
     injuryCount = 0,

@@ -83,7 +83,13 @@ export default function View() {
       .uniq()
       .value();
 
-    return unitRules.concat(usedWeaponRules);
+    const usedTraitsRules = _.chain(list?.units)
+      .map((unit) => unit.traits)
+      .flattenDeep()
+      .uniq()
+      .value();
+    
+    return unitRules.concat(usedWeaponRules).concat(usedTraitsRules);
   }, [list?.units]);
 
   if (!armyState.loaded) return <p>Loading...</p>;
