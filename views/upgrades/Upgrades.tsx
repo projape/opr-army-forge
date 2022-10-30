@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../data/store";
 import UpgradeGroup from "./UpgradeGroup";
 import UnitEquipmentTable from "../UnitEquipmentTable";
+import CampaignTraitTable from "../CampaignTraitTable";
 import RuleList from "../components/RuleList";
 import { ISpecialRule, IUpgradePackage } from "../../data/interfaces";
 import UnitService from "../../services/UnitService";
@@ -211,6 +212,8 @@ export function Upgrades() {
             )}
             {/* Equipment */}
             <UnitEquipmentTable loadout={selectedUnit.loadout} square={true} />
+            {/* Campaign Traits */}
+            <CampaignTraitTable traits={selectedUnit.traits} square={true} />
             {isPsychic && <SpellsTable unit={selectedUnit} />}
             <UnitNotes selectedUnit={selectedUnit} />
           </Stack>
