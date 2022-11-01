@@ -12,14 +12,16 @@ export interface ISkillSet {
   traits: ITrait[];
 }
 
+interface ICampaignData {
+  units: ITrait[];
+  heroes: ISkillSet[];
+  injuries: ITrait[];
+  talents: ITrait[];
+}
+
 export default class TraitService {
   
-  static getTraitDefinitions(): {
-    units: ITrait[],
-    heroes: ISkillSet[],
-    injuries: ITrait[],
-    talents: ITrait[]
-  }{
+  static getTraitDefinitions(): ICampaignData {
     return traitDefinitions[UpgradeService.gameSystem];
   }
 
