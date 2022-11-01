@@ -13,7 +13,8 @@ import _ from "lodash";
 import { ISelectedUnit, IUpgradeGainsItem, IUpgradeGainsRule } from "../data/interfaces";
 import RuleList from "./components/RuleList";
 import { IViewPreferences, listContainsPyschic } from "../pages/view";
-import { getFlatTraitDefinitions, ITrait } from "../data/campaign";
+import TraitService from "../services/TraitService";
+import { ITrait } from "../services/TraitService";
 import LinkIcon from "@mui/icons-material/Link";
 import { ListState } from "../data/listSlice";
 import ViewCard from "./components/ViewCard";
@@ -29,7 +30,7 @@ export default function ViewCards({ prefs }: ViewCardsProps) {
   const gameRules = army.rules;
   const armyRules = army.loadedArmyBooks.flatMap((x) => x.specialRules);
   const ruleDefinitions: IGameRule[] = gameRules.concat(armyRules);
-  const traitDefinitions = getFlatTraitDefinitions();
+  const traitDefinitions = TraitService.getFlatTraitDefinitions();
 
   const units = UnitService.getFullUnitList(list?.units, true);
   const unitGroups = UnitService.getGroupedDisplayUnits(units);
