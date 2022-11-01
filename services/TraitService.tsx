@@ -18,34 +18,22 @@ export default class TraitService {
     groupedTraits["traits"] = [];
 
     const allTraitDefinitions = getTraitDefinitions();
-    const injuryDefinitions = allTraitDefinitions["injuries"];
-    const talentDefinitions = allTraitDefinitions["talents"];
-    
     const flatTraitDefinitions = getFlatTraitDefinitions();
     
-    const isInjury = (trait: string) => !!injuryDefinitions.find((x) => x.name === trait);
-    const isTalent = (trait: string) => !!talentDefinitions.find((x) => x.name === trait);
+    const isInjury = (trait: string) => !!allTraitDefinitions.injuries.find((x) => x.name === trait);
+    const isTalent = (trait: string) => !!allTraitDefinitions.talents.find((x) => x.name === trait);
 
-    // using flat trait definitions works for heroes and standard units without special handling code
-    const isTrait = (trait: string) => !!flatTraitDefinitions.find((x) => x.name === trait && !isInjury(x.name) && !isTalent(x.name));
-
-    // the dictionaries created to be returned as ITraits below are currently only used as parameter for RuleList, which ignores the id of
-    // the ITrait, thus we don't set any id this might lead to problems in other use cases
     for (let trait of traits) {
 
       const traitDescription = flatTraitDefinitions.find((x) => x.name === trait).description;
 
-      if (isInjury(trait)) {
-          groupedTraits["injuries"].push( { name: trait, description: traitDescription } );
-      }
-      
-      if (isTalent(trait)) {
-          groupedTraits["talents"].push( { name: trait, description: traitDescription } );
-      }
-
-      if (isTrait(trait)) {
-          groupedTraits["traits"].push( { name: trait, description: traitDescription } );
-      }
+      // everything that's not an injury or talent is treated as a trait. While heroes in campaigns also
+      // gain skill sets, those are just containers for traits and thus we can ignore them here
+      groupedTraits[
+        isInjury(trait) ? "injuries" :
+        isTalent(trait) ? "talents" :
+        "traits"
+        ].push( { name: trait, description: traitDescription } );
     }
 
     return groupedTraits;

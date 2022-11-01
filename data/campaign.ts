@@ -722,7 +722,12 @@ const traitDefinitions = {
 traitDefinitions["aofr"] = traitDefinitions["aof"];
 
 
-export function getTraitDefinitions() {
+export function getTraitDefinitions(): {
+  units: ITrait[],
+  heroes: ISkillSet[],
+  injuries: ITrait[],
+  talents: ITrait[]
+}{
   return traitDefinitions[UpgradeService.gameSystem];
 }
 

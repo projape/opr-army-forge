@@ -136,11 +136,9 @@ export default class UpgradeService {
     const isHero = unit.specialRules.some((r) => r.name === "Hero");
     if (isHero && unit.traits?.length > 0) {
       const allTraitDefinitions = getTraitDefinitions();
-      const injuryDefinitions = allTraitDefinitions["injuries"];
-      const talentDefinitions = allTraitDefinitions["talents"];
 
-      const isInjury = (trait: string) => !!injuryDefinitions.find((x) => x.name === trait);
-      const isTalent = (trait: string) => !!talentDefinitions.find((x) => x.name === trait);
+      const isInjury = (trait: string) => !!allTraitDefinitions.injuries.find((x) => x.name === trait);
+      const isTalent = (trait: string) => !!allTraitDefinitions.talents.find((x) => x.name === trait);
 
       let traitCount = 0;
       let injuryCount = 0;

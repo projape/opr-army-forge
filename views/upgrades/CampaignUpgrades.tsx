@@ -27,13 +27,13 @@ export default function CampaignUpgrades({ unit }: CampaignUpgradesProps) {
 
   const isHero = unit.specialRules.some((r) => r.name === "Hero");
   const allTraitDefinitions = getTraitDefinitions();
-  const traitDefinitions = allTraitDefinitions[isHero ? "heroes" : "units"];
-  const injuryDefinitions = allTraitDefinitions["injuries"];
-  const talentDefinitions = allTraitDefinitions["talents"];
+
+  const traitDefinitions = isHero ? allTraitDefinitions.heroes : allTraitDefinitions.units;
+
   const level = unit.xp ? Math.floor(unit.xp / 5) : 0;
 
-  const isInjury = (trait: string) => !!injuryDefinitions.find((x) => x.name === trait);
-  const isTalent = (trait: string) => !!talentDefinitions.find((x) => x.name === trait);
+  const isInjury = (trait: string) => !!allTraitDefinitions.injuries.find((x) => x.name === trait);
+  const isTalent = (trait: string) => !!allTraitDefinitions.talents.find((x) => x.name === trait);
 
   let traitCount = 0,
     injuryCount = 0,
@@ -131,14 +131,14 @@ export default function CampaignUpgrades({ unit }: CampaignUpgradesProps) {
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 Injuries {displayCount(injuryCount)}
               </AccordionSummary>
-              <AccordionDetails>{traitControls(injuryDefinitions)}</AccordionDetails>
+              <AccordionDetails>{traitControls(allTraitDefinitions.injuries)}</AccordionDetails>
             </Accordion>
 
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 Talents {displayCount(talentCount)}
               </AccordionSummary>
-              <AccordionDetails>{traitControls(talentDefinitions)}</AccordionDetails>
+              <AccordionDetails>{traitControls(allTraitDefinitions.talents)}</AccordionDetails>
             </Accordion>
           </Box>
         )}
