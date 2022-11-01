@@ -9,7 +9,7 @@ export default class TraitService {
    * @return {} a dictionary with keys "injuries", "talents" and "traits" containing ITrait[] with trait names and descriptions correctly set
    */
   static groupTraits(traits: string[]): { [key: string]: ITrait[] } {
-    let groupedTraits: { [key: string]: ITrait[] } = {};
+    const groupedTraits: { [key: string]: ITrait[] } = {};
 
     if (!traits || traits.length === 0) return groupedTraits;
 
@@ -36,15 +36,15 @@ export default class TraitService {
       const traitDescription = flatTraitDefinitions.find((x) => x.name === trait).description;
 
       if (isInjury(trait)) {
-          groupedTraits["injuries"].push( { id: "", name: trait, description: traitDescription } );
+          groupedTraits["injuries"].push( { name: trait, description: traitDescription } );
       }
       
       if (isTalent(trait)) {
-          groupedTraits["talents"].push( { id: "", name: trait, description: traitDescription } );
+          groupedTraits["talents"].push( { name: trait, description: traitDescription } );
       }
 
       if (isTrait(trait)) {
-          groupedTraits["traits"].push( { id: "", name: trait, description: traitDescription } );
+          groupedTraits["traits"].push( { name: trait, description: traitDescription } );
       }
     }
 

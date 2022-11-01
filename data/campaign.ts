@@ -1,7 +1,6 @@
 import UpgradeService from "../services/UpgradeService";
 
 export interface ITrait {
-  id: string;
   name: string;
   description: string;
 }
