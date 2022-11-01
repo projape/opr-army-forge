@@ -1,17 +1,4 @@
-import UpgradeService from "../services/UpgradeService";
-
-export interface ITrait {
-  name: string;
-  description: string;
-}
-
-export interface ISkillSet {
-  id: string;
-  name: string;
-  traits: ITrait[];
-}
-
-const traitDefinitions = {
+export const traitDefinitions = {
   gf: {
     units: [
       {
@@ -720,21 +707,3 @@ const traitDefinitions = {
 };
 
 traitDefinitions["aofr"] = traitDefinitions["aof"];
-
-
-export function getTraitDefinitions(): {
-  units: ITrait[],
-  heroes: ISkillSet[],
-  injuries: ITrait[],
-  talents: ITrait[]
-}{
-  return traitDefinitions[UpgradeService.gameSystem];
-}
-
-export function getFlatTraitDefinitions(): ITrait[] {
-  const defs = traitDefinitions[UpgradeService.gameSystem];
-  if (!traitDefinitions[UpgradeService.gameSystem]["all"]) {
-    traitDefinitions[UpgradeService.gameSystem]["all"] = defs.units.concat(defs.injuries).concat(defs.talents).concat(defs.heroes.flatMap(x => x.traits));
-  }
-  return traitDefinitions[UpgradeService.gameSystem]["all"];
-}

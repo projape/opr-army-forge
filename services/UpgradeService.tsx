@@ -14,7 +14,8 @@ import { nanoid } from "nanoid";
 import _ from "lodash";
 import UnitService from "./UnitService";
 import { makeCopy } from "./Helpers";
-import { getTraitDefinitions, ISkillSet, ITrait } from "../data/campaign";
+import TraitService from "../services/TraitService";
+import { ISkillSet, ITrait } from "../services/TraitService";
 
 export default class UpgradeService {
   private static readonly countRegex = /^(\d+)x\s/;
@@ -135,7 +136,7 @@ export default class UpgradeService {
 
     const isHero = unit.specialRules.some((r) => r.name === "Hero");
     if (isHero && unit.traits?.length > 0) {
-      const allTraitDefinitions = getTraitDefinitions();
+      const allTraitDefinitions = TraitService.getTraitDefinitions();
 
       const isInjury = (trait: string) => !!allTraitDefinitions.injuries.find((x) => x.name === trait);
       const isTalent = (trait: string) => !!allTraitDefinitions.talents.find((x) => x.name === trait);

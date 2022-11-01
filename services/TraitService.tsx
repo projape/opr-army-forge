@@ -1,6 +1,35 @@
-import { getTraitDefinitions, getFlatTraitDefinitions, ITrait } from "../data/campaign";
+import UpgradeService from "../services/UpgradeService";
+import { traitDefinitions } from "../data/campaign";
+
+export interface ITrait {
+  name: string;
+  description: string;
+}
+
+export interface ISkillSet {
+  id: string;
+  name: string;
+  traits: ITrait[];
+}
 
 export default class TraitService {
+  
+  static getTraitDefinitions(): {
+    units: ITrait[],
+    heroes: ISkillSet[],
+    injuries: ITrait[],
+    talents: ITrait[]
+  }{
+    return traitDefinitions[UpgradeService.gameSystem];
+  }
+
+  static getFlatTraitDefinitions(): ITrait[] {
+    const defs = traitDefinitions[UpgradeService.gameSystem];
+    if (!traitDefinitions[UpgradeService.gameSystem]["all"]) {
+      traitDefinitions[UpgradeService.gameSystem]["all"] = defs.units.concat(defs.injuries).concat(defs.talents).concat(defs.heroes.flatMap(x => x.traits));
+    }
+    return traitDefinitions[UpgradeService.gameSystem]["all"];
+  }
 
   /**
    * Groups traits into injuries, talents and traits by checking their name against the campaign data.
@@ -17,8 +46,8 @@ export default class TraitService {
     groupedTraits["talents"] = [];
     groupedTraits["traits"] = [];
 
-    const allTraitDefinitions = getTraitDefinitions();
-    const flatTraitDefinitions = getFlatTraitDefinitions();
+    const allTraitDefinitions = TraitService.getTraitDefinitions();
+    const flatTraitDefinitions = TraitService.getFlatTraitDefinitions();
     
     const isInjury = (trait: string) => !!allTraitDefinitions.injuries.find((x) => x.name === trait);
     const isTalent = (trait: string) => !!allTraitDefinitions.talents.find((x) => x.name === trait);

@@ -13,7 +13,8 @@ import DownIcon from "@mui/icons-material/KeyboardArrowDown";
 import UpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { ISelectedUnit } from "../../data/interfaces";
 import { useDispatch } from "react-redux";
-import { getTraitDefinitions, ISkillSet, ITrait } from "../../data/campaign";
+import TraitService from "../../services/TraitService";
+import { ISkillSet, ITrait } from "../../services/TraitService";
 import { adjustXp, toggleTrait } from "../../data/listSlice";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import RuleList from "../components/RuleList";
@@ -26,7 +27,7 @@ export default function CampaignUpgrades({ unit }: CampaignUpgradesProps) {
   const dispatch = useDispatch();
 
   const isHero = unit.specialRules.some((r) => r.name === "Hero");
-  const allTraitDefinitions = getTraitDefinitions();
+  const allTraitDefinitions = TraitService.getTraitDefinitions();
 
   const traitDefinitions = isHero ? allTraitDefinitions.heroes : allTraitDefinitions.units;
 

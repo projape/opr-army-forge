@@ -8,7 +8,6 @@ import {
   TableRow,
 } from "@mui/material";
 import TraitService from "../services/TraitService";
-import { ITrait }  from "../data/campaign";
 import RuleList from "./components/RuleList";
 
 interface CampaignTraitTableProps {
