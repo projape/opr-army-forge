@@ -65,6 +65,17 @@ interface IRelease {
 
 const releaseNotes: IRelease[] = [
   {
+    version: "0.9.8",
+    date: "2022-11-02",
+    notes: [
+      "Enhancements:",
+      "- Added Campaign trait/injury/talent list to upgrade view.",
+      "Bug fixes:",
+      "- Campaign mode injury costs -5pt",
+      "- Fixed edge case with \"Combine Similar Units\""
+    ],
+  },
+  {
     version: "0.9.7",
     date: "2022-10-27",
     notes: [
