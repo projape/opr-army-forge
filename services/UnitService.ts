@@ -138,14 +138,19 @@ export default class UnitService {
         id: unit.id,
         customName: unit.customName,
         joinToUnit: unit.joinToUnit,
-        upgrades: unit.selectedUpgrades.map((x) => ({
-          sectionId: x.upgrade.uid,
-          optionId: x.option.id,
-        })),
-        loadout: unit.loadout.map((x) => ({
-          id: x.id,
-          count: x.count,
-        })),
+        upgrades: unit.selectedUpgrades
+          .sort((a,b) => (a.upgrade.label > b.upgrade.label) ? 1 : ((a.option.label > b.option.label) ? -1 : 0))
+          .map((x) => ({
+            sectionId: x.upgrade.uid,
+            optionId: x.option.id,
+          })),
+        loadout: unit.loadout
+          .sort((a,b) => (a.label > b.label) ? 1 : 0)
+          .map((x) => ({
+            id: x.id,
+            count: x.count,
+          })),
+        traits: unit.traits,
       };
     };
 

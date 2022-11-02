@@ -14,6 +14,8 @@ import { nanoid } from "nanoid";
 import _ from "lodash";
 import UnitService from "./UnitService";
 import { makeCopy } from "./Helpers";
+import TraitService from "../services/TraitService";
+import { ISkillSet, ITrait } from "../services/TraitService";
 
 export default class UpgradeService {
   private static readonly countRegex = /^(\d+)x\s/;
@@ -70,7 +72,7 @@ export default class UpgradeService {
         gainEquipment.map((g) => ({
           ...g,
           count: isAffectsAll ? g.count * unit.size : g.count,
-          isModel: option.isModel // Upgrade items which are models (weapon teams...)
+          isModel: option.isModel, // Upgrade items which are models (weapon teams...)
         }))
       );
     } else if (upgrade.type === "replace") {
@@ -96,7 +98,7 @@ export default class UpgradeService {
           ...g,
           // "Replace all" is replacing each item with "g.count" copies,
           // whereas "replace 2x something" is replacing 2 with "g.count"
-          count: isAffectsAll ? g.count * removeCount : g.count
+          count: isAffectsAll ? g.count * removeCount : g.count,
         }))
       );
     }
@@ -130,6 +132,25 @@ export default class UpgradeService {
       if (upgrade.cost) {
         cost += upgrade.cost;
       }
+    }
+
+    const isHero = unit.specialRules.some((r) => r.name === "Hero");
+    if (isHero && unit.traits?.length > 0) {
+      const allTraitDefinitions = TraitService.getTraitDefinitions();
+
+      const isInjury = (trait: string) => !!allTraitDefinitions.injuries.find((x) => x.name === trait);
+      const isTalent = (trait: string) => !!allTraitDefinitions.talents.find((x) => x.name === trait);
+
+      let traitCount = 0;
+      let injuryCount = 0;
+      let talentCount = 0;
+      for (let trait of unit.traits) {
+        if (isInjury(trait)) injuryCount++;
+        else if (isTalent(trait)) talentCount++;
+        else traitCount++;
+      }
+
+      cost += 5 * talentCount - 5 * injuryCount;
     }
 
     const levelCost =

@@ -6,7 +6,7 @@ import { Fragment, memo } from "react";
 import { ISpecialRule } from "../../data/interfaces";
 import RulesService from "../../services/RulesService";
 import { groupBy } from "../../services/Helpers";
-import { getTraitDefinitions, ITrait } from "../../data/campaign";
+import { ITrait } from "../../services/TraitService";
 
 export default function RuleList({ specialRules }: { specialRules: (ISpecialRule | ITrait)[] }) {
   const army = useSelector((state: RootState) => state.army);

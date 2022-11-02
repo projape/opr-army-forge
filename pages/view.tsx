@@ -31,7 +31,7 @@ import { MenuBar } from "../views/components/MenuBar";
 import ViewCard from "../views/components/ViewCard";
 import { IGameRule } from "../data/armySlice";
 import _ from "lodash";
-import { getFlatTraitDefinitions } from "../data/campaign";
+import TraitService from "../services/TraitService";
 import { Container } from "@mui/system";
 import { useMediaQuery } from "react-responsive";
 
@@ -83,7 +83,13 @@ export default function View() {
       .uniq()
       .value();
 
-    return unitRules.concat(usedWeaponRules);
+    const usedTraitsRules = _.chain(list?.units)
+      .map((unit) => unit.traits)
+      .flattenDeep()
+      .uniq()
+      .value();
+    
+    return unitRules.concat(usedWeaponRules).concat(usedTraitsRules);
   }, [list?.units]);
 
   if (!armyState.loaded) return <p>Loading...</p>;
@@ -91,7 +97,7 @@ export default function View() {
   const gameRules = armyState.rules;
   const armyRules = armyState.loadedArmyBooks.flatMap((x) => x.specialRules);
   const ruleDefinitions: IGameRule[] = gameRules.concat(armyRules);
-  const traitDefinitions = getFlatTraitDefinitions();
+  const traitDefinitions = TraitService.getFlatTraitDefinitions();
 
   function setPreferences(setFunc) {
     const newPrefs = setFunc(preferences);
