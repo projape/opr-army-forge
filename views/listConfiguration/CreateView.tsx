@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getArmyBookData } from "../../data/armySlice";
 import { createList } from "../../data/listSlice";
-import { RootState } from "../../data/store";
+import { RootState, useAppDispatch } from "../../data/store";
 import PersistenceService from "../../services/PersistenceService";
 
 interface CreateViewProps {
@@ -14,7 +14,7 @@ interface CreateViewProps {
 }
 
 export function CreateView(props: CreateViewProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const armyState = useSelector((state: RootState) => state.army);
 
