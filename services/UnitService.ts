@@ -18,6 +18,7 @@ import UpgradeService from "./UpgradeService";
 export interface IFullUnit {
   unitSize: number;
   unitPoints: number;
+  unitPointsAll: number;
   unit: ISelectedUnit;
   joined?: ISelectedUnit;
   heroes: ISelectedUnit[];
