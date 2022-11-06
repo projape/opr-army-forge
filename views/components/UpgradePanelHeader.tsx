@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Button, IconButton, Stack, TextField, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Create";
 import UpgradeService from "../../services/UpgradeService";
 import { addUnit, renameUnit } from "../../data/listSlice";
-import { RootState } from "../../data/store";
+import { RootState, useAppDispatch } from "../../data/store";
 import UnitService from "../../services/UnitService";
 import { debounce } from "throttle-debounce";
 
@@ -13,7 +13,7 @@ const ESCAPE_KEY: number = 27;
 
 export default function UpgradePanelHeader() {
   const list = useSelector((state: RootState) => state.list);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [editMode, setEditMode] = useState(false);
   const [customName, setCustomName] = useState("");
 
