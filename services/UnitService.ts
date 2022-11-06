@@ -161,8 +161,9 @@ export default class UnitService {
   }
 
   public static getGroupedDisplayUnits(input: IFullUnit[]) {
-    const unitAsKey = (unit: ISelectedUnit) => {
+    const unitAsKey = (fullUnit: IFullUnit, unit: ISelectedUnit) => {
       return {
+        heroBreaker: fullUnit.hasJoined ? nanoid() : undefined,
         id: unit.id,
         customName: unit.customName,
         joinToUnit: unit.joinToUnit,
@@ -183,7 +184,7 @@ export default class UnitService {
       };
     };
 
-    return _.groupBy(input, (u) => JSON.stringify(unitAsKey(u.unit)));
+    return _.groupBy(input, (u) => JSON.stringify(unitAsKey(u, u.unit)));
   }
 
   private static readonly countRegex = /^(\d+)x\s/;
