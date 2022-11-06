@@ -1,18 +1,4 @@
-import UpgradeService from "../services/UpgradeService";
-
-export interface ITrait {
-  id: string;
-  name: string;
-  description: string;
-}
-
-export interface ISkillSet {
-  id: string;
-  name: string;
-  traits: ITrait[];
-}
-
-const traitDefinitions = {
+export const traitDefinitions = {
   gf: {
     units: [
       {
@@ -158,7 +144,7 @@ const traitDefinitions = {
         "description": "Gets -1 to rolls when in melee."
       },
       {
-        "name": "Traumatised",
+        "name": "Traumatized",
         "description": "Gets -1 to rolls when taking morale tests."
       },
       {
@@ -334,7 +320,7 @@ const traitDefinitions = {
         "description": "Gets -1 to rolls when in melee."
       },
       {
-        "name": "Traumatised",
+        "name": "Traumatized",
         "description": "Gets -1 to rolls when taking morale tests."
       },
       {
@@ -415,15 +401,15 @@ const traitDefinitions = {
         traits: [
           {
             name: "Vanguard",
-            description: "Friendly units within 6” get +1 to morale tests."
+            description: "Friendly units within 6” get +4” charge range."
           },
           {
             name: "Scavenger",
-            description: "Friendly units within 6” get +1 to melee."
+            description: "Friendly units within 6” get +6” firing range."
           },
           {
             name: "Mastermind",
-            description: "Friendly units within 6” get +1 to shooting."
+            description: "Enemy units within 6” get -1 to defense."
           }
         ]
       },
@@ -432,15 +418,15 @@ const traitDefinitions = {
         traits: [
           {
             name: "Duellist",
-            description: "Friendly units within 6” get +1 to morale tests."
+            description: "Enemy units get -1 in melee against the hero."
           },
           {
             name: "Fanatic",
-            description: "Friendly units within 6” get +1 to melee."
+            description: "The hero gets +1 attack when in melee."
           },
           {
             name: "Berserker",
-            description: "Friendly units within 6” get +1 to shooting."
+            description: "Enemies get -1 to morale test when in melee with the hero."
           }
         ]
       },
@@ -491,7 +477,7 @@ const traitDefinitions = {
           },
           {
             name: "Warden",
-            description: "When the hero is activated roll one die, on a 5+ all friendly units within 6” stop being pinned."
+            description: "When the hero is activated roll one die, on a 5+ all friendly units within 6” stop being wavering."
           }
         ]
       }
@@ -510,7 +496,7 @@ const traitDefinitions = {
         "description": "Gets -1 to rolls when in melee."
       },
       {
-        "name": "Traumatised",
+        "name": "Traumatized",
         "description": "Gets -1 to rolls when taking morale tests."
       },
       {
@@ -529,7 +515,7 @@ const traitDefinitions = {
       },
       {
         "name": "Bitter Rivalry",
-        "description": "Always hits pinned units on 2+."
+        "description": "Always hits wavering units on 2+."
       },
       {
         "name": "Horrible Scars",
@@ -565,7 +551,7 @@ const traitDefinitions = {
       },
       {
         "name": "Elite",
-        "description": "May re-roll one roll of any kind once per game."
+        "description": "May re-roll one die of any kind once per game."
       }
     ],
     "heroes": [
@@ -574,15 +560,15 @@ const traitDefinitions = {
         traits: [
           {
             name: "Leader",
-            description: "Friendly units within 6” get +1 to morale tests."
+            description: "Friendly units within 3” get +1 to morale tests."
           },
           {
             name: "Instigator",
-            description: "Friendly units within 6” get +1 to melee."
+            description: "Friendly units within 3” get +1 to melee."
           },
           {
             name: "Tactician",
-            description: "Friendly units within 6” get +1 to shooting."
+            description: "Friendly units within 3” get +1 to shooting."
           }
         ]
       },
@@ -591,15 +577,15 @@ const traitDefinitions = {
         traits: [
           {
             name: "Vanguard",
-            description: "Friendly units within 6” get +1 to morale tests."
+            description: "Friendly units within 3” get +4” charge range."
           },
           {
             name: "Scavenger",
-            description: "Friendly units within 6” get +1 to melee."
+            description: "Friendly units within 3” get +6” firing range."
           },
           {
             name: "Mastermind",
-            description: "Friendly units within 6” get +1 to shooting."
+            description: "Enemy units within 3” get -1 to defense."
           }
         ]
       },
@@ -608,15 +594,15 @@ const traitDefinitions = {
         traits: [
           {
             name: "Duellist",
-            description: "Friendly units within 6” get +1 to morale tests."
+            description: "Enemy units get -1 in melee against the hero."
           },
           {
             name: "Fanatic",
-            description: "Friendly units within 6” get +1 to melee."
+            description: "The hero gets +1 attack when in melee."
           },
           {
             name: "Berserker",
-            description: "Friendly units within 6” get +1 to shooting."
+            description: "Enemies get +1 to wound results when in melee with the hero."
           }
         ]
       },
@@ -649,8 +635,8 @@ const traitDefinitions = {
             description: "Enemy units further than 12” get -1 to shooting rolls against the hero."
           },
           {
-            name: "Daredevil",
-            description: "The hero ignores dangerous terrain effects."
+            name: "Climber",
+            description: "The hero needs to roll only 2+ (instead of 3+) when dropping, leaping and jumping."
           }
         ]
       },
@@ -659,15 +645,15 @@ const traitDefinitions = {
         traits: [
           {
             name: "Chemist",
-            description: "Friendly units within 6” get +1 to morale tests when in melee."
+            description: "Friendly units within 3” get -1 to wound result rolls."
           },
           {
             name: "Herbalist",
-            description: "Friendly units within 6” may ignore wounds on a roll of 6+."
+            description: "Friendly units within 3” may ignore wounds on a roll of 6+."
           },
           {
             name: "Warden",
-            description: "When the hero is activated roll one die, on a 5+ all friendly units within 6” stop being pinned."
+            description: "When the hero is activated roll one die, on a 5+ all friendly units within 3” stop being stunned."
           }
         ]
       }
@@ -686,7 +672,7 @@ const traitDefinitions = {
         "description": "Gets -1 to rolls when in melee."
       },
       {
-        "name": "Traumatised",
+        "name": "Traumatized",
         "description": "Gets -1 to rolls when taking morale tests."
       },
       {
@@ -705,7 +691,7 @@ const traitDefinitions = {
       },
       {
         "name": "Bitter Rivalry",
-        "description": "Always hits pinned units on 2+."
+        "description": "Always hits stunned units on 2+."
       },
       {
         "name": "Horrible Scars",
@@ -721,16 +707,3 @@ const traitDefinitions = {
 };
 
 traitDefinitions["aofr"] = traitDefinitions["aof"];
-
-
-export function getTraitDefinitions() {
-  return traitDefinitions[UpgradeService.gameSystem];
-}
-
-export function getFlatTraitDefinitions(): ITrait[] {
-  const defs = traitDefinitions[UpgradeService.gameSystem];
-  if (!traitDefinitions[UpgradeService.gameSystem]["all"]) {
-    traitDefinitions[UpgradeService.gameSystem]["all"] = defs.units.concat(defs.injuries).concat(defs.talents).concat(defs.heroes.flatMap(x => x.traits));
-  }
-  return traitDefinitions[UpgradeService.gameSystem]["all"];
-}

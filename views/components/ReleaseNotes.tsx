@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, IconButton, Modal, Stack, Typography } from "@mui/material";
-import { Fragment, useEffect } from "react";
+import { useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../data/store";
@@ -64,6 +64,43 @@ interface IRelease {
 }
 
 const releaseNotes: IRelease[] = [
+  {
+    version: "0.9.9",
+    date: "2022-11-06",
+    notes: [
+      "Enhancements:",
+      "- Add unit XP to text export (Campaign mode)",
+      "- Show special rules referenced by spell text in special rule summary",
+      "Bug fixes:",
+      "- Fix [11] unit size display with units that have attached models",
+      "- Fixed grouping of similar units when heroes are attached",
+      "- AoFS Command groups duplication fix",
+      "- Fix of special rules values stacking when they shouldn't!"
+    ],
+  },
+  {
+    version: "0.9.8",
+    date: "2022-11-02",
+    notes: [
+      "Enhancements:",
+      "- Added Campaign trait/injury/talent list to upgrade view.",
+      "Bug fixes:",
+      "- Campaign mode injury costs -5pt",
+      "- Fixed edge case with \"Combine Similar Units\""
+    ],
+  },
+  {
+    version: "0.9.7",
+    date: "2022-10-27",
+    notes: [
+      "New Features:",
+      "- Rules referenced by other special rules are now included in summary.",
+      "Enhancements:",
+      "- AoFS validation warning for command groups.",
+      "Bug fixes:",
+      "- Campaign trait descriptions"
+    ],
+  },
   {
     version: "0.9.6",
     date: "2022-09-17",

@@ -1,9 +1,7 @@
 import axios from "axios";
-import { nanoid } from "nanoid";
-import router from "next/router";
 import { IArmyData } from "../data/armySlice";
 import { ListState } from "../data/listSlice";
-import { gameSystemToEnum } from "./Helpers";
+import { gameSystemToEnum, isServer } from "./Helpers";
 import PersistenceService from "./PersistenceService";
 import UnitService from "./UnitService";
 
@@ -12,21 +10,21 @@ export default class WebappApiService {
   private static webCompanionUrl = "https://webapp.onepagerules.com/api";
 
   private static getUrl() {
-    const fromQuery = router.query.dataSourceUrl;
-    if (fromQuery) return `https://${fromQuery}.herokuapp.com/api`;
-
     //return window.location.host.startsWith("localhost") ? "http://localhost:3000/api" : this.webCompanionUrl;
     return this.webCompanionUrl;
   }
 
   private static cacheResponse(key: string, res: any) {
-    localStorage[key] = JSON.stringify({
-      cached: new Date(),
-      res
-    });
+    if (!isServer())
+      localStorage[key] = JSON.stringify({
+        cached: new Date(),
+        res
+      });
   }
 
   private static getFromCache(key: string) {
+    if (isServer())
+      return null;
     const cachedValue = localStorage[key];
     if (!cachedValue) return null;
     const cachedObject = JSON.parse(cachedValue);

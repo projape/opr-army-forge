@@ -4,7 +4,7 @@ import { RootState } from "../data/store";
 import { TableContainer, Table, TableRow, TableCell, TableHead, Typography } from "@mui/material";
 import { IGameRule } from "../data/armySlice";
 import { groupBy, groupMap, intersperse } from "../services/Helpers";
-import UnitService, { IFullUnit } from "../services/UnitService";
+import UnitService, { IFullUnit, IRulesItem } from "../services/UnitService";
 import UpgradeService from "../services/UpgradeService";
 import _ from "lodash";
 import { ISelectedUnit, IUpgradeGainsItem, IUpgradeGainsRule } from "../data/interfaces";
@@ -113,6 +113,7 @@ function UnitRow({
     .filter((r) => r.name != "-")
     .concat(UnitService.getUpgradeRules(unit));
   const items = unit.loadout.filter((x) => x.type === "ArmyBookItem") as IUpgradeGainsItem[];
+  const itemRules: IRulesItem[] = UnitService.getItemRules(unit, items);
 
   const stats = (
     <TableCell>
@@ -148,40 +149,19 @@ function UnitRow({
           (group, key) => <RuleList key={key} specialRules={group} />
         );
 
-        const itemRules = groupMap(
-          items,
-          (x) => x.name,
-          (group, key) => {
-            const item: IUpgradeGainsItem = group[0] as IUpgradeGainsItem;
-            const count = _.sumBy(group, (x) => x.count || 1);
-
-            const itemRules: IUpgradeGainsRule[] = item.content.filter(
-              (x) => x.type === "ArmyBookRule" || x.type === "ArmyBookDefense"
-            ) as any;
-
-            const itemAffectsAll =
-              unit.selectedUpgrades.find((x) => x.option.gains.some((y) => y.name === item.name))
-                ?.upgrade?.affects === "all";
-            //const hasStackableRule = itemRules.some((x) => x.name === "Impact");
-            const hideCount = itemAffectsAll; // && !hasStackableRule;
-
-            return (
-              <span key={key}>
-                {count > 1 && !hideCount && `${count}x `}
-                {item.name}
-                {itemRules.length > 0 && (
-                  <>
-                    <span>(</span>
-                    <RuleList specialRules={itemRules} />
-                    <span>)</span>
-                  </>
-                )}
+        const itemRulesElements = itemRules.map((item) => (
+          <span key={item.name}>
+            {item.count && `${item.count}x `}
+            {item.name}
+            {item.specialRules.length > 0 && (
+              <span>
+                (<RuleList specialRules={item.specialRules} />)
               </span>
-            );
-          }
-        );
+            )}
+          </span>
+        ));
 
-        return intersperse(rules.concat(itemRules), <span>, </span>);
+        return intersperse(rules.concat(itemRulesElements), <span>, </span>);
       })()}
     </TableCell>
   );

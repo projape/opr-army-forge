@@ -88,6 +88,21 @@ export default class ValidationService {
         errors.push(`Heroes only join units from their own faction.`);
     }
 
+    if (army.gameSystem === "aofs") {
+
+      // Rule: When preparing your army you may only have one model with one of the following upgrades (across the entire army).
+      const sergeants = units.filter(u => u.selectedUpgrades.some(upgrade => upgrade.option.label === "Sergeant"));
+      const sergeantsCount = sergeants.length;
+      const musicians = units.filter(u => u.selectedUpgrades.some(upgrade => upgrade.option.label === "Musician"));
+      const musiciansCount = musicians.length;
+      const battleStandards = units.filter(u => u.selectedUpgrades.some(upgrade => upgrade.option.label === "Battle Standard"));
+      const battleStandrdsCount = battleStandards.length;
+  
+      if (sergeantsCount + musiciansCount + battleStandrdsCount > 1) {
+        errors.push(`Max 1 of the following upgrades per army (not one of each!): Sergeant, Musician or Battle Standard.`);
+      }
+    }
+
     if (army.loadedArmyBooks.length > 2) {
       errors.push("Players may bring units from up to two factions in the same list.")
     }

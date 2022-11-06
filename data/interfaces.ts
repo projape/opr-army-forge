@@ -35,6 +35,10 @@ export interface ISpecialRule {
   modify?: boolean;
 }
 
+export interface IGroupedSpecialRule extends ISpecialRule {
+  count?: number;
+}
+
 export interface IUnit {
   id: string;
   armyId: string;

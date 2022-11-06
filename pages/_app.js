@@ -97,4 +97,5 @@ const ThemedApp = ({ Component, pageProps }) => {
   );
 };
 
+//export default App;
 export default dynamic(() => Promise.resolve(App), { ssr: false });

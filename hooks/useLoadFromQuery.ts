@@ -2,12 +2,12 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getGameRules } from "../data/armySlice";
-import { RootState } from "../data/store";
+import { RootState, useAppDispatch } from "../data/store";
 import PersistenceService from "../services/PersistenceService";
 
 export function useLoadFromQuery() {
   const armyState = useSelector((state: RootState) => state.army);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
   useEffect(() => {
     if (!router.isReady) return;

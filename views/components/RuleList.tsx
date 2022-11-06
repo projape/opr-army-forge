@@ -2,11 +2,10 @@ import RuleItem from "./RuleItem";
 import { RootState } from "../../data/store";
 import { useSelector } from "react-redux";
 import { IGameRule } from "../../data/armySlice";
-import { Fragment, memo } from "react";
 import { ISpecialRule } from "../../data/interfaces";
 import RulesService from "../../services/RulesService";
-import { groupBy } from "../../services/Helpers";
-import { getTraitDefinitions, ITrait } from "../../data/campaign";
+import { ITrait } from "../../services/TraitService";
+import { intersperse } from "../../services/Helpers";
 
 export default function RuleList({ specialRules }: { specialRules: (ISpecialRule | ITrait)[] }) {
   const army = useSelector((state: RootState) => state.army);
@@ -18,55 +17,21 @@ export default function RuleList({ specialRules }: { specialRules: (ISpecialRule
 
   if (!rules || rules.length === 0) return null;
 
-  const ruleGroups = groupBy(rules, "name");
-  const keys = Object.keys(ruleGroups);
-  // Sort rules alphabetically
-  keys.sort((a, b) => a.localeCompare(b));
+  const ruleItems = RulesService.group(rules as ISpecialRule[]).map((rule) => {
+    const ruleDefinition = ruleDefinitions.filter(
+      (r) => /(.+?)(?:\(|$)/.exec(r.name)[0] === rule.name
+    )[0];
 
-  return (
-    <>
-      {keys.map((key, index) => {
-        const group: ISpecialRule[] = ruleGroups[key];
-        const rule = group[0];
-        const stack = rule.rating && ["Psychic", "Wizard"].indexOf(rule.name) === -1;
-        const rating =
-          rule.rating == null || rule.rating == ""
-            ? null
-            : key === "Psychic" || key === "Wizard"
-            ? // Take Highest
-              Math.max(...group.map((rule) => parseInt(rule.rating)))
-            : // Sum all occurrences
-              group.reduce(
-                (total, next) => (next.rating ? total + parseInt(next.rating) : total),
-                0
-              );
+    return (
+      <RuleItem
+        key={rule.name}
+        label={RulesService.displayName(rule, rule.count)}
+        description={(rule as any).description || ruleDefinition?.description || ""}
+      />
+    );
+  });
 
-        // Rules with ratings do not show multiple instances
-        const count = stack ? 0 : group.length;
-
-        //console.log(rule)
-        const ruleDefinition = ruleDefinitions.filter(
-          (r) => /(.+?)(?:\(|$)/.exec(r.name)[0] === rule.name
-        )[0];
-
-        return (
-          <Fragment key={index}>
-            {index > 0 ? <span>,&nbsp;&nbsp;</span> : null}
-            <RuleItem
-              label={RulesService.displayName(
-                {
-                  ...rule,
-                  rating: rule.rating ? rating.toString() : null,
-                },
-                count
-              )}
-              description={(rule as any).description || ruleDefinition?.description || ""}
-            />
-          </Fragment>
-        );
-      })}
-    </>
-  );
+  return <>{intersperse(ruleItems, <span>,&nbsp;&nbsp;</span>)}</>;
 }
 
 //export const MemoisedRuleList = memo(RuleList);

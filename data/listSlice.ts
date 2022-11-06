@@ -127,6 +127,15 @@ export const listSlice = createSlice({
         }
       })
 
+      if (state.gameSystem === "aofs") {
+        unitsMapped.forEach((u, i) => {
+          u.selectedUpgrades = u.selectedUpgrades.filter((upgrade) =>
+            (upgrade.option.label != "Sergeant") &&
+            (upgrade.option.label != "Musician") &&
+            (upgrade.option.label != "Battle Standard"));
+          });
+      }
+
       //state.units.splice(index ?? -1, 0, ...unitsMapped)
       state.units.push(...unitsMapped);
       state.points = UpgradeService.calculateListTotal(state.units);
@@ -307,6 +316,8 @@ export const listSlice = createSlice({
       } else {
         unit.traits.push(trait);
       }
+
+      state.points = UpgradeService.calculateListTotal(state.units);
 
       debounceSave(current(state));
     },
