@@ -34,11 +34,18 @@ export interface IArmyData {
   units: IUnit[];
   upgradePackages: IUpgradePackage[];
   specialRules: IGameRule[];
-  spells: { id: string; name: string; effect: string; threshold: number; }[];
+  spells: ISpell[];
   isLive: boolean;
   official: boolean;
   coverImagePath: string;
   username?: string;
+}
+
+export interface ISpell {
+  id: string;
+  name: string;
+  effect: string;
+  threshold: number;
 }
 
 const initialState: ArmyState = {
@@ -66,7 +73,7 @@ export const getArmyBookData = createAsyncThunk("army/getArmyBookData", async (p
     payload.armyUid,
     payload.gameSystem
   );
-  
+
   console.log("Loaded army data", armyBookData);
 
   try {

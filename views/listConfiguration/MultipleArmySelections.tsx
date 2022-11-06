@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { Fragment } from "react";
-import { RootState } from "../../data/store";
+import { RootState, useAppDispatch } from "../../data/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { getArmyBookData, unloadArmyBook, unloadFaction } from "../../data/armySlice";
@@ -84,7 +84,7 @@ export default function MultipleArmySelections() {
 }
 
 function ArmyBookSelection({ army, allowRemove, editMode }) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   function remove(armyId) {
     const prompt =
@@ -120,7 +120,7 @@ function ArmyBookSelection({ army, allowRemove, editMode }) {
 }
 
 function FactionArmyBookSelection({ faction, allowRemove, editMode }) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const armyState = useSelector((state: RootState) => state.army);
   const armyBooks = armyState.armyBooks;

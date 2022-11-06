@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../data/store";
 import { useRouter } from "next/router";
 import ViewCards from "../views/ViewCards";
-import style from "../styles/Cards.module.css";
 import {
   Button,
   IconButton,
@@ -28,12 +27,12 @@ import UnitService from "../services/UnitService";
 import { MainMenuOptions } from "../views/components/MainMenu";
 import { useLoadFromQuery } from "../hooks/useLoadFromQuery";
 import { MenuBar } from "../views/components/MenuBar";
-import ViewCard from "../views/components/ViewCard";
-import { IGameRule } from "../data/armySlice";
+import { IGameRule, ISpell } from "../data/armySlice";
 import _ from "lodash";
 import TraitService from "../services/TraitService";
 import { Container } from "@mui/system";
 import { useMediaQuery } from "react-responsive";
+import SpecialRulesCard from "../views/components/SpecialRulesCard";
 
 export interface IViewPreferences {
   showFullRules: boolean;
@@ -73,7 +72,7 @@ export default function View() {
   // Load army list file
   const usedRules = useMemo(() => {
     const unitRules = _.flatten(
-      list?.units.map((u) => UnitService.getAllRules(u).map((r) => r.name))
+      list.units.map((u) => UnitService.getAllRules(u).map((r) => r.name))
     );
 
     const usedWeaponRules = _.chain(list?.units)
@@ -88,16 +87,20 @@ export default function View() {
       .flattenDeep()
       .uniq()
       .value();
-    
+
     return unitRules.concat(usedWeaponRules).concat(usedTraitsRules);
-  }, [list?.units]);
+  }, [list.units]);
 
   if (!armyState.loaded) return <p>Loading...</p>;
 
   const gameRules = armyState.rules;
-  const armyRules = armyState.loadedArmyBooks.flatMap((x) => x.specialRules);
+  const armyRules: IGameRule[] = armyState.loadedArmyBooks.flatMap((x) => x.specialRules);
+  const armySpells: ISpell[] = armyState.loadedArmyBooks.flatMap((x) => x.spells);
   const ruleDefinitions: IGameRule[] = gameRules.concat(armyRules);
   const traitDefinitions = TraitService.getFlatTraitDefinitions();
+
+  // TODO: Filter this to just army books that have taken a psychic/wizard?
+  const containsPsychic = listContainsPyschic(list.units);
 
   function setPreferences(setFunc) {
     const newPrefs = setFunc(preferences);
@@ -201,6 +204,7 @@ export default function View() {
           <Box mb={6}>
             <SpecialRulesCard
               usedRules={usedRules}
+              spells={containsPsychic ? armySpells : []}
               ruleDefinitions={ruleDefinitions.concat(traitDefinitions as any[])}
             />
           </Box>
@@ -210,42 +214,7 @@ export default function View() {
   );
 }
 
-interface SpecialRulesCardProps {
-  usedRules: string[];
-  ruleDefinitions: { name: string; description: string }[];
-}
 
-function SpecialRulesCard({ usedRules, ruleDefinitions }: SpecialRulesCardProps) {
-  usedRules = _.uniq(usedRules).sort();
-  const usedRuleDefs = [];
-
-  // Check each rule for nested rules...
-  for (let rule of usedRules) {
-    const usedRuleDef = ruleDefinitions.find((t) => t.name === rule);
-    if (!usedRuleDef) continue;
-    for (let match of ruleDefinitions) {
-      // Don't match against self
-      if (match.name === usedRuleDef.name) continue;
-
-      if (new RegExp(match.name).test(usedRuleDef.description)) {
-        usedRuleDefs.push(match);
-      }
-    }
-    usedRuleDefs.push(usedRuleDef);
-  }
-  return (
-    <ViewCard title="Special Rules">
-      <Box className={style.grid} sx={{ p: 2, mt: 1 }}>
-        {_.uniqBy(usedRuleDefs, (x) => x.name).map((r, i) => (
-          <Typography key={i} sx={{ breakInside: "avoid" }}>
-            <span style={{ fontWeight: 600 }}>{r.name + ": "}</span>
-            <span>{r.description}</span>
-          </Typography>
-        ))}
-      </Box>
-    </ViewCard>
-  );
-}
 
 // TODO: extract these as global helper functions
 export function listContainsPyschic(units: ISelectedUnit[]) {

@@ -1,10 +1,10 @@
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Dispatch } from "react";
 import { ArmyState, getArmyBookData, getGameRules, IArmyData, resetLoadedBooks, setGameSystem } from "../data/armySlice";
-import { ISaveData, ISavedListState, ISelectedUnit, ISpecialRule, IUnit, IUpgrade, IUpgradeGains, IUpgradeGainsWeapon, IUpgradeOption } from "../data/interfaces";
+import { ISaveData, ISavedListState, ISelectedUnit, ISpecialRule, IUnit, IUpgrade, IUpgradeGains, IUpgradeGainsItem, IUpgradeGainsWeapon, IUpgradeOption } from "../data/interfaces";
 import { ListState, loadSavedList } from "../data/listSlice";
 import { RootState } from "../data/store";
-import { groupBy, makeCopy } from "./Helpers";
+import { makeCopy } from "./Helpers";
 import RulesService from "./RulesService";
 import UnitService from "./UnitService";
 import UpgradeService from "./UpgradeService";
@@ -339,32 +339,17 @@ export default class PersistenceService {
     };
 
     const getRules = (unit: ISelectedUnit) => {
-      const rules = UnitService.getAllRules(unit);
+      const unitRules = unit.specialRules
+        .filter((r) => r.name != "-")
+        .concat(UnitService.getUpgradeRules(unit));
+      const items = unit.loadout.filter((x) => x.type === "ArmyBookItem") as IUpgradeGainsItem[];
+      const itemRules = UnitService.getItemRules(unit, items);
 
-      const ruleGroups = groupBy(rules, "name");
-      const keys = Object.keys(ruleGroups);
-      // Sort rules alphabetically
-      keys.sort((a, b) => a.localeCompare(b));
-
-      const displayRules = keys.map(key => {
-
-        // This has been copy/pasted from RuleList.tsx - refactor!
-        const group: ISpecialRule[] = ruleGroups[key];
-        const rule = group[0];
-        const stack = rule.rating && ["Psychic", "Wizard"].indexOf(rule.name) === -1;
-        const rating = (rule.rating == null || rule.rating == "")
-          ? null
-          : (key === "Psychic" || key === "Wizard")
-            // Take Highest
-            ? Math.max(...group.map(rule => parseInt(rule.rating)))
-            // Sum all occurrences
-            : group.reduce((total, next) => next.rating ? total + parseInt(next.rating) : total, 0);
-
-        // Rules with ratings do not show multiple instances
-        const count = stack ? 0 : group.length;
-
-        return (count > 1 ? `${count}x ` : "") + RulesService.displayName({ ...rule, rating: rule.rating ? rating.toString() : null });
-      });
+      const displayRules = RulesService
+        .group(unitRules).map(rule => RulesService.displayName(rule, rule.count))
+        .concat(itemRules.map(x =>
+          (x.count ? `${x.count}x ` : "") + `${x.name}(${x.specialRules.map(r => RulesService.displayName(r)).join(", ")})`
+        ));
 
       return displayRules.concat(unit.traits).join(", ");
     };
@@ -376,7 +361,7 @@ export default class PersistenceService {
       const name = unit.customName || unit.name;
       const size = UnitService.getSize(unit);
       const cost = pointsCost ?? UpgradeService.calculateUnitTotal(unit);
-      lines.push(`${count > 1 ? (count + "x ") : ""}${name} [${size}] Q${unit.quality}+ D${unit.defense}+ | ${cost}pts | ` + getRules(unit));
+      lines.push(`${count > 1 ? (count + "x ") : ""}${name} [${size}] Q${unit.quality}+ D${unit.defense}+ | ${cost}pts${unit.xp ? ` | ${unit.xp}XP` : ""} | ` + getRules(unit));
       lines.push(getWeapons(unit) + (endWithNewline ? "\n" : ""));
     }
 

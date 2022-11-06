@@ -73,7 +73,6 @@ function MainListSection({
   const [collapsed, setCollapsed] = useState(false);
 
   const fullUnits = useMemo(() => UnitService.getFullUnitList(units, false), [units]);
-  console.log("fullUnits", fullUnits);
 
   return (
     <Card elevation={2} sx={{ mb: 2 }} square>
@@ -114,7 +113,7 @@ function MainListSection({
                       <Typography
                         component="span"
                         color="text.secondary"
-                      >{` [${unitSize}]`}</Typography>
+                      >{` [${unitSize + heroes.length}]`}</Typography>
                     </Typography>
                     <span>{unitPointsAll}pts</span>
                     <DropMenu sx={{ ml: 1 }}>

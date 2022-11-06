@@ -187,7 +187,7 @@ export function Upgrades() {
               .filter((t) => t != selectedUnit)
               .map((u, index) => (
                 <MenuItem key={index} value={u.selectionId}>
-                  {u.customName || u.name} [{u.size * (u.combined ? 2 : 1)}]
+                  {u.customName || u.name} [{UnitService.getSize(u)}]
                 </MenuItem>
               ))}
           </Select>

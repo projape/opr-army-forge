@@ -7,7 +7,7 @@ import { Stack, Typography, Box, useMediaQuery } from "@mui/material";
 import RulesService from "../services/RulesService";
 import { ArmyState, IGameRule } from "../data/armySlice";
 import { groupMap, intersperse } from "../services/Helpers";
-import UnitService, { IFullUnit } from "../services/UnitService";
+import UnitService, { IFullUnit, IRulesItem } from "../services/UnitService";
 import UpgradeService from "../services/UpgradeService";
 import _ from "lodash";
 import { ISelectedUnit, IUpgradeGainsItem, IUpgradeGainsRule } from "../data/interfaces";
@@ -105,7 +105,9 @@ export function UnitCard({
   const unitRules = unit.specialRules
     .filter((r) => r.name != "-")
     .concat(UnitService.getUpgradeRules(unit));
+
   const items = unit.loadout.filter((x) => x.type === "ArmyBookItem") as IUpgradeGainsItem[];
+  const itemRules: IRulesItem[] = UnitService.getItemRules(unit, items);
 
   const Stat = ({ label, value }: { label: string; value: string }) => (
     <Box className={style.profileStat}>
@@ -136,38 +138,20 @@ export function UnitCard({
                   (x) => x.type === "ArmyBookRule" || x.type === "ArmyBookDefense"
                 ) as IUpgradeGainsRule[]
             );
-            return groupMap(
-              unitRules.concat(itemRules),
-              (x) => x.name,
-              (group, key) => {
-                const rule = group[0];
-                const count = group.length;
-                const stack = rule.rating && ["Psychic", "Wizard"].indexOf(rule.name) === -1;
-                const rating = stack
-                  ? group.reduce(
-                      (total, next) => (next.rating ? total + parseInt(next.rating) : total),
-                      0
-                    )
-                  : rule.rating || 0;
+            return RulesService.group(unitRules.concat(itemRules)).map((rule) => {
+              const ruleDefinition = ruleDefinitions.filter(
+                (r) => /(.+?)(?:\(|$)/.exec(r.name)[0] === rule.name
+              )[0];
 
-                const ruleDefinition = ruleDefinitions.filter(
-                  (r) => /(.+?)(?:\(|$)/.exec(r.name)[0] === rule.name
-                )[0];
-
-                return (
-                  <Typography key={key} fontSize={"14px"}>
-                    <span style={{ fontWeight: 600 }}>
-                      {RulesService.displayName(
-                        { ...rule, rating: rating as any },
-                        stack ? 1 : count
-                      )}{" "}
-                      -
-                    </span>
-                    <span> {ruleDefinition?.description || ""}</span>
-                  </Typography>
-                );
-              }
-            );
+              return (
+                <Typography key={rule.name} fontSize={"14px"}>
+                  <span style={{ fontWeight: 600 }}>
+                    {RulesService.displayName(rule, rule.count)} -
+                  </span>
+                  <span> {ruleDefinition?.description || ""}</span>
+                </Typography>
+              );
+            });
           })()
         : (() => {
             const rules = groupMap(
@@ -176,66 +160,44 @@ export function UnitCard({
               (group, key) => <RuleList key={key} specialRules={group} />
             );
 
-            const itemRules = groupMap(
-              items,
-              (x) => x.name,
-              (group, key) => {
-                const item: IUpgradeGainsItem = group[0] as IUpgradeGainsItem;
-                const count = _.sumBy(group, (x) => x.count || 1);
-
-                const itemRules: IUpgradeGainsRule[] = item.content.filter(
-                  (x) => x.type === "ArmyBookRule" || x.type === "ArmyBookDefense"
-                ) as any;
-
-                const itemAffectsAll =
-                  unit.selectedUpgrades.find((x) =>
-                    x.option.gains.some((y) => y.name === item.name)
-                  )?.upgrade?.affects === "all";
-                //const hasStackableRule = itemRules.some((x) => x.name === "Impact");
-                const hideCount = itemAffectsAll; // && !hasStackableRule;
-
-                return (
-                  <span key={key}>
-                    {count > 1 && !hideCount && `${count}x `}
-                    {item.name}
-                    {itemRules.length > 0 && (
-                      <>
-                        <span>(</span>
-                        <RuleList specialRules={itemRules} />
-                        <span>)</span>
-                      </>
-                    )}
+            const itemRulesElements = itemRules.map((item) => (
+              <span key={item.name}>
+                {item.count && `${item.count}x `}
+                {item.name}
+                {item.specialRules.length > 0 && (
+                  <span>
+                    (<RuleList specialRules={item.specialRules} />)
                   </span>
-                );
-              }
-            );
+                )}
+              </span>
+            ));
 
-            return intersperse(rules.concat(itemRules), <span>, </span>);
+            return intersperse(rules.concat(itemRulesElements), <span>, </span>);
           })()}
     </Box>
   );
 
   const traitsSection = unit.traits?.length > 0 && (
     <Box mb={1} px={1} fontSize="14px">
-    <div className="px-2 mb-4" style={{ fontSize: "14px" }}>
-      {unit.traits.map((trait: string, index: number) => {
-        const traitDef = traitDefinitions.find((x) => x.name === trait);
-        if (!prefs.showFullRules)
-          return (
-            <span key={index}>
-              {index === 0 ? "" : ", "}
-              <RuleList specialRules={[traitDef]} />
-            </span>
-          );
+      <div className="px-2 mb-4" style={{ fontSize: "14px" }}>
+        {unit.traits.map((trait: string, index: number) => {
+          const traitDef = traitDefinitions.find((x) => x.name === trait);
+          if (!prefs.showFullRules)
+            return (
+              <span key={index}>
+                {index === 0 ? "" : ", "}
+                <RuleList specialRules={[traitDef]} />
+              </span>
+            );
 
-        return (
-          <p key={index}>
-            <span style={{ fontWeight: 600 }}>{traitDef.name} -</span>
-            <span> {traitDef.description}</span>
-          </p>
-        );
-      })}
-    </div>
+          return (
+            <p key={index}>
+              <span style={{ fontWeight: 600 }}>{traitDef.name} -</span>
+              <span> {traitDef.description}</span>
+            </p>
+          );
+        })}
+      </div>
     </Box>
   );
 
