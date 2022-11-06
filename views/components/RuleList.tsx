@@ -5,6 +5,7 @@ import { IGameRule } from "../../data/armySlice";
 import { ISpecialRule } from "../../data/interfaces";
 import RulesService from "../../services/RulesService";
 import { ITrait } from "../../services/TraitService";
+import { intersperse } from "../../services/Helpers";
 
 export default function RuleList({ specialRules }: { specialRules: (ISpecialRule | ITrait)[] }) {
   const army = useSelector((state: RootState) => state.army);
@@ -30,7 +31,7 @@ export default function RuleList({ specialRules }: { specialRules: (ISpecialRule
     );
   });
 
-  return <>{ruleItems}</>;
+  return <>{intersperse(ruleItems, <span>,&nbsp;&nbsp;</span>)}</>;
 }
 
 //export const MemoisedRuleList = memo(RuleList);

@@ -154,11 +154,9 @@ function UnitRow({
             {item.count && `${item.count}x `}
             {item.name}
             {item.specialRules.length > 0 && (
-              <>
-                <span>(</span>
-                <RuleList specialRules={item.specialRules} />
-                <span>)</span>
-              </>
+              <span>
+                (<RuleList specialRules={item.specialRules} />)
+              </span>
             )}
           </span>
         ));
