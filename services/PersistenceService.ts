@@ -376,7 +376,7 @@ export default class PersistenceService {
       const name = unit.customName || unit.name;
       const size = UnitService.getSize(unit);
       const cost = pointsCost ?? UpgradeService.calculateUnitTotal(unit);
-      lines.push(`${count > 1 ? (count + "x ") : ""}${name} [${size}] Q${unit.quality}+ D${unit.defense}+ | ${cost}pts | ` + getRules(unit));
+      lines.push(`${count > 1 ? (count + "x ") : ""}${name} [${size}] Q${unit.quality}+ D${unit.defense}+ | ${cost}pts${unit.xp ? ` | ${unit.xp}XP` : ""} | ` + getRules(unit));
       lines.push(getWeapons(unit) + (endWithNewline ? "\n" : ""));
     }
 

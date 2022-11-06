@@ -151,6 +151,7 @@ export default class UnitService {
             count: x.count,
           })),
         traits: unit.traits,
+        xp: unit.xp || 0
       };
     };
 
