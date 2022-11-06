@@ -12,7 +12,7 @@ import {
 import { ListState } from "../data/listSlice";
 import _ from "lodash";
 import EquipmentService from "./EquipmentService";
-import { makeCopy } from "./Helpers";
+import { groupMap, makeCopy } from "./Helpers";
 import UpgradeService from "./UpgradeService";
 
 export interface IFullUnit {
@@ -21,8 +21,14 @@ export interface IFullUnit {
   unit: ISelectedUnit;
   joined?: ISelectedUnit;
   heroes: ISelectedUnit[];
-  hasJoined: boolean
+  hasJoined: boolean;
 };
+
+export interface IRulesItem {
+  count: number;
+  name: string;
+  specialRules: IUpgradeGainsRule[];
+}
 
 export default class UnitService {
   public static getSelected(list: ListState): ISelectedUnit {
@@ -96,7 +102,26 @@ export default class UnitService {
     };
   }
 
-  public static getFullUnitList(input: ISelectedUnit[], combine: boolean) {
+  public static getItemRules(unit: ISelectedUnit, items: IUpgradeGainsItem[]) {
+    return groupMap(items, x => x.name, (group, key) => {
+      const item: IUpgradeGainsItem = group[0] as IUpgradeGainsItem;
+      const count = _.sumBy(group, (x) => x.count || 1);
+
+      const itemRules: IUpgradeGainsRule[] = item.content.filter(
+        (x) => x.type === "ArmyBookRule" || x.type === "ArmyBookDefense"
+      ) as any;
+      const itemAffectsAll =
+        unit.selectedUpgrades.find((x) =>
+          x.option.gains.some((y) => y.name === item.name)
+        )?.upgrade?.affects === "all";
+      return {
+        count: itemAffectsAll ? undefined : count,
+        name: key,
+        specialRules: itemRules
+      }
+    });
+  }
+  public static getFullUnitList(input: ISelectedUnit[], combine: boolean): IFullUnit[] {
     const units = (input ?? []).map((u) => makeCopy(u));
 
     const result = units.filter((x: ISelectedUnit) => !x.joinToUnit).map((unit: ISelectedUnit) => {
@@ -118,11 +143,13 @@ export default class UnitService {
         (cost, u) => cost + UpgradeService.calculateUnitTotal(u),
         UpgradeService.calculateUnitTotal(unit)
       );
+
+      const finalUnit = combine ? UnitService.mergeCombinedUnit(unit, joined[0]) : unit;
       return {
         unitSize,
         unitPoints,
         unitPointsAll,
-        unit: combine ? UnitService.mergeCombinedUnit(unit, joined[0]) : unit,
+        unit: finalUnit,
         joined: joined[0], // Combined units can only have one joined...
         heroes,
         hasJoined: attachedUnits.length > 0
@@ -139,13 +166,13 @@ export default class UnitService {
         customName: unit.customName,
         joinToUnit: unit.joinToUnit,
         upgrades: unit.selectedUpgrades
-          .sort((a,b) => (a.upgrade.label > b.upgrade.label) ? 1 : ((a.option.label > b.option.label) ? -1 : 0))
+          .sort((a, b) => (a.upgrade.label > b.upgrade.label) ? 1 : ((a.option.label > b.option.label) ? -1 : 0))
           .map((x) => ({
             sectionId: x.upgrade.uid,
             optionId: x.option.id,
           })),
         loadout: unit.loadout
-          .sort((a,b) => (a.label > b.label) ? 1 : 0)
+          .sort((a, b) => (a.label > b.label) ? 1 : 0)
           .map((x) => ({
             id: x.id,
             count: x.count,
