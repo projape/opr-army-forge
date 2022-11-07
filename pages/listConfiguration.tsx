@@ -29,18 +29,18 @@ export default function ListConfiguration() {
 
   useEffect(() => {
     // Ensure gameSystem is set
-    if (!armyState.gameSystem) {
+    if (router.isReady && !armyState.gameSystem) {
       dispatch(setGameSystem(router.query["gameSystem"] as string));
       return;
     }
-  }, [armyState.gameSystem]);
+  }, [router, armyState.gameSystem]);
 
   useEffect(() => {
     // Load books if not loaded
-    if (armyState.gameSystem && armyState.armyBooks?.length <= 0) {
+    if (router.isReady && armyState.gameSystem && armyState.armyBooks?.length <= 0) {
       dispatch(getArmyBooks(armyState.gameSystem));
     }
-  }, [armyState.gameSystem, armyState.armyBooks]);
+  }, [router, armyState.gameSystem, armyState.armyBooks]);
 
   // Reset list if not edit mode
   useEffect(() => {
