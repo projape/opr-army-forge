@@ -7,7 +7,7 @@ import UnitService from "./UnitService";
 
 export default class WebappApiService {
 
-  private static webCompanionUrl = "https://projape.net/checker/api";
+  private static webCompanionUrl = "https://webapp.onepagerules.com/api";
 
   private static getUrl() {
     //return window.location.host.startsWith("localhost") ? "http://localhost:3000/api" : this.webCompanionUrl;
@@ -34,7 +34,7 @@ export default class WebappApiService {
   public static async getArmyBooks(gameSystemSlug: string) {
     const cacheKey = "AF_Cache_army-books-" + gameSystemSlug;
     try {
-      const res = await fetch(this.getUrl() + "//index.php?gamebooks=" + gameSystemSlug + "-army-books");
+      const res = await fetch(this.getUrl() + "/army-books?gameSystemSlug=" + gameSystemSlug);
       const data = await res.json();
       this.cacheResponse(cacheKey, data);
       return data;
@@ -48,7 +48,7 @@ export default class WebappApiService {
 
     const cacheKey = "AF_Cache_game-rules-" + gameSystemSlug;
     try {
-      const res = await fetch(this.getUrl() + "/index.php?specialid=" + gameSystemSlug);
+      const res = await fetch(this.getUrl() + `/content/game-systems/${gameSystemSlug}/special-rules`);
       const data = await res.json();
       this.cacheResponse(cacheKey, data);
       return data;
@@ -64,7 +64,7 @@ export default class WebappApiService {
     try {
       const gameSystemId = gameSystemToEnum(gameSystem);
 
-      const url = this.getUrl() + `/index.php?id=${armyId}~${gameSystemId}`;
+      const url = "https://projape.net/checker/api/index.php?id=" + armyId + "~" + gameSystemId;
       console.log("Fetching army data from", url);
 
       const armyBookRes = await fetch(url);
