@@ -43,7 +43,7 @@ const debounceSave = debounce(1500, (state: ListState) => {
 });
 
 export const listSlice = createSlice({
-  name: 'army',
+  name: 'list',
   initialState,
   reducers: {
     resetList: (state) => {
@@ -281,6 +281,7 @@ export const listSlice = createSlice({
     removeUnitsForBook(state, action: PayloadAction<string>) {
       const armyBookId = action.payload;
       state.units = state.units.filter(unit => unit.armyId !== armyBookId);
+      state.points = UpgradeService.calculateListTotal(state.units);
     },
     previewUnit(state, action: PayloadAction<ISelectedUnit>) {
       const unit: ISelectedUnit = makeCopy(action.payload);

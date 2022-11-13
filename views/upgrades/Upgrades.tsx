@@ -165,7 +165,7 @@ export function Upgrades() {
 
   const joinCandidates = list.units
     .filter((u) => (!competitive || u.size > 1) && !u.joinToUnit)
-    .filter(u => u.armyId === selectedUnit.armyId)
+    .filter(u => u.armyId === selectedUnit?.armyId)
     .filter(
       (u) =>
         !competitive ||
