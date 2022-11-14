@@ -146,7 +146,7 @@ export function CreateView(props: CreateViewProps) {
         const isEvenNumber = ++i % 2 === 0;
         const isHero = unit.specialRules.some((x) => x.name === "Hero");
 
-        if (isEvenNumber && !isHero) {
+        if (isEvenNumber && !isHero && unit.size > 1) {
           // Attach to last unit
           dispatch(addCombinedUnit(lastId));
           console.log("Combining unit", lastId);
