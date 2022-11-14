@@ -47,10 +47,13 @@ function SpecialRulesCard({ usedRules, spells, ruleDefinitions }: SpecialRulesCa
     }
   }
 
+  // sorting is required because the array is not necessarily in alphabetical order as we push the extra rules from Spells last
+  const sortedRuleDefs = _.orderBy(usedRuleDefs, x => x.name);
+
   return (
     <ViewCard title="Special Rules">
       <Box className={style.grid} sx={{ p: 2, mt: 1 }}>
-        {_.uniqBy(usedRuleDefs, (x) => x.name).map((r, i) => (
+        {_.uniqBy(sortedRuleDefs, (x) => x.name).map((r, i) => (
           <Typography key={i} sx={{ breakInside: "avoid" }}>
             <span style={{ fontWeight: 600 }}>{r.name + ": "}</span>
             <span>{r.description}</span>
