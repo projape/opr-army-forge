@@ -144,12 +144,12 @@ export function CreateView(props: CreateViewProps) {
 
       for (let unit of group) {
         const isEvenNumber = ++i % 2 === 0;
-        const isHero = unit.specialRules.some(x => x.name === "Hero");
+        const isHero = unit.specialRules.some((x) => x.name === "Hero");
 
         if (isEvenNumber && !isHero) {
           // Attach to last unit
           dispatch(addCombinedUnit(lastId));
-          console.log("Combining unit", lastId)
+          console.log("Combining unit", lastId);
         } else {
           const { payload }: any = await dispatch(addUnit(unit));
           console.log("GEN added unit", payload);
@@ -178,8 +178,13 @@ in a 2000pts list, it should:
     router.push({ pathname: "/list", query: { listId: creationTime } });
   };
 
+  const armyGenInvalid =
+    props.pointsLimit > 0 && (props.pointsLimit > 4000 || props.pointsLimit < 150);
   const armyGenDisabled =
-    armyState.loadingArmyData || armyState.loadedArmyBooks.length === 0 || !props.pointsLimit;
+    armyState.loadingArmyData ||
+    armyState.loadedArmyBooks.length === 0 ||
+    !props.pointsLimit ||
+    armyGenInvalid;
 
   return (
     <>
@@ -210,14 +215,15 @@ in a 2000pts list, it should:
           sx={{ px: 6 }}
           variant="contained"
           onClick={() => generateArmy()}
-          disabled={armyGenDisabled}
+          disabled={armyGenDisabled || armyGenInvalid}
         >
-          Generate Army
+          Generate Starter List
         </Button>
       </Stack>
       {armyGenDisabled && (
-        <Typography align="center" variant="body2">
-          Enter a point limit to enable army generation.
+        <Typography align="center" variant="body2" sx={{ mt: 1 }}>
+          Enter a point limit to enable army generation.{" "}
+          {armyGenInvalid ? "Points limit must be 150-4000 points." : ""}
         </Typography>
       )}
     </>
