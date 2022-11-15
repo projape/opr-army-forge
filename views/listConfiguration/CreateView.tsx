@@ -1,7 +1,5 @@
 import {
-  Button,
   Checkbox,
-  Grid,
   FormControlLabel,
   FormGroup,
   Stack,
@@ -11,12 +9,12 @@ import _ from "lodash";
 import { nanoid } from "nanoid";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { getArmyBookData } from "../../data/armySlice";
-import { ISelectedUnit } from "../../data/interfaces";
 import { addCombinedUnit, addUnit, createList } from "../../data/listSlice";
 import { RootState, useAppDispatch } from "../../data/store";
 import PersistenceService from "../../services/PersistenceService";
+import SplitButton from "../components/SplitButton";
 import { getUnitCategories } from "../UnitSelection";
 
 interface CreateViewProps {
@@ -28,12 +26,9 @@ export function CreateView(props: CreateViewProps) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const armyState = useSelector((state: RootState) => state.army);
-
   const [autoSave, setAutoSave] = useState(
     localStorage["AF_AutoSave"] ? JSON.parse(localStorage["AF_AutoSave"]) : true
   );
-  const [isCampaignList, setCampaignList] = useState(false);
-
   const armyId = router.query["armyId"] as string;
 
   useEffect(() => {
@@ -57,7 +52,7 @@ export function CreateView(props: CreateViewProps) {
     });
   };
 
-  const dispatchCreate = () => {
+  const dispatchCreate = (campaignMode: boolean) => {
     const name = props.armyName || "My List";
 
     const creationTime = autoSave ? PersistenceService.createSave(armyState, name) : null;
@@ -71,15 +66,15 @@ export function CreateView(props: CreateViewProps) {
         points: 0,
         pointsLimit: props.pointsLimit || 0,
         creationTime: creationTime,
-        campaignMode: isCampaignList,
+        campaignMode: campaignMode,
         gameSystem: armyState.gameSystem,
       })
     );
     return creationTime;
   };
 
-  const create = () => {
-    const creationTime = dispatchCreate();
+  const create = (campaignMode: boolean) => {
+    const creationTime = dispatchCreate(campaignMode);
 
     router.push({ pathname: "/list", query: { listId: creationTime } });
   };
@@ -87,7 +82,7 @@ export function CreateView(props: CreateViewProps) {
   const generateArmy = async () => {
     console.group("ARMY GENERATE");
 
-    const creationTime = dispatchCreate();
+    const creationTime = dispatchCreate(false);
 
     const getRandomFrom = (array: any[]) => array[Math.floor(Math.random() * array.length)];
 
@@ -186,6 +181,12 @@ in a 2000pts list, it should:
     !props.pointsLimit ||
     armyGenInvalid;
 
+  const generateOptions = [
+    { label: "Generate Starter List", action: () => generateArmy() },
+    { label: "Generate Starter List (800pt)", action: () => generateArmy() },
+    { label: "Generate Starter List (2000pt)", action: () => generateArmy() }
+  ];
+
   return (
     <>
       <FormGroup sx={{ mt: 2 }}>
@@ -194,31 +195,14 @@ in a 2000pts list, it should:
           label="Auto-save changes"
         />
       </FormGroup>
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Checkbox checked={isCampaignList} onClick={() => setCampaignList((prev) => !prev)} />
-          }
-          label="Campaign Mode"
-        />
-      </FormGroup>
       <Stack alignItems="center" spacing={2} mt={2}>
-        <Button
-          sx={{ px: 6 }}
-          variant="contained"
-          onClick={() => create()}
-          disabled={armyState.loadingArmyData || armyState.loadedArmyBooks.length === 0}
-        >
-          Create List
-        </Button>
-        <Button
-          sx={{ px: 6 }}
-          variant="contained"
-          onClick={() => generateArmy()}
-          disabled={armyGenDisabled || armyGenInvalid}
-        >
-          Generate Starter List
-        </Button>
+        <SplitButton
+          options={[{ label: "Create List", action: () => create(false) }, { label: "Create Campaign List", action: () => create(true) }]}
+          disabled={armyState.loadingArmyData || armyState.loadedArmyBooks.length === 0} />
+
+        <SplitButton
+          options={generateOptions}
+          disabled={armyGenDisabled || armyGenInvalid} />
       </Stack>
       {armyGenDisabled && (
         <Typography align="center" variant="body2" sx={{ mt: 1 }}>
