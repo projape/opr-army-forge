@@ -68,6 +68,7 @@ export default class WebappApiService {
       const gameSystemId = gameSystemToEnum(gameSystem);
 
       //const url = this.getUrl() + `/army-books/${armyId}~${gameSystemId}?armyForge=true`;
+      //https://www.projape.net/checker/api/index.php?id=w7qor7b2kuifcyvk~3
       const url = "https://projape.net/checker/api/index.php?id=" + armyId + "~" + gameSystemId;
       console.log("Fetching army data from", url);
 
