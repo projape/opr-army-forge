@@ -22,11 +22,15 @@ export default function RuleList({ specialRules }: { specialRules: (ISpecialRule
       (r) => /(.+?)(?:\(|$)/.exec(r.name)[0] === rule.name
     )[0];
 
+    const label = RulesService.displayName(rule, rule.count);
+    const description =
+      (rule.rating ? `${rule.name}(X)` : rule.name) + ": " + ((rule as any).description || ruleDefinition?.description || "");
+
     return (
       <RuleItem
         key={rule.name}
-        label={RulesService.displayName(rule, rule.count)}
-        description={(rule as any).description || ruleDefinition?.description || ""}
+        label={label}
+        description={description}
       />
     );
   });

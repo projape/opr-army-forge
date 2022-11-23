@@ -27,6 +27,8 @@ export default function ViewCards({ prefs }: ViewCardsProps) {
   const list = useSelector((state: RootState) => state.list);
   const army = useSelector((state: RootState) => state.army);
 
+  console.log("prefs", prefs);
+
   const gameRules = army.rules;
   const armyRules = army.loadedArmyBooks.flatMap((x) => x.specialRules);
   const ruleDefinitions: IGameRule[] = gameRules.concat(armyRules);
@@ -75,7 +77,7 @@ export default function ViewCards({ prefs }: ViewCardsProps) {
             );
           })
         : units.map((unit, i) => getUnitCard(unit, 1, unit.heroes))}
-      {prefs.showPsychic && <SpellsCard army={army} list={list} />}
+      <SpellsCard army={army} list={list} force={prefs.showPsychic} />
     </div>
   );
 }
@@ -246,9 +248,10 @@ export function UnitCard({
 interface SpellsCardProps {
   army: ArmyState;
   list: ListState;
+  force: boolean;
 }
 
-export function SpellsCard({ army, list }: SpellsCardProps) {
+export function SpellsCard({ army, list, force }: SpellsCardProps) {
   const isGrimdark = army.gameSystem.startsWith("gf");
   return (
     <>
