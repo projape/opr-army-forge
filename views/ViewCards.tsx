@@ -27,6 +27,8 @@ export default function ViewCards({ prefs }: ViewCardsProps) {
   const list = useSelector((state: RootState) => state.list);
   const army = useSelector((state: RootState) => state.army);
 
+  console.log("prefs", prefs);
+
   const gameRules = army.rules;
   const armyRules = army.loadedArmyBooks.flatMap((x) => x.specialRules);
   const ruleDefinitions: IGameRule[] = gameRules.concat(armyRules);
@@ -66,16 +68,16 @@ export default function ViewCards({ prefs }: ViewCardsProps) {
     <div className={style.grid}>
       {prefs.combineSameUnits
         ? Object.values(unitGroups).map((grp: IFullUnit[], i) => {
-            const unit = grp[0];
-            const count = grp.length;
-            return getUnitCard(
-              unit,
-              count,
-              grp.flatMap((x) => x.heroes)
-            );
-          })
+          const unit = grp[0];
+          const count = grp.length;
+          return getUnitCard(
+            unit,
+            count,
+            grp.flatMap((x) => x.heroes)
+          );
+        })
         : units.map((unit, i) => getUnitCard(unit, 1, unit.heroes))}
-      {prefs.showPsychic && <SpellsCard army={army} list={list} />}
+      <SpellsCard army={army} list={list} force={prefs.showPsychic} />
     </div>
   );
 }
@@ -108,6 +110,7 @@ export function UnitCard({
 
   const items = unit.loadout.filter((x) => x.type === "ArmyBookItem") as IUpgradeGainsItem[];
   const itemRules: IRulesItem[] = UnitService.getItemRules(unit, items);
+  const isRenamed = unit.customName && (unit.customName !== unit.name);
 
   const Stat = ({ label, value }: { label: string; value: string }) => (
     <Box className={style.profileStat}>
@@ -131,49 +134,49 @@ export function UnitCard({
     <Box mb={1} px={1} fontSize="14px">
       {prefs.showFullRules
         ? (() => {
-            const itemRules = _.flatMap(
-              items,
-              (item) =>
-                item.content.filter(
-                  (x) => x.type === "ArmyBookRule" || x.type === "ArmyBookDefense"
-                ) as IUpgradeGainsRule[]
-            );
-            return RulesService.group(unitRules.concat(itemRules)).map((rule) => {
-              const ruleDefinition = ruleDefinitions.filter(
-                (r) => /(.+?)(?:\(|$)/.exec(r.name)[0] === rule.name
-              )[0];
+          const itemRules = _.flatMap(
+            items,
+            (item) =>
+              item.content.filter(
+                (x) => x.type === "ArmyBookRule" || x.type === "ArmyBookDefense"
+              ) as IUpgradeGainsRule[]
+          );
+          return RulesService.group(unitRules.concat(itemRules)).map((rule) => {
+            const ruleDefinition = ruleDefinitions.filter(
+              (r) => /(.+?)(?:\(|$)/.exec(r.name)[0] === rule.name
+            )[0];
 
-              return (
-                <Typography key={rule.name} fontSize={"14px"}>
-                  <span style={{ fontWeight: 600 }}>
-                    {RulesService.displayName(rule, rule.count)} -
-                  </span>
-                  <span> {ruleDefinition?.description || ""}</span>
-                </Typography>
-              );
-            });
-          })()
+            return (
+              <Typography key={rule.name} fontSize={"14px"}>
+                <span style={{ fontWeight: 600 }}>
+                  {RulesService.displayName(rule, rule.count)} -
+                </span>
+                <span> {ruleDefinition?.description || ""}</span>
+              </Typography>
+            );
+          });
+        })()
         : (() => {
-            const rules = groupMap(
-              unitRules,
-              (x) => x.name,
-              (group, key) => <RuleList key={key} specialRules={group} />
-            );
+          const rules = groupMap(
+            unitRules,
+            (x) => x.name,
+            (group, key) => <RuleList key={key} specialRules={group} />
+          );
 
-            const itemRulesElements = itemRules.map((item) => (
-              <span key={item.name}>
-                {item.count && `${item.count}x `}
-                {item.name}
-                {item.specialRules.length > 0 && (
-                  <span>
-                    (<RuleList specialRules={item.specialRules} />)
-                  </span>
-                )}
-              </span>
-            ));
+          const itemRulesElements = itemRules.map((item) => (
+            <span key={item.name}>
+              {item.count && `${item.count}x `}
+              {item.name}
+              {item.specialRules.length > 0 && (
+                <span>
+                  (<RuleList specialRules={item.specialRules} />)
+                </span>
+              )}
+            </span>
+          ));
 
-            return intersperse(rules.concat(itemRulesElements), <span>, </span>);
-          })()}
+          return intersperse(rules.concat(itemRulesElements), <span>, </span>);
+        })()}
     </Box>
   );
 
@@ -226,9 +229,11 @@ export function UnitCard({
               - {pointCost}pts
             </Typography>
           )}
+
         </>
       }
     >
+      {false && isRenamed && <Typography variant="body2"> ({unit.name})</Typography>}
       {joinedUnitText}
       {stats}
       {rulesSection}
@@ -246,9 +251,10 @@ export function UnitCard({
 interface SpellsCardProps {
   army: ArmyState;
   list: ListState;
+  force: boolean;
 }
 
-export function SpellsCard({ army, list }: SpellsCardProps) {
+export function SpellsCard({ army, list, force }: SpellsCardProps) {
   const isGrimdark = army.gameSystem.startsWith("gf");
   return (
     <>

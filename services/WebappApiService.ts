@@ -7,7 +7,7 @@ import UnitService from "./UnitService";
 
 export default class WebappApiService {
 
-  private static webCompanionUrl = "https://webapp.onepagerules.com/api";
+  private static webCompanionUrl = "https://opr-webapp-production.herokuapp.com/api";
 
   private static getUrl() {
     //return window.location.host.startsWith("localhost") ? "http://localhost:3000/api" : this.webCompanionUrl;
@@ -48,7 +48,7 @@ export default class WebappApiService {
 
     const cacheKey = "AF_Cache_game-rules-" + gameSystemSlug;
     try {
-      const res = await fetch(this.getUrl() + `/content/game-systems/${gameSystemSlug}/special-rules`);
+      const res = await fetch(this.getUrl() + `/public/game-systems/${gameSystemSlug}/common-rules`);
       const data = await res.json();
       this.cacheResponse(cacheKey, data);
       return data;
