@@ -7,7 +7,7 @@ import UnitService from "./UnitService";
 
 export default class WebappApiService {
 
-  private static webCompanionUrl = "https://opr-webapp-production.herokuapp.com/api";
+  private static webCompanionUrl = "https://webapp.onepagerules.com/api";
 
   private static getUrl() {
     //return window.location.host.startsWith("localhost") ? "http://localhost:3000/api" : this.webCompanionUrl;
