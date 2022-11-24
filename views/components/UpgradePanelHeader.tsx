@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Button, IconButton, Stack, TextField, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Create";
 import UpgradeService from "../../services/UpgradeService";
 import { addUnit, renameUnit } from "../../data/listSlice";
-import { RootState } from "../../data/store";
+import { RootState, useAppDispatch } from "../../data/store";
 import UnitService from "../../services/UnitService";
 import { debounce } from "throttle-debounce";
 
@@ -13,12 +13,13 @@ const ESCAPE_KEY: number = 27;
 
 export default function UpgradePanelHeader() {
   const list = useSelector((state: RootState) => state.list);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [editMode, setEditMode] = useState(false);
   const [customName, setCustomName] = useState("");
 
   const selectedUnit = list.unitPreview ?? UnitService.getSelected(list);
   const previewMode = !!list.unitPreview;
+  const isRenamed = selectedUnit.customName && (selectedUnit.customName !== selectedUnit.name);
 
   useEffect(() => {
     setCustomName(selectedUnit?.customName ?? selectedUnit?.name ?? "");
@@ -84,6 +85,7 @@ export default function UpgradePanelHeader() {
         </Stack>
         <Typography sx={{ ml: 1 }}>{UpgradeService.calculateUnitTotal(selectedUnit)}pts</Typography>
       </Stack>
+      {isRenamed && <Typography variant="body2">{selectedUnit.name}</Typography>}
       {previewMode && (
         <Button
           variant="contained"
