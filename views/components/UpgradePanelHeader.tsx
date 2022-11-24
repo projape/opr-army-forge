@@ -19,7 +19,7 @@ export default function UpgradePanelHeader() {
 
   const selectedUnit = list.unitPreview ?? UnitService.getSelected(list);
   const previewMode = !!list.unitPreview;
-  const isRenamed = selectedUnit.customName && (selectedUnit.customName !== selectedUnit.name);
+  const isRenamed = selectedUnit?.customName && (selectedUnit.customName !== selectedUnit.name);
 
   useEffect(() => {
     setCustomName(selectedUnit?.customName ?? selectedUnit?.name ?? "");
