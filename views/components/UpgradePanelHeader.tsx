@@ -19,6 +19,7 @@ export default function UpgradePanelHeader() {
 
   const selectedUnit = list.unitPreview ?? UnitService.getSelected(list);
   const previewMode = !!list.unitPreview;
+  const isRenamed = selectedUnit?.customName && (selectedUnit.customName !== selectedUnit.name);
 
   useEffect(() => {
     setCustomName(selectedUnit?.customName ?? selectedUnit?.name ?? "");
@@ -84,6 +85,7 @@ export default function UpgradePanelHeader() {
         </Stack>
         <Typography sx={{ ml: 1 }}>{UpgradeService.calculateUnitTotal(selectedUnit)}pts</Typography>
       </Stack>
+      {isRenamed && <Typography variant="body2">{selectedUnit.name}</Typography>}
       {previewMode && (
         <Button
           variant="contained"
