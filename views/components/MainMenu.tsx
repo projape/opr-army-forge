@@ -315,7 +315,7 @@ export function MainMenuOptions() {
           <ListItemText>Open a List</ListItemText>
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleCloudShare} disabled={true || !list.creationTime}>
+        <MenuItem onClick={handleCloudShare} disabled={!list.creationTime}>
           <ListItemIcon>
             <ShareIcon sx={sxIcon} />
           </ListItemIcon>
