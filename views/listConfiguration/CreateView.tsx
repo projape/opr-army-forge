@@ -109,6 +109,10 @@ export function CreateView(props: CreateViewProps) {
 
     // Add upgrades to heroes
     for (let hero of selections) {
+
+      // Add the hero to the list
+      const { payload }: any = await dispatch(addUnit(hero));
+
       const heroUpgradeSection = hero
         .upgrades
         .flatMap(x => armyBook.upgradePackages.find(pkg => pkg.uid === x).sections)
@@ -122,9 +126,6 @@ export function CreateView(props: CreateViewProps) {
 
       // Track the cost
       heroUpgradesCost += heroUpgrade.cost;
-
-      // Add the hero to the list
-      const { payload }: any = await dispatch(addUnit(hero));
 
       // Apply upgrade to the hero
       dispatch(applyUpgrade({ unitId: payload.selectionId, upgrade: heroUpgradeSection, option: heroUpgrade }));
@@ -154,6 +155,7 @@ export function CreateView(props: CreateViewProps) {
     let choices = [];
     // While there are still choices available
     while ((choices = getChoices("Core Units")).length > 0) {
+      console.log("Choices...", choices);
       selections.push(getRandomFrom(choices));
     }
     console.log("GEN All selections:", selections);
