@@ -31,6 +31,7 @@ export function CreateView(props: CreateViewProps) {
     localStorage["AF_AutoSave"] ? JSON.parse(localStorage["AF_AutoSave"]) : true
   );
   const armyId = router.query["armyId"] as string;
+  const isSkirmish = armyState.gameSystem === "gff" || armyState.gameSystem === "aofs";
 
   useEffect(() => {
     if (armyState.armyBooks?.length < 1) return;
@@ -173,7 +174,7 @@ export function CreateView(props: CreateViewProps) {
         const isEvenNumber = ++i % 2 === 0;
         const isHero = unit.specialRules.some((x) => x.name === "Hero");
 
-        if (isEvenNumber && !isHero && unit.size > 1) {
+        if (isEvenNumber && !isHero && !isSkirmish && unit.size > 1) {
           // Attach to last unit
           dispatch(addCombinedUnit(lastId));
           console.log("Combining unit", lastId);
@@ -221,7 +222,7 @@ in a 2000pts list, it should:
     !props.pointsLimit ||
     armyGenInvalid;
 
-  const isSkirmish = armyState.gameSystem === "gff" || armyState.gameSystem === "aofs";
+  
 
   const generateOptions = [
     { label: "Generate Starter List", action: () => generateArmy(), disabled: armyGenDisabled },
