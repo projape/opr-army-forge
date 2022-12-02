@@ -216,11 +216,18 @@ in a 2000pts list, it should:
     !props.pointsLimit ||
     armyGenInvalid;
 
+  const isSkirmish = armyState.gameSystem === "gff" || armyState.gameSystem === "aofs";
+
   const generateOptions = [
     { label: "Generate Starter List", action: () => generateArmy(), disabled: armyGenDisabled },
-    { label: "Generate Starter List (750pt)", action: () => generateArmy(750) },
-    { label: "Generate Starter List (2000pt)", action: () => generateArmy(2000) }
   ];
+
+  if (isSkirmish) {
+    generateOptions.push({ label: "Generate Starter List (250pt)", action: () => generateArmy(250) } as any);
+  } else {
+    generateOptions.push({ label: "Generate Starter List (750pt)", action: () => generateArmy(750) } as any);
+    generateOptions.push({ label: "Generate Starter List (2000pt)", action: () => generateArmy(2000) } as any);
+  }
 
   return (
     <>
@@ -241,7 +248,7 @@ in a 2000pts list, it should:
       </Stack>
       {armyGenDisabled && (
         <Typography align="center" variant="body2" sx={{ mt: 1 }}>
-          Enter a point limit to enable army generation.{" "}
+          Enter a point limit to enable army generation (or select a preset value).{" "}
           {armyGenInvalid ? "Points limit must be 150-4000 points." : ""}
         </Typography>
       )}
