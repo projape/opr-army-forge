@@ -119,7 +119,7 @@ export function CreateView(props: CreateViewProps) {
 
       const heroUpgradeSection = hero
         .upgrades
-        .flatMap(x => armyBook.upgradePackages.find(pkg => pkg.uid === x).sections)
+        .flatMap(x => armyBook.upgradePackages.find(pkg => pkg.uid === x)?.sections ?? [])
         .find(x => x.isHeroUpgrade === true);
 
       if (!heroUpgradeSection)
