@@ -114,6 +114,9 @@ export function CreateView(props: CreateViewProps) {
         .flatMap(x => armyBook.upgradePackages.find(pkg => pkg.uid === x).sections)
         .find(x => x.isHeroUpgrade === true);
 
+      if (!heroUpgradeSection)
+        continue;
+
       // get a random option from the hero upgrade section
       const heroUpgrade = getRandomFrom(heroUpgradeSection.options);
 
