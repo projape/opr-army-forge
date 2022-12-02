@@ -65,6 +65,14 @@ interface IRelease {
 
 const releaseNotes: IRelease[] = [
   {
+    version: "0.9.10",
+    date: "2022-12-02",
+    notes: [
+      "New features:",
+      "- Generation of starter lists",
+    ],
+  },
+  {
     version: "0.9.9",
     date: "2022-11-06",
     notes: [
