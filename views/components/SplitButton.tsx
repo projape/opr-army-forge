@@ -18,6 +18,7 @@ interface SplitButtonProps {
 interface SplitButtonOption {
   label: string;
   action: () => void;
+  disabled?: boolean;
 }
 
 export default function SplitButton({ options, disabled }: SplitButtonProps) {
@@ -55,7 +56,7 @@ export default function SplitButton({ options, disabled }: SplitButtonProps) {
   return (
     <React.Fragment>
       <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button" disabled={disabled}>
-        <Button onClick={handleClick} disabled={disabled}>{options[selectedIndex]?.label}</Button>
+        <Button onClick={handleClick} disabled={disabled || (options[selectedIndex].disabled === true)}>{options[selectedIndex]?.label}</Button>
         <Button
           size="small"
           aria-controls={open ? 'split-button-menu' : undefined}
@@ -91,7 +92,7 @@ export default function SplitButton({ options, disabled }: SplitButtonProps) {
                   {options.map((option, index) => (
                     <MenuItem
                       key={option.label}
-                      disabled={index === 2}
+                      disabled={option.disabled === true}
                       selected={index === selectedIndex}
                       onClick={(_) => handleMenuItemClick(index)}
                     >

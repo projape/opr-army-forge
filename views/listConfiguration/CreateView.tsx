@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getArmyBookData } from "../../data/armySlice";
-import { IUnit } from "../../data/interfaces";
+import { ISelectedUnit, IUnit } from "../../data/interfaces";
 import { addCombinedUnit, addUnit, applyUpgrade, createList } from "../../data/listSlice";
 import { RootState, useAppDispatch } from "../../data/store";
 import PersistenceService from "../../services/PersistenceService";
@@ -53,7 +53,7 @@ export function CreateView(props: CreateViewProps) {
     });
   };
 
-  const dispatchCreate = (campaignMode: boolean) => {
+  const dispatchCreate = (campaignMode: boolean, pointsLimitOverride?: number) => {
     const name = props.armyName || "My List";
 
     const creationTime = autoSave ? PersistenceService.createSave(armyState, name) : null;
@@ -65,7 +65,7 @@ export function CreateView(props: CreateViewProps) {
         name,
         units: [],
         points: 0,
-        pointsLimit: props.pointsLimit || 0,
+        pointsLimit: pointsLimitOverride ?? (props.pointsLimit || 0),
         creationTime: creationTime,
         campaignMode: campaignMode,
         gameSystem: armyState.gameSystem,
@@ -80,26 +80,27 @@ export function CreateView(props: CreateViewProps) {
     router.push({ pathname: "/list", query: { listId: creationTime } });
   };
 
-  const generateArmy = async () => {
+  const generateArmy = async (pointsLimitOverride?: number) => {
     console.group("ARMY GENERATE");
 
+    const pointsLimit = pointsLimitOverride ?? props.pointsLimit;
     const creationTime = dispatchCreate(false);
 
     const getRandomFrom = (array: any[]) => array[Math.floor(Math.random() * array.length)];
 
     const armyBook = armyState.loadedArmyBooks[0];
-    const units = armyBook.units;
+    const units: IUnit[] = JSON.parse(JSON.stringify(armyBook.units));
     const unitGroups = getUnitCategories(units);
     console.log("GEN unit groups", unitGroups);
 
     const heroPoints = 500;
-    const heroCount = Math.floor(props.pointsLimit / 500);
+    const heroCount = Math.floor(pointsLimit / 500);
 
-    let pointsRemaining = props.pointsLimit;
+    let pointsRemaining = pointsLimit;
     let heroUpgradesCost = 0;
     const selections: IUnit[] = [];
 
-    const getPointsRemaining = () => props.pointsLimit - _.sumBy(selections, (x) => x.cost) - heroUpgradesCost;
+    const getPointsRemaining = () => pointsLimit - _.sumBy(selections, (x) => x.cost) - heroUpgradesCost;
 
     // Add Heroes
     selections.push(...new Array(heroCount)
@@ -130,10 +131,10 @@ export function CreateView(props: CreateViewProps) {
       unitGroups[category]
         .filter((x) => x.cost <= (pointLimit ?? getPointsRemaining()))
         // no unit may be worth >33% of total point cost
-        .filter((x) => x.cost <= props.pointsLimit * 0.3333);
+        .filter((x) => x.cost <= pointsLimit * 0.3333);
 
     const vehicles = (() => {
-      let vehicleMax = props.pointsLimit * 0.3333;
+      let vehicleMax = pointsLimit * 0.3333;
       let vehicleRemaining = vehicleMax;
       const vehicles = [];
       let choices = [];
@@ -176,9 +177,15 @@ export function CreateView(props: CreateViewProps) {
         else if (!isHero) {
           const { payload }: any = await dispatch(addUnit(unit));
           console.log("GEN added unit", payload);
-          lastId = payload.selectionId;
+          lastId = (unit as ISelectedUnit).selectionId = payload.selectionId;
         }
       }
+    }
+
+    // For each hero, again - work out join candidates
+    for (let hero of selections.filter(u => u.specialRules.some((x) => x.name === "Hero"))) {
+      const joinCandidates = selections.filter(u => (u as any).selectionId && u.size > 1);
+      console.log("joinCandidates", joinCandidates);
     }
 
     /*
@@ -201,18 +208,18 @@ in a 2000pts list, it should:
     router.push({ pathname: "/list", query: { listId: creationTime } });
   };
 
+  const loaded = armyState.loadedArmyBooks.length > 0;
   const armyGenInvalid =
     props.pointsLimit > 0 && (props.pointsLimit > 4000 || props.pointsLimit < 150);
   const armyGenDisabled =
-    armyState.loadingArmyData ||
-    armyState.loadedArmyBooks.length === 0 ||
+    !loaded ||
     !props.pointsLimit ||
     armyGenInvalid;
 
   const generateOptions = [
-    { label: "Generate Starter List", action: () => generateArmy() },
-    { label: "Generate Starter List (800pt)", action: () => generateArmy() },
-    { label: "Generate Starter List (2000pt)", action: () => generateArmy() }
+    { label: "Generate Starter List", action: () => generateArmy(), disabled: armyGenDisabled },
+    { label: "Generate Starter List (750pt)", action: () => generateArmy(750) },
+    { label: "Generate Starter List (2000pt)", action: () => generateArmy(2000) }
   ];
 
   return (
@@ -230,7 +237,7 @@ in a 2000pts list, it should:
 
         <SplitButton
           options={generateOptions}
-          disabled={armyGenDisabled || armyGenInvalid} />
+          disabled={!loaded} />
       </Stack>
       {armyGenDisabled && (
         <Typography align="center" variant="body2" sx={{ mt: 1 }}>
