@@ -35,9 +35,9 @@ export default function ValidationErrors({ open, setOpen }) {
 }
 
 export const competitiveGoogleDriveLinks = {
-  gf: "https://drive.google.com/file/d/1UVOOMeHRstZhjfXKrq826KlkM2N0Gvc7/view?usp=sharing",
-  gff: "https://drive.google.com/file/d/1UJtD01GzDpfN6qNtIofYTHeuFdhbG9cX/view?usp=sharing",
-  aof: "https://drive.google.com/file/d/1ThYIF-bpU1Bq0vDwT0N479fsAdT4Ch-_/view?usp=sharing",
-  aofs: "https://drive.google.com/file/d/1UgrqUD2T0CmrjSSczm4NAFbiQB1Mm5FB/view?usp=sharing",
-  aofr: "https://drive.google.com/file/d/1ThYIF-bpU1Bq0vDwT0N479fsAdT4Ch-_/view?usp=sharing",
+  gf: "https://drive.google.com/drive/folders/1EkkrFT5yqDLzeSAM_VfPbSYTE8ITbb7i",
+  gff: "https://drive.google.com/drive/folders/1m_6Iw5pf20eaL9sROO7efbIdvFBxjZSD",
+  aof: "https://drive.google.com/drive/folders/19ebqbc_jqtfmgn73zx-9M3yIkuSLhQWw",
+  aofs: "https://drive.google.com/drive/folders/1UhNNOiXpKLh9ClYZ0MMLSWZVKNGrhZtY",
+  aofr: "https://drive.google.com/drive/folders/19ebqbc_jqtfmgn73zx-9M3yIkuSLhQWw",
 };
