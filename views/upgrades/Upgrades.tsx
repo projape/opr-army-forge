@@ -25,6 +25,7 @@ import { CustomTooltip } from "../components/CustomTooltip";
 import CampaignUpgrades from "./CampaignUpgrades";
 import { IGameRule } from "../../data/armySlice";
 import UnitNotes from "../components/UnitNotes";
+import { Fragment } from "react";
 
 export function Upgrades() {
   const list = useSelector((state: RootState) => state.list);
@@ -226,7 +227,7 @@ export function Upgrades() {
       )}
       <Box sx={{ pb: 4 }}>
         {upgradeSets.map((pkg: IUpgradePackage) => (
-          <Box key={pkg.uid}>
+          <Fragment key={pkg.uid}>
             {pkg.sections
               .filter((section) => selectedUnit.disabledUpgradeSections.indexOf(section.uid) === -1)
               .map((u, i) => (
@@ -237,7 +238,7 @@ export function Upgrades() {
                   previewMode={previewMode}
                 />
               ))}
-          </Box>
+          </Fragment>
         ))}
       </Box>
     </>

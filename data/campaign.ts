@@ -199,7 +199,7 @@ export const traitDefinitions = {
       },
       {
         "name": "Elite",
-        "description": "May re-roll one die of any kind once per game."
+        "description": "May re-roll one die of any kind once per round."
       }
     ],
     "heroes": [
@@ -551,7 +551,7 @@ export const traitDefinitions = {
       },
       {
         "name": "Elite",
-        "description": "May re-roll one die of any kind once per game."
+        "description": "May re-roll one die of any kind once per round."
       }
     ],
     "heroes": [

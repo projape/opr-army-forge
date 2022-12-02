@@ -10,8 +10,8 @@ export default class WebappApiService {
   private static webCompanionUrl = "https://webapp.onepagerules.com/api";
 
   private static getUrl() {
-    //return window.location.host.startsWith("localhost") ? "http://localhost:3000/api" : this.webCompanionUrl;
-    return this.webCompanionUrl;
+    return window.location.host.startsWith("localhost") ? "http://localhost:3000/api" : this.webCompanionUrl;
+    //return this.webCompanionUrl;
   }
 
   private static cacheResponse(key: string, res: any) {
