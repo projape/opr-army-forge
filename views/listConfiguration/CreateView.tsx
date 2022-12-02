@@ -102,11 +102,14 @@ export function CreateView(props: CreateViewProps) {
     const selections: IUnit[] = [];
 
     const getPointsRemaining = () => pointsLimit - _.sumBy(selections, (x) => x.cost) - heroUpgradesCost;
-
+    const availableHeroes = unitGroups
+      .Heroes
+      .filter((x) => x.cost <= pointsLimit * 0.3333);
+      
     // Add Heroes
     selections.push(...new Array(heroCount)
       .fill(null)
-      .map((x) => getRandomFrom(unitGroups.Heroes)));
+      .map((x) => getRandomFrom(availableHeroes)));
 
     // Add upgrades to heroes
     for (let hero of selections) {
@@ -222,7 +225,7 @@ in a 2000pts list, it should:
     !props.pointsLimit ||
     armyGenInvalid;
 
-  
+
 
   const generateOptions = [
     { label: "Generate Starter List", action: () => generateArmy(), disabled: armyGenDisabled },
