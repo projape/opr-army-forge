@@ -84,6 +84,7 @@ export interface IUpgrade {
   attachModel?: boolean;
   options?: IUpgradeOption[];
   isCommandGroup: boolean;
+  isHeroUpgrade?: boolean;
 }
 
 export interface IUpgradeOption {

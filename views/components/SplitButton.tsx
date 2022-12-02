@@ -26,7 +26,7 @@ export default function SplitButton({ options, disabled }: SplitButtonProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleClick = () => {
-    console.info(`You clicked ${options[selectedIndex]}`);
+    options[selectedIndex].action();
   };
 
   const handleMenuItemClick = (
@@ -34,6 +34,7 @@ export default function SplitButton({ options, disabled }: SplitButtonProps) {
   ) => {
     setSelectedIndex(index);
     setOpen(false);
+    options[index].action();
   };
 
   const handleToggle = () => {

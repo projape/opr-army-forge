@@ -11,7 +11,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getArmyBookData } from "../../data/armySlice";
-import { addCombinedUnit, addUnit, createList } from "../../data/listSlice";
+import { IUnit } from "../../data/interfaces";
+import { addCombinedUnit, addUnit, applyUpgrade, createList } from "../../data/listSlice";
 import { RootState, useAppDispatch } from "../../data/store";
 import PersistenceService from "../../services/PersistenceService";
 import SplitButton from "../components/SplitButton";
@@ -94,13 +95,40 @@ export function CreateView(props: CreateViewProps) {
     const heroPoints = 500;
     const heroCount = Math.floor(props.pointsLimit / 500);
 
-    const selections = new Array(heroCount).fill(null).map((x) => getRandomFrom(unitGroups.Heroes));
-
     let pointsRemaining = props.pointsLimit;
+    let heroUpgradesCost = 0;
+    const selections: IUnit[] = [];
+
+    const getPointsRemaining = () => props.pointsLimit - _.sumBy(selections, (x) => x.cost) - heroUpgradesCost;
+
+    // Add Heroes
+    selections.push(...new Array(heroCount)
+      .fill(null)
+      .map((x) => getRandomFrom(unitGroups.Heroes)));
+
+    // Add upgrades to heroes
+    for (let hero of selections) {
+      const heroUpgradeSection = hero
+        .upgrades
+        .flatMap(x => armyBook.upgradePackages.find(pkg => pkg.uid === x).sections)
+        .find(x => x.isHeroUpgrade === true);
+
+      // get a random option from the hero upgrade section
+      const heroUpgrade = getRandomFrom(heroUpgradeSection.options);
+
+      // Track the cost
+      heroUpgradesCost += heroUpgrade.cost;
+
+      // Add the hero to the list
+      const { payload }: any = await dispatch(addUnit(hero));
+
+      // Apply upgrade to the hero
+      dispatch(applyUpgrade({ unitId: payload.selectionId, upgrade: heroUpgradeSection, option: heroUpgrade }));
+    }
 
     const getChoices = (category: string, pointLimit?: number) =>
       unitGroups[category]
-        .filter((x) => x.cost <= (pointLimit ?? pointsRemaining))
+        .filter((x) => x.cost <= (pointLimit ?? getPointsRemaining()))
         // no unit may be worth >33% of total point cost
         .filter((x) => x.cost <= props.pointsLimit * 0.3333);
 
@@ -113,7 +141,6 @@ export function CreateView(props: CreateViewProps) {
       while ((choices = getChoices("Vehicles / Monsters", vehicleRemaining)).length > 0) {
         vehicles.push(getRandomFrom(choices));
         vehicleRemaining = vehicleMax - _.sumBy(vehicles, (x) => x.cost);
-        pointsRemaining = props.pointsLimit - _.sumBy(selections, (x) => x.cost);
       }
       return vehicles;
     })();
@@ -124,7 +151,6 @@ export function CreateView(props: CreateViewProps) {
     // While there are still choices available
     while ((choices = getChoices("Core Units")).length > 0) {
       selections.push(getRandomFrom(choices));
-      pointsRemaining = props.pointsLimit - _.sumBy(selections, (x) => x.cost);
     }
     console.log("GEN All selections:", selections);
     console.log("GEN Points left...", pointsRemaining);
@@ -145,7 +171,9 @@ export function CreateView(props: CreateViewProps) {
           // Attach to last unit
           dispatch(addCombinedUnit(lastId));
           console.log("Combining unit", lastId);
-        } else {
+        }
+        // Heroes are already added above
+        else if (!isHero) {
           const { payload }: any = await dispatch(addUnit(unit));
           console.log("GEN added unit", payload);
           lastId = payload.selectionId;
