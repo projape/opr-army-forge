@@ -85,7 +85,7 @@ export function CreateView(props: CreateViewProps) {
     console.group("ARMY GENERATE");
 
     const pointsLimit = pointsLimitOverride ?? props.pointsLimit;
-    const creationTime = dispatchCreate(false);
+    const creationTime = dispatchCreate(false, pointsLimit);
 
     const getRandomFrom = (array: any[]) => array[Math.floor(Math.random() * array.length)];
 

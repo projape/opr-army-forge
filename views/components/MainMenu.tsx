@@ -107,26 +107,23 @@ export default function MainMenu() {
                 placement="bottom-end"
                 anchorEl={validationAnchorElement}
                 open={Boolean(validationAnchorElement) && isBigScreen}
-                // onClose={_ => setValidationAnchorElement(null)}
+              // onClose={_ => setValidationAnchorElement(null)}
               >
                 <ClickAwayListener onClickAway={(_) => setValidationAnchorElement(null)}>
                   <Paper>
                     <List>
                       <ListItem divider>
                         <ListItemText>
-                          <p style={{ fontWeight: 600 }}>Competitive List Validation</p>
-                          <p className="mt-2" style={{ color: "rgba(0,0,0,.66)" }}>
-                            These rules are <span style={{ fontWeight: 600 }}>optional</span>. See
-                            the{" "}
-                            <a
+                          <Typography>Competitive List Validation</Typography>
+                          <Typography color="text.secondary" sx={{mt:1, maxWidth: "480px" }}>
+                            Note: <span style={{ fontWeight: 600 }}>If you are playing with the optional competitive rules</span>,
+                            your current list is not valid because it breaks the army composition restrictions shown below. Download the <a
                               href={competitiveRulesLink}
                               target="_blank"
                               style={{ textDecoration: "underline" }}
-                            >
-                              competitive rules document
-                            </a>{" "}
-                            for more info.
-                          </p>
+                            >competitive rules here.</a>
+
+                          </Typography>
                         </ListItemText>
                       </ListItem>
                       {errors.map((error, index) => (

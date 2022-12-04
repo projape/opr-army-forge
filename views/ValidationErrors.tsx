@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemText, Dialog, DialogTitle } from "@mui/material";
+import { List, ListItem, ListItemText, Dialog, DialogTitle, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../data/store";
 import _ from "lodash";
@@ -13,16 +13,18 @@ export default function ValidationErrors({ open, setOpen }) {
 
   return (
     <Dialog onClose={() => setOpen(false)} open={open}>
-      <DialogTitle className="pb-0">Competitive List Validation</DialogTitle>
+      <DialogTitle sx={{ pb: 0 }}>Competitive List Validation</DialogTitle>
       <List>
-        <ListItem>
-          <p style={{ color: "rgba(0,0,0,.66)" }}>
-            These rules are <span style={{ fontWeight: 600 }}>optional</span>. See the{" "}
-            <a href={competitiveRulesLink} target="_blank" style={{ textDecoration: "underline" }}>
-              competitive rules document
-            </a>{" "}
-            for more info.
-          </p>
+        <ListItem sx={{ pt: 0 }}>
+          <Typography color="text.secondary">
+            Note: <span style={{ fontWeight: 600 }}>If you are playing with the optional competitive rules</span>,
+            your current list is not valid because it breaks the army composition restrictions shown below. Download the <a
+              href={competitiveRulesLink}
+              target="_blank"
+              style={{ textDecoration: "underline" }}
+            >competitive rules here.</a>
+
+          </Typography>
         </ListItem>
         {errors.map((error, index) => (
           <ListItem key={index} divider>
