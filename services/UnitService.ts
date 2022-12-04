@@ -240,6 +240,10 @@ export default class UnitService {
   }
 
   public static getTough(unit: ISelectedUnit) {
+
+    if (!unit || !unit.specialRules)
+      return 1;
+
     let baseTough: number = 0;
 
     baseTough += unit.specialRules.reduce((tough, rule) => {
