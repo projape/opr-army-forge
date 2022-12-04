@@ -30,6 +30,7 @@ export function CreateView(props: CreateViewProps) {
   const [autoSave, setAutoSave] = useState(
     localStorage["AF_AutoSave"] ? JSON.parse(localStorage["AF_AutoSave"]) : true
   );
+  const [competitive, setCompetitive] = useState(false);
   const armyId = router.query["armyId"] as string;
   const isSkirmish = armyState.gameSystem === "gff" || armyState.gameSystem === "aofs";
 
@@ -69,6 +70,7 @@ export function CreateView(props: CreateViewProps) {
         pointsLimit: pointsLimitOverride ?? (props.pointsLimit || 0),
         creationTime: creationTime,
         campaignMode: campaignMode,
+        competitive: competitive,
         gameSystem: armyState.gameSystem,
       })
     );
@@ -105,7 +107,7 @@ export function CreateView(props: CreateViewProps) {
     const availableHeroes = unitGroups
       .Heroes
       .filter((x) => x.cost <= pointsLimit * 0.3333);
-      
+
     // Add Heroes
     selections.push(...new Array(heroCount)
       .fill(null)
@@ -245,6 +247,10 @@ in a 2000pts list, it should:
           control={<Checkbox checked={autoSave} onClick={toggleAutoSave} />}
           label="Auto-save changes"
         />
+        <FormControlLabel
+          control={<Checkbox checked={competitive} onClick={() => setCompetitive(x => !x)} />}
+          label="Competitive Validation"
+        />
       </FormGroup>
       <Stack alignItems="center" spacing={2} mt={2}>
         <SplitButton
@@ -254,13 +260,14 @@ in a 2000pts list, it should:
         <SplitButton
           options={generateOptions}
           disabled={!loaded} />
+
+        {armyGenDisabled && (
+          <Typography align="center" variant="body2" sx={{ mt: 1 }}>
+            Enter a point limit to enable army generation (or select a preset value).{" "}
+            {armyGenInvalid ? "Points limit must be 150-4000 points." : ""}
+          </Typography>
+        )}
       </Stack>
-      {armyGenDisabled && (
-        <Typography align="center" variant="body2" sx={{ mt: 1 }}>
-          Enter a point limit to enable army generation (or select a preset value).{" "}
-          {armyGenInvalid ? "Points limit must be 150-4000 points." : ""}
-        </Typography>
-      )}
     </>
   );
 }

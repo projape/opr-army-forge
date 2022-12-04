@@ -17,8 +17,7 @@ export default function ValidationErrors({ open, setOpen }) {
       <List>
         <ListItem sx={{ pt: 0 }}>
           <Typography color="text.secondary">
-            Note: <span style={{ fontWeight: 600 }}>If you are playing with the optional competitive rules</span>,
-            your current list is not valid because it breaks the army composition restrictions shown below. Download the <a
+            The current list is not valid because it breaks the army composition restrictions shown below. Download the <a
               href={competitiveRulesLink}
               target="_blank"
               style={{ textDecoration: "underline" }}

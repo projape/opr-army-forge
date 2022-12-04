@@ -32,7 +32,7 @@ export function Upgrades() {
   const { gameSystem, loadedArmyBooks, rules } = useSelector((state: RootState) => state.army);
   const dispatch = useDispatch();
 
-  const competitive = false;
+  const competitive = list.competitive ?? false;
   const previewMode = !!list.unitPreview;
   const selectedUnit = list.unitPreview ?? UnitService.getSelected(list);
   const army = selectedUnit && loadedArmyBooks?.find((book) => book.uid === selectedUnit.armyId);

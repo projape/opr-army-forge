@@ -19,6 +19,7 @@ export interface ListState {
   points: number;
   unitPreview?: ISelectedUnit;
   campaignMode?: boolean;
+  competitive?: boolean;
   id?: string;
   key?: string;
   gameSystem: string;
@@ -35,6 +36,7 @@ const initialState: ListState = {
   points: 0,
   unitPreview: null,
   campaignMode: false,
+  competitive: false,
   gameSystem: ""
 };
 
