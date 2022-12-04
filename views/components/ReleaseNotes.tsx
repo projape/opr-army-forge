@@ -65,6 +65,17 @@ interface IRelease {
 
 const releaseNotes: IRelease[] = [
   {
+    version: "0.9.11",
+    date: "2022-12-04",
+    notes: [
+      "New features:",
+      "- Competitive Validation now opt-in",
+      "  - Restricts hero join options",
+      "  - Restricts combine unit for units of size [1]",
+      "  - Non-competitive lists will no longer show competitive army composition validation"
+    ],
+  },
+  {
     version: "0.9.10",
     date: "2022-12-02",
     notes: [

@@ -38,6 +38,7 @@ export function Upgrades() {
   const army = selectedUnit && loadedArmyBooks?.find((book) => book.uid === selectedUnit.armyId);
   const armyRules = loadedArmyBooks.flatMap((x) => x.specialRules);
   const ruleDefinitions: IGameRule[] = rules.concat(armyRules);
+  const toughness = UnitService.getTough(selectedUnit);
 
   const getUpgradeSet = (id) => army.upgradePackages.filter((s) => s.uid === id)[0];
 
@@ -177,6 +178,7 @@ export function Upgrades() {
   const joinToUnitControl = () =>
     !previewMode &&
     !isSkirmish &&
+    (!competitive || toughness <= 6) &&
     isHero && (
       <FormGroup>
         <FormControl fullWidth>

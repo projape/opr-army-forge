@@ -101,7 +101,7 @@ export function UnitCard({
   ruleDefinitions,
   traitDefinitions,
 }: UnitCardProps) {
-  const toughness = toughFromUnit(unit);
+  const toughness = UnitService.getTough(unit);
   const tinyScreen = useMediaQuery("(max-width: 420px)", { noSsr: true });
 
   const unitRules = unit.specialRules
@@ -279,24 +279,4 @@ export function SpellsCard({ army, list, force }: SpellsCardProps) {
       })}
     </>
   );
-}
-
-function toughFromUnit(unit: ISelectedUnit) {
-  let baseTough: number = 0;
-
-  baseTough += unit.specialRules.reduce((tough, rule) => {
-    if (rule.name === "Tough") {
-      tough += parseInt(rule.rating);
-    }
-    return tough;
-  }, 0);
-
-  baseTough += UnitService.getAllUpgradedRules(unit).reduce((tough, { name, rating }) => {
-    if (name === "Tough") {
-      tough += parseInt(rating);
-    }
-    return tough;
-  }, 0);
-
-  return baseTough || 1;
 }
