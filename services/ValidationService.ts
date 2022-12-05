@@ -110,8 +110,9 @@ export default class ValidationService {
 
       // 1 model per full 20pts
       const modelCount = _.sumBy(units, u => u.size);
+      const modelLimit = Math.floor(points / 20);
       if (modelCount > Math.floor(points / 20))
-        errors.push(`Max 1 model per full 20pts.`);
+        errors.push(`Max 1 model per full 20pts. Maximum valid number of models is ${modelLimit}, current total is ${modelCount}.`);
     }
 
     if (army.gameSystem === "aofs") {
