@@ -51,7 +51,7 @@ export default class WebappApiService {
       //https://webapp.onepagerules.com/api/content/game-systems/grimdark-future/special-rules
       //const res = await fetch(this.getUrl() + `/content/game-systems/${gameSystemSlug}/special-rules`);
       //https://www.projape.net/checker/api/index.php?specialid=grimdark-future
-      const res = await fetch(`https://projape.net/checker/api/index.php?specialid=${gameSystemSlug}`);
+      const res = await fetch(`https://projape.net/checker/api.php?specialid=${gameSystemSlug}`);
       const data = await res.json();
       this.cacheResponse(cacheKey, data);
       return data;
@@ -69,7 +69,7 @@ export default class WebappApiService {
 
       //const url = this.getUrl() + `/army-books/${armyId}~${gameSystemId}?armyForge=true`;
       //https://www.projape.net/checker/api/index.php?id=w7qor7b2kuifcyvk~3
-      const url = "https://projape.net/checker/api/index.php?id=" + armyId + "~" + gameSystemId;
+      const url = "https://projape.net/checker/api.php?id=" + armyId + "~" + gameSystemId;
       console.log("Fetching army data from", url);
 
       const armyBookRes = await fetch(url);
