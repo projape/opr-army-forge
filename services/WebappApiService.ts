@@ -48,7 +48,7 @@ export default class WebappApiService {
 
     const cacheKey = "AF_Cache_game-rules-" + gameSystemSlug;
     try {
-      const res = await fetch(this.getUrl() + `/content/game-systems/${gameSystemSlug}/special-rules`);
+      const res = await fetch(this.getUrl() + `/public/game-systems/${gameSystemSlug}/common-rules`);
       const data = await res.json();
       this.cacheResponse(cacheKey, data);
       return data;

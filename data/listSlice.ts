@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ISelectedUnit, IUnit, IUpgrade, IUpgradeOption } from './interfaces';
 import UpgradeService from '../services/UpgradeService';
 import { debounce } from 'throttle-debounce';
@@ -19,6 +19,7 @@ export interface ListState {
   points: number;
   unitPreview?: ISelectedUnit;
   campaignMode?: boolean;
+  competitive?: boolean;
   id?: string;
   key?: string;
   gameSystem: string;
@@ -35,6 +36,7 @@ const initialState: ListState = {
   points: 0,
   unitPreview: null,
   campaignMode: false,
+  competitive: false,
   gameSystem: ""
 };
 
@@ -42,8 +44,13 @@ const debounceSave = debounce(1500, (state: ListState) => {
   PersistenceService.updateSave(state);
 });
 
+export const addUnit = createAsyncThunk("list/addUnit", async (unit: IUnit) => {
+  const selectedUnit = UnitService.createUnitFromDefinition(unit);
+  return UpgradeService.buildUpgrades(selectedUnit);
+});
+
 export const listSlice = createSlice({
-  name: 'army',
+  name: 'list',
   initialState,
   reducers: {
     resetList: (state) => {
@@ -281,6 +288,7 @@ export const listSlice = createSlice({
     removeUnitsForBook(state, action: PayloadAction<string>) {
       const armyBookId = action.payload;
       state.units = state.units.filter(unit => unit.armyId !== armyBookId);
+      state.points = UpgradeService.calculateListTotal(state.units);
     },
     previewUnit(state, action: PayloadAction<ISelectedUnit>) {
       const unit: ISelectedUnit = makeCopy(action.payload);
@@ -323,13 +331,25 @@ export const listSlice = createSlice({
       debounceSave(current(state));
     }
   },
+  extraReducers: (builder) => {
+    // Add reducers for additional action types here, and handle loading state as needed
+    builder.addCase(addUnit.fulfilled, (state, action: PayloadAction<ISelectedUnit>) => {
+      const unit = action.payload;
+      state.units.push(unit);
+      state.selectedUnitId = unit.selectionId;
+      state.unitPreview = null;
+      state.points = UpgradeService.calculateListTotal(state.units);
+
+      debounceSave(current(state));
+    })
+  },
 })
 
 // Action creators are generated for each case reducer function
 export const {
   resetList,
   createList,
-  addUnit,
+  //addUnit,
   applyUpgrade,
   removeUpgrade,
   addCombinedUnit,

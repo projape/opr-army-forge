@@ -238,4 +238,28 @@ export default class UnitService {
 
     return disabledSections;
   }
+
+  public static getTough(unit: ISelectedUnit) {
+
+    if (!unit || !unit.specialRules)
+      return 1;
+
+    let baseTough: number = 0;
+
+    baseTough += unit.specialRules.reduce((tough, rule) => {
+      if (rule.name === "Tough") {
+        tough += parseInt(rule.rating);
+      }
+      return tough;
+    }, 0);
+
+    baseTough += UnitService.getAllUpgradedRules(unit).reduce((tough, { name, rating }) => {
+      if (name === "Tough") {
+        tough += parseInt(rating);
+      }
+      return tough;
+    }, 0);
+
+    return baseTough || 1;
+  }
 }

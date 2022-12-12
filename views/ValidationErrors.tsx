@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemText, Dialog, DialogTitle } from "@mui/material";
+import { List, ListItem, ListItemText, Dialog, DialogTitle, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../data/store";
 import _ from "lodash";
@@ -13,16 +13,17 @@ export default function ValidationErrors({ open, setOpen }) {
 
   return (
     <Dialog onClose={() => setOpen(false)} open={open}>
-      <DialogTitle className="pb-0">Competitive List Validation</DialogTitle>
+      <DialogTitle sx={{ pb: 0 }}>Competitive List Validation</DialogTitle>
       <List>
-        <ListItem>
-          <p style={{ color: "rgba(0,0,0,.66)" }}>
-            These rules are <span style={{ fontWeight: 600 }}>optional</span>. See the{" "}
-            <a href={competitiveRulesLink} target="_blank" style={{ textDecoration: "underline" }}>
-              competitive rules document
-            </a>{" "}
-            for more info.
-          </p>
+        <ListItem sx={{ pt: 0 }}>
+          <Typography color="text.secondary">
+            The current list is not valid because it breaks the army composition restrictions shown below. Download the <a
+              href={competitiveRulesLink}
+              target="_blank"
+              style={{ textDecoration: "underline" }}
+            >competitive rules here.</a>
+
+          </Typography>
         </ListItem>
         {errors.map((error, index) => (
           <ListItem key={index} divider>
@@ -35,9 +36,9 @@ export default function ValidationErrors({ open, setOpen }) {
 }
 
 export const competitiveGoogleDriveLinks = {
-  gf: "https://drive.google.com/file/d/1UVOOMeHRstZhjfXKrq826KlkM2N0Gvc7/view?usp=sharing",
-  gff: "https://drive.google.com/file/d/1UJtD01GzDpfN6qNtIofYTHeuFdhbG9cX/view?usp=sharing",
-  aof: "https://drive.google.com/file/d/1ThYIF-bpU1Bq0vDwT0N479fsAdT4Ch-_/view?usp=sharing",
-  aofs: "https://drive.google.com/file/d/1UgrqUD2T0CmrjSSczm4NAFbiQB1Mm5FB/view?usp=sharing",
-  aofr: "https://drive.google.com/file/d/1ThYIF-bpU1Bq0vDwT0N479fsAdT4Ch-_/view?usp=sharing",
+  gf: "https://drive.google.com/drive/folders/1EkkrFT5yqDLzeSAM_VfPbSYTE8ITbb7i",
+  gff: "https://drive.google.com/drive/folders/1m_6Iw5pf20eaL9sROO7efbIdvFBxjZSD",
+  aof: "https://drive.google.com/drive/folders/19ebqbc_jqtfmgn73zx-9M3yIkuSLhQWw",
+  aofs: "https://drive.google.com/drive/folders/1UhNNOiXpKLh9ClYZ0MMLSWZVKNGrhZtY",
+  aofr: "https://drive.google.com/drive/folders/19ebqbc_jqtfmgn73zx-9M3yIkuSLhQWw",
 };

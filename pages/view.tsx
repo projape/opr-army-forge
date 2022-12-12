@@ -203,7 +203,7 @@ export default function View() {
         {!preferences.showFullRules && (
           <Box mb={6}>
             <SpecialRulesCard
-              usedRules={usedRules}
+              usedRules={usedRules as string[]}
               spells={containsPsychic ? armySpells : []}
               ruleDefinitions={ruleDefinitions.concat(traitDefinitions as any[])}
             />

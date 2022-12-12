@@ -85,7 +85,7 @@ export default function ViewTable({ prefs }: ViewTableProps) {
               })}
         </Table>
       </TableContainer>
-      {prefs.showPsychic && <SpellsCard army={army} list={list} />}
+      <SpellsCard army={army} list={list} force={prefs.showPsychic} />
     </>
   );
 }

@@ -2,6 +2,7 @@ import { ListState } from "../data/listSlice";
 import _ from "lodash";
 import { ArmyState } from "../data/armySlice";
 import UpgradeService from "./UpgradeService";
+import UnitService from "./UnitService";
 
 const unitPointThresholds = {
   "gf": 200,
@@ -56,6 +57,9 @@ export default class ValidationService {
       }))
       .filter((grp) => grp.count > duplicateUnitLimit);
 
+    const fullUnits = UnitService.getFullUnitList(units, false);
+    const maxAllowedSingleUnit = points * 0.3333;
+
     //#region All Game Systems
 
     if (heroCount > Math.floor(points / heroPointThresholds[system]))
@@ -71,9 +75,25 @@ export default class ValidationService {
     if (unitsOverDuplicateLimit.length > 0)
       errors.push(`Cannot have more than ${duplicateUnitLimit} copies of a particular unit (${unitsOverDuplicateLimit.map(x => x.unitName).join(", ")}).`); // combined units still count as one
 
+      console.log("fullUnits", fullUnits);
+      console.log("maxAllowedSingleUnit", maxAllowedSingleUnit);
+    if (fullUnits.some(u => u.unitPointsAll > maxAllowedSingleUnit))
+      errors.push("May not bring any single unit worth more than 33% of total points.");
+
     //#endregion
 
-    if (army.gameSystem === "gf" || army.gameSystem === "aof" || army.gameSystem === "aofr") {
+    /*
+    all games - "Players may not bring any single unit worth more than 33% of their total points."
+    skirmish games - "Players must configure their lists so that they only have a max. of 1 model in play per full 20pts in their list."
+    for battle games: "Example: For a 2000pts game, you can take max. 4 heroes, max. 3 copies of each unit, no unit worth over 660pts, and max. 10 units in total."
+    for skirmish games: "Example: For a 300pts game, you can take max. 2 heroes, max. 3 copies of each unit, no unit worth over 99pts, max. 10 units in total, and max. 15 models."
+     */
+
+    const isBattleSystem = army.gameSystem === "gf" || army.gameSystem === "aof" || army.gameSystem === "aofr";
+    const isSkirmishSystem = army.gameSystem === "gff" || army.gameSystem === "aofs";
+
+
+    if (isBattleSystem) {
 
       if (units.some(u => u.combined && u.size === 1))
         errors.push(`Cannot combine units of unit size [1].`);
@@ -86,6 +106,12 @@ export default class ValidationService {
 
       if (joinedHeroes.some(hero => list.units.find(unit => unit.selectionId === hero.joinToUnit).armyId !== hero.armyId))
         errors.push(`Heroes only join units from their own faction.`);
+    } else if (isSkirmishSystem) {
+
+      // 1 model per full 20pts
+      const modelCount = _.sumBy(units, u => u.size);
+      if (modelCount > Math.floor(points / 20))
+        errors.push(`Max 1 model per full 20pts.`);
     }
 
     if (army.gameSystem === "aofs") {
@@ -97,7 +123,7 @@ export default class ValidationService {
       const musiciansCount = musicians.length;
       const battleStandards = units.filter(u => u.selectedUpgrades.some(upgrade => upgrade.option.label === "Battle Standard"));
       const battleStandrdsCount = battleStandards.length;
-  
+
       if (sergeantsCount + musiciansCount + battleStandrdsCount > 1) {
         errors.push(`Max 1 of the following upgrades per army (not one of each!): Sergeant, Musician or Battle Standard.`);
       }

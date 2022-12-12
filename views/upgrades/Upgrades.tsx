@@ -25,18 +25,20 @@ import { CustomTooltip } from "../components/CustomTooltip";
 import CampaignUpgrades from "./CampaignUpgrades";
 import { IGameRule } from "../../data/armySlice";
 import UnitNotes from "../components/UnitNotes";
+import { Fragment } from "react";
 
 export function Upgrades() {
   const list = useSelector((state: RootState) => state.list);
   const { gameSystem, loadedArmyBooks, rules } = useSelector((state: RootState) => state.army);
   const dispatch = useDispatch();
 
-  const competitive = false;
+  const competitive = list.competitive ?? false;
   const previewMode = !!list.unitPreview;
   const selectedUnit = list.unitPreview ?? UnitService.getSelected(list);
   const army = selectedUnit && loadedArmyBooks?.find((book) => book.uid === selectedUnit.armyId);
   const armyRules = loadedArmyBooks.flatMap((x) => x.specialRules);
   const ruleDefinitions: IGameRule[] = rules.concat(armyRules);
+  const toughness = UnitService.getTough(selectedUnit);
 
   const getUpgradeSet = (id) => army.upgradePackages.filter((s) => s.uid === id)[0];
 
@@ -165,6 +167,7 @@ export function Upgrades() {
 
   const joinCandidates = list.units
     .filter((u) => (!competitive || u.size > 1) && !u.joinToUnit)
+    .filter(u => u.armyId === selectedUnit?.armyId)
     .filter(
       (u) =>
         !competitive ||
@@ -175,6 +178,7 @@ export function Upgrades() {
   const joinToUnitControl = () =>
     !previewMode &&
     !isSkirmish &&
+    (!competitive || toughness <= 6) &&
     isHero && (
       <FormGroup>
         <FormControl fullWidth>
@@ -225,7 +229,7 @@ export function Upgrades() {
       )}
       <Box sx={{ pb: 4 }}>
         {upgradeSets.map((pkg: IUpgradePackage) => (
-          <Box key={pkg.uid}>
+          <Fragment key={pkg.uid}>
             {pkg.sections
               .filter((section) => selectedUnit.disabledUpgradeSections.indexOf(section.uid) === -1)
               .map((u, i) => (
@@ -236,7 +240,7 @@ export function Upgrades() {
                   previewMode={previewMode}
                 />
               ))}
-          </Box>
+          </Fragment>
         ))}
       </Box>
     </>

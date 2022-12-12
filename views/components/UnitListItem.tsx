@@ -21,6 +21,7 @@ export default function UnitListItem(props: UnitListItemProps) {
 
   const weaponGroups = _.groupBy(loadout, (x) => x.name + x.attacks);
   const unitSize = UnitService.getSize(unit);
+  const isRenamed = unit.customName && (unit.customName !== unit.name);
 
   return (
     <>
@@ -48,7 +49,7 @@ export default function UnitListItem(props: UnitListItemProps) {
                   {props.countInList}x{" "}
                 </Typography>
               )}
-              <span>{unit.customName || unit.name} </span>
+              <span>{unit.customName || unit.name} {isRenamed && `(${unit.name}) `}</span>
               <Typography component="span" color="text.secondary">
                 [{unitSize}]
               </Typography>

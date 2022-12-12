@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../data/store";
+import { RootState, useAppDispatch } from "../data/store";
 import { Fragment, useState } from "react";
 import { Box, Card, Divider, IconButton, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -22,7 +22,7 @@ export function UnitSelection() {
 }
 
 function UnitSelectionForArmy({ army, showTitle }) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const list = useSelector((state: RootState) => state.list);
@@ -104,7 +104,7 @@ function UnitSelectionForArmy({ army, showTitle }) {
   );
 }
 
-function getUnitCategories(units: IUnit[]) {
+export function getUnitCategories(units: IUnit[]) {
   // Group army units by category
   const isTough = (u: IUnit, threshold) =>
     u.specialRules.some((r) => {

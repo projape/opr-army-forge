@@ -42,6 +42,7 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import DownloadFileIcon from "../icons/DownloadFile";
 import SaveIcon from "@mui/icons-material/Save";
 import ShareIcon from "@mui/icons-material/Share";
+import RuleIcon from "@mui/icons-material/Rule";
 import WebappApiService from "../../services/WebappApiService";
 export default function MainMenu() {
   const army = useSelector((state: RootState) => state.army);
@@ -90,7 +91,7 @@ export default function MainMenu() {
           >
             {list.name}
           </Typography>
-          {errors.length > 0 && (
+          {errors.length > 0 && list.competitive && (
             <>
               <IconButton
                 size={isBigScreen ? "large" : "medium"}
@@ -101,32 +102,27 @@ export default function MainMenu() {
                 }}
                 onClick={(e) => setValidationAnchorElement(e.currentTarget)}
               >
-                <NotificationImportantIcon />
+                <RuleIcon />
               </IconButton>
               <Popper
                 placement="bottom-end"
                 anchorEl={validationAnchorElement}
                 open={Boolean(validationAnchorElement) && isBigScreen}
-                // onClose={_ => setValidationAnchorElement(null)}
+              // onClose={_ => setValidationAnchorElement(null)}
               >
                 <ClickAwayListener onClickAway={(_) => setValidationAnchorElement(null)}>
                   <Paper>
                     <List>
                       <ListItem divider>
                         <ListItemText>
-                          <p style={{ fontWeight: 600 }}>Competitive List Validation</p>
-                          <p className="mt-2" style={{ color: "rgba(0,0,0,.66)" }}>
-                            These rules are <span style={{ fontWeight: 600 }}>optional</span>. See
-                            the{" "}
-                            <a
+                          <Typography>Competitive List Validation</Typography>
+                          <Typography color="text.secondary" sx={{mt:1, maxWidth: "480px" }}>
+                            The current list is not valid because it breaks the army composition restrictions shown below. Download the <a
                               href={competitiveRulesLink}
                               target="_blank"
                               style={{ textDecoration: "underline" }}
-                            >
-                              competitive rules document
-                            </a>{" "}
-                            for more info.
-                          </p>
+                            >competitive rules here.</a>
+                          </Typography>
                         </ListItemText>
                       </ListItem>
                       {errors.map((error, index) => (

@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { CustomTooltip } from "./CustomTooltip";
 
-export default function RuleItem({ label, description }) {
+interface RuleItemProps {
+  label: string;
+  description: string;
+}
+
+export default function RuleItem({ label, description }: RuleItemProps) {
   const [open, setOpen] = useState(false);
 
   const bullet = /•|/;
