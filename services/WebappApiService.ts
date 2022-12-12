@@ -69,7 +69,7 @@ export default class WebappApiService {
 
       //const url = this.getUrl() + `/army-books/${armyId}~${gameSystemId}?armyForge=true`;
       //const url = "https://projape.net/checker/api.php?id=" + armyId + "~" + gameSystemId;
-      const url = "?army=" + armyId + "~" + gameSystemId;
+      const url = this.getUrl() + "?army=" + armyId + "~" + gameSystemId;
       console.log("Fetching army data from", url);
 
       const armyBookRes = await fetch(url);
