@@ -49,9 +49,9 @@ export default class WebappApiService {
     const cacheKey = "AF_Cache_game-rules-" + gameSystemSlug;
     try {
       //https://webapp.onepagerules.com/api/content/game-systems/grimdark-future/special-rules
-      //const res = await fetch(this.getUrl() + `/content/game-systems/${gameSystemSlug}/special-rules`);
+      const res = await fetch(this.getUrl() + `/content/game-systems/${gameSystemSlug}/special-rules`);
       //https://www.projape.net/checker/api/index.php?specialid=grimdark-future
-      const res = await fetch(`https://projape.net/checker/api.php?specialid=${gameSystemSlug}`);
+      //const res = await fetch(`https://projape.net/checker/api.php?specialid=${gameSystemSlug}`);
       const data = await res.json();
       this.cacheResponse(cacheKey, data);
       return data;
