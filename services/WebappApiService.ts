@@ -7,7 +7,8 @@ import UnitService from "./UnitService";
 
 export default class WebappApiService {
 
-  private static webCompanionUrl = "https://webapp.onepagerules.com/api";
+  //private static webCompanionUrl = "https://webapp.onepagerules.com/api";
+  private static webCompanionUrl = "https://projape.net/checker/api.php";
 
   private static getUrl() {
     //return window.location.host.startsWith("localhost") ? "http://localhost:3000/api" : this.webCompanionUrl;
@@ -34,7 +35,8 @@ export default class WebappApiService {
   public static async getArmyBooks(gameSystemSlug: string) {
     const cacheKey = "AF_Cache_army-books-" + gameSystemSlug;
     try {
-      const res = await fetch(this.getUrl() + "/army-books?gameSystemSlug=" + gameSystemSlug);
+      //const res = await fetch(this.getUrl() + "/army-books?gameSystemSlug=" + gameSystemSlug);
+      const res = await fetch(this.getUrl() + "?books=" + gameSystemSlug);
       const data = await res.json();
       this.cacheResponse(cacheKey, data);
       return data;
@@ -48,7 +50,8 @@ export default class WebappApiService {
 
     const cacheKey = "AF_Cache_game-rules-" + gameSystemSlug;
     try {
-      const res = await fetch(this.getUrl() + `/public/game-systems/${gameSystemSlug}/common-rules`);
+      //const res = await fetch(this.getUrl() + `/public/game-systems/${gameSystemSlug}/common-rules`);
+      const res = await fetch(this.getUrl() + `?rules=${gameSystemSlug}`);
       const data = await res.json();
       this.cacheResponse(cacheKey, data);
       return data;
@@ -65,7 +68,8 @@ export default class WebappApiService {
       const gameSystemId = gameSystemToEnum(gameSystem);
 
       //const url = this.getUrl() + `/army-books/${armyId}~${gameSystemId}?armyForge=true`;
-      const url = "https://projape.net/checker/api.php?id=" + armyId + "~" + gameSystemId;
+      //const url = "https://projape.net/checker/api.php?id=" + armyId + "~" + gameSystemId;
+      const url = "?army=" + armyId + "~" + gameSystemId;
       console.log("Fetching army data from", url);
 
       const armyBookRes = await fetch(url);
