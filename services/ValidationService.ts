@@ -75,8 +75,6 @@ export default class ValidationService {
     if (unitsOverDuplicateLimit.length > 0)
       errors.push(`Cannot have more than ${duplicateUnitLimit} copies of a particular unit (${unitsOverDuplicateLimit.map(x => x.unitName).join(", ")}).`); // combined units still count as one
 
-      console.log("fullUnits", fullUnits);
-      console.log("maxAllowedSingleUnit", maxAllowedSingleUnit);
     if (fullUnits.some(u => u.unitPointsAll > maxAllowedSingleUnit))
       errors.push("May not bring any single unit worth more than 33% of total points.");
 
