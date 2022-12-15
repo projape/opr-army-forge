@@ -47,8 +47,8 @@ export function gameSystemToEnum(gameSystem) {
   switch (gameSystem) {
     case "gf": return 2;
     case "gff": return 3;
-    case "gff": return 31;
-    case "gff": return 33;
+    case "gff1": return 31;
+    case "gff3": return 33;
     case "aof": return 4;
     case "aofs": return 5;
     case "aofr": return 6;
