@@ -11,14 +11,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const vercelProd = "fake-forge.vercel.app";
   const isVercelProd = host?.toLocaleLowerCase() === vercelProd;
 
-  return isVercelProd
-    ? {
-        redirect: {
-          permanent: true,
-          destination: "https://fake-forge.vercel.app/",
-        },
-      }
-    : { props: {} };
+  //return isVercelProd
+    //? {
+      //  redirect: {
+        //  permanent: true,
+          //destination: "https://fake-forge.vercel.app/",
+        //},
+      //}
+    //: { props: {} };
 }
 
 export default function Home() {
