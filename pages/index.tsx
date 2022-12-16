@@ -8,14 +8,14 @@ import { GetServerSidePropsContext } from "next";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const host = context.req.headers.host;
-  const vercelProd = "opr-army-forge.vercel.app";
+  const vercelProd = "fake-forge.vercel.app";
   const isVercelProd = host?.toLocaleLowerCase() === vercelProd;
 
   return isVercelProd
     ? {
         redirect: {
           permanent: true,
-          destination: "https://army-forge.onepagerules.com/",
+          destination: "https://fake-forge.vercel.app/",
         },
       }
     : { props: {} };
@@ -30,7 +30,7 @@ export default function Home() {
         <Box mx="auto" pt={6} textAlign="center" className={styles.homeColumn}>
           <div>
             <h1 className={styles.title} style={{ letterSpacing: "8px", margin: 0 }}>
-              ARMY
+              FAKE
             </h1>
             <Box mx="auto" className={styles.logo}></Box>
             <h1 className={styles.title} style={{ margin: 0 }}>
