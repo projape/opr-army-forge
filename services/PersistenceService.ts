@@ -91,7 +91,7 @@ export default class PersistenceService {
   public static updateSave(list: ListState) {
 
     this.updateSaveData(list.creationTime, existingSave => {
-      const armyIds = _.uniq(list.units.map(u => u.armyId));
+      const armyIds = _.uniq(list.units.map(u => u.armyId).concat(existingSave.armyId));
       const points: number = UpgradeService.calculateListTotal(list.units);
 
       const saveData: ISaveData = {

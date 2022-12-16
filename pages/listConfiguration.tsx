@@ -83,7 +83,7 @@ export default function ListConfiguration() {
         </Stack>
         <MultipleArmySelections />
         {isEdit ? (
-          <EditView armyName={armyName} pointsLimit={pointsLimit} />
+          <EditView armyName={armyName} pointsLimit={pointsLimit} competitive={listState?.competitive} />
         ) : (
           <CreateView armyName={armyName} pointsLimit={pointsLimit} />
         )}

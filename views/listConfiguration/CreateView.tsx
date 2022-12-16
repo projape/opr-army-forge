@@ -30,7 +30,9 @@ export function CreateView(props: CreateViewProps) {
   const [autoSave, setAutoSave] = useState(
     localStorage["AF_AutoSave"] ? JSON.parse(localStorage["AF_AutoSave"]) : true
   );
-  const [competitive, setCompetitive] = useState(false);
+  const [competitive, setCompetitive] = useState(
+    localStorage["AF_UseCompetitiveDefault"] ? JSON.parse(localStorage["AF_UseCompetitiveDefault"]) : false
+  );
   const armyId = router.query["armyId"] as string;
   const isSkirmish = armyState.gameSystem === "gff" || armyState.gameSystem === "aofs";
 
@@ -51,6 +53,13 @@ export function CreateView(props: CreateViewProps) {
   const toggleAutoSave = () => {
     setAutoSave((prev) => {
       localStorage["AF_AutoSave"] = !prev;
+      return !prev;
+    });
+  };
+
+  const toggleUseCompetitive = () => {
+    setCompetitive((prev) => {
+      localStorage["AF_UseCompetitiveDefault"] = !prev;
       return !prev;
     });
   };
@@ -248,7 +257,7 @@ in a 2000pts list, it should:
           label="Auto-save changes"
         />
         <FormControlLabel
-          control={<Checkbox checked={competitive} onClick={() => setCompetitive(x => !x)} />}
+          control={<Checkbox checked={competitive} onClick={toggleUseCompetitive} />}
           label="Competitive Validation"
         />
       </FormGroup>

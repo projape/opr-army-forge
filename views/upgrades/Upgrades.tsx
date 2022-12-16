@@ -199,6 +199,17 @@ export function Upgrades() {
       </FormGroup>
     );
 
+
+
+  const allSections = upgradeSets
+    .flatMap(pkg => pkg.sections)
+    .filter((section) => selectedUnit.disabledUpgradeSections.indexOf(section.uid) === -1);
+
+  const heroUpgradeSections = allSections.filter(x => x.isHeroUpgrade);
+  const mainUpgradeSections = allSections.filter(x => !x.isHeroUpgrade);
+
+  console.log("allSections", allSections);
+
   return (
     <>
       {selectedUnit && (
@@ -228,20 +239,24 @@ export function Upgrades() {
         <CampaignUpgrades unit={selectedUnit} />
       )}
       <Box sx={{ pb: 4 }}>
-        {upgradeSets.map((pkg: IUpgradePackage) => (
-          <Fragment key={pkg.uid}>
-            {pkg.sections
-              .filter((section) => selectedUnit.disabledUpgradeSections.indexOf(section.uid) === -1)
-              .map((u, i) => (
-                <UpgradeGroup
-                  key={u.uid}
-                  unit={selectedUnit}
-                  upgrade={u}
-                  previewMode={previewMode}
-                />
-              ))}
-          </Fragment>
-        ))}
+        {heroUpgradeSections
+          .map((u, i) => (
+            <UpgradeGroup
+              key={u.uid}
+              unit={selectedUnit}
+              upgrade={u}
+              previewMode={previewMode}
+            />
+          ))}
+        {mainUpgradeSections
+          .map((u, i) => (
+            <UpgradeGroup
+              key={u.uid}
+              unit={selectedUnit}
+              upgrade={u}
+              previewMode={previewMode}
+            />
+          ))}
       </Box>
     </>
   );

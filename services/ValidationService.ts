@@ -75,8 +75,6 @@ export default class ValidationService {
     if (unitsOverDuplicateLimit.length > 0)
       errors.push(`Cannot have more than ${duplicateUnitLimit} copies of a particular unit (${unitsOverDuplicateLimit.map(x => x.unitName).join(", ")}).`); // combined units still count as one
 
-      console.log("fullUnits", fullUnits);
-      console.log("maxAllowedSingleUnit", maxAllowedSingleUnit);
     if (fullUnits.some(u => u.unitPointsAll > maxAllowedSingleUnit))
       errors.push("May not bring any single unit worth more than 33% of total points.");
 
@@ -110,8 +108,9 @@ export default class ValidationService {
 
       // 1 model per full 20pts
       const modelCount = _.sumBy(units, u => u.size);
+      const modelLimit = Math.floor(points / 20);
       if (modelCount > Math.floor(points / 20))
-        errors.push(`Max 1 model per full 20pts.`);
+        errors.push(`Max 1 model per full 20pts. Maximum valid number of models is ${modelLimit}, current total is ${modelCount}.`);
     }
 
     if (army.gameSystem === "aofs") {

@@ -63,10 +63,11 @@ export const listSlice = createSlice({
       state.creationTime = action.payload;
       debounceSave(current(state));
     },
-    updateListSettings: (state, action: PayloadAction<{ name: string, pointsLimit?: number }>) => {
-      const { name, pointsLimit } = action.payload;
+    updateListSettings: (state, action: PayloadAction<{ name: string, pointsLimit?: number, competitive: boolean }>) => {
+      const { name, pointsLimit, competitive } = action.payload;
       state.name = name;
       state.pointsLimit = pointsLimit;
+      state.competitive = competitive;
       debounceSave(current(state));
     },
     loadSavedList(state, action: PayloadAction<ListState>) {
