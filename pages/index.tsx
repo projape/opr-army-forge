@@ -8,17 +8,17 @@ import { GetServerSidePropsContext } from "next";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const host = context.req.headers.host;
-  const vercelProd = "fake-forge.vercel.app";
+  const vercelProd = "opr-army-forge.vercel.app";
   const isVercelProd = host?.toLocaleLowerCase() === vercelProd;
 
-  //return isVercelProd
-    //? {
-      //  redirect: {
-        //  permanent: true,
-          //destination: "https://fake-forge.vercel.app/",
-        //},
-      //}
-    //: { props: {} };
+  return isVercelProd
+    ? {
+        redirect: {
+          permanent: true,
+          destination: "https://army-forge.onepagerules.com/",
+        },
+      }
+    : { props: {} };
 }
 
 export default function Home() {
