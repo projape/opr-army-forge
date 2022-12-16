@@ -28,6 +28,10 @@ export function gameSystemToSlug(gameSystem) {
   switch (gameSystem) {
     case "gf":
       return "grimdark-future";
+    case "gf2":
+      return "grimdark-future-2";
+    case "ggm":
+      return "grimdark-gopramopra";
     case "gff":
       return "grimdark-future-firefight";
     case "gff1":
@@ -46,6 +50,8 @@ export function gameSystemToSlug(gameSystem) {
 export function gameSystemToEnum(gameSystem) {
   switch (gameSystem) {
     case "gf": return 2;
+    case "gf2": return 22;
+    case "ggm": return 20;
     case "gff": return 3;
     case "gff1": return 31;
     case "gff3": return 33;
