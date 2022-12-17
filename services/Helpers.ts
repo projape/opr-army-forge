@@ -31,7 +31,7 @@ export function gameSystemToSlug(gameSystem) {
     case "gf2":
       return "grimdark-future-2";
     case "ggm":
-      return "grimdark-gopramopra";
+      return "grimdark-future-gopramopra";
     case "gff":
       return "grimdark-future-firefight";
     case "gff1":
