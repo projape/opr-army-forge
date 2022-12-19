@@ -18,8 +18,8 @@ function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>OPR Army Forge Beta</title>
-        <meta name="description" content="OPR Army Forge List Builder" />
+        <title>OPR FAKE Forge Beta</title>
+        <meta name="description" content="OPR Fake Forge List Builder" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="manifest" href="/manifest.json" />
@@ -30,11 +30,11 @@ function App({ Component, pageProps }) {
           href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&&family=Source+Sans+Pro:wght@400;500;600;900&display=swap"
           rel="stylesheet"
         />
-        <script
-          data-goatcounter="https://opr-army-forge.goatcounter.com/count"
-          async
-          src="//gc.zgo.at/count.js"
-        ></script>
+        //<script
+        //  data-goatcounter="https://opr-army-forge.goatcounter.com/count"
+        //  async
+        //  src="//gc.zgo.at/count.js"
+        //></script>
       </Head>
       <Provider store={store}>
         <ThemedApp Component={Component} pageProps={pageProps} />
