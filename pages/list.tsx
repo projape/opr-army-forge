@@ -18,7 +18,7 @@ export default function List() {
   return (
     <>
       <Head>
-        <title>OPR Army Forge</title>
+        <title>Fake Forge</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {armyState.loaded && (isBigScreen ? <DesktopView /> : <MobileView />)}
