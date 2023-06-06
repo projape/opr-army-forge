@@ -26,7 +26,7 @@ export default function GameSystem() {
     }
   }, []);
 
-  const gameSystems = ["gdf", "ggm", "gff1"];
+  const gameSystems = ["gf", "ggm", "gff1"];
 
   return (
     <>
